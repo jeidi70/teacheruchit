@@ -162,7 +162,7 @@
 <body>
   <div class="container">
     <!-- Логотип -->
-    <img src="logo.png" alt="TeacherUchit" class="logo">
+    <img src="logo-transparent.png" alt="TeacherUchit" class="logo">
 
     <!-- Кнопки входа -->
     <button class="auth-button google-btn" onclick="signInWithGoogle()">
@@ -195,8 +195,98 @@
 
   <!-- Логика Firebase -->
   <script>
-    // Все функции из предыдущего ответа (signInWithGoogle, signUpWithEmail и т.д.)
-    // Вставьте сюда JavaScript-код из предыдущего ответа
+    // 🔧 Замените на ваши данные из Firebase Console
+    const firebaseConfig = {
+      apiKey: "AIzaSyD8n5dz6...",
+      authDomain: "teacheruchit.firebaseapp.com",
+      projectId: "teacheruchit",
+      storageBucket: "teacheruchit.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:abc123def456ghi789"
+    };
+
+    // Инициализация Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Вход через Google
+    function signInWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(() => handleRoleSelection())
+        .catch(error => alert(error.message));
+    }
+
+    // Вход через телефон
+    function signInWithPhone() {
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible'
+      });
+      const phoneNumber = prompt("Введите номер телефона:");
+      auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+        .then(confirmationResult => {
+          const code = prompt("Введите код из SMS:");
+          confirmationResult.confirm(code)
+            .then(() => handleRoleSelection());
+        })
+        .catch(error => alert(error.message));
+    }
+
+    // Вход по email/паролю
+    function signInWithEmail() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => handleRoleSelection())
+        .catch(error => alert(error.message));
+    }
+
+    // Регистрация по email/паролю
+    function signUpWithEmail() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          document.getElementById('roleSelection').classList.remove('hidden');
+        })
+        .catch(error => alert(error.message));
+    }
+
+    // Сохранение роли в Firestore
+    function setRole(role) {
+      const user = auth.currentUser;
+      if (!user) return;
+      
+      db.collection("users").doc(user.uid).set({ role })
+        .then(() => {
+          alert(`Роль "${role}" установлена!`);
+          window.location.href = "index.html"; // Перенаправление на главную
+        })
+        .catch(error => alert(error.message));
+    }
+
+    // Проверка наличия роли
+    function handleRoleSelection() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      db.collection("users").doc(user.uid).get()
+        .then(doc => {
+          if (!doc.exists) {
+            document.getElementById('roleSelection').classList.remove('hidden');
+          } else {
+            window.location.href = "index.html"; // Уже есть роль — перенаправление
+          }
+        });
+    }
+
+    // Прослушиватель состояния аутентификации
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        handleRoleSelection();
+      }
+    });
   </script>
 </body>
 </html>

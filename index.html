@@ -1,4 +1,148 @@
 <!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TeacherUchit</title>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script> 
+
+  <!-- Стили (пример) -->
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .hidden { display: none; }
+    .role-buttons { margin-top: 20px; }
+    button { margin: 5px; padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Добро пожаловать в TeacherUchit!</h1>
+
+  <!-- Кнопки входа -->
+  <div>
+    <button onclick="signInWithGoogle()">Войти через Google</button>
+    <button onclick="signInWithPhone()">Войти через телефон</button>
+  </div>
+
+  <!-- Форма регистрации/входа -->
+  <div style="margin-top: 20px;">
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Пароль" required />
+    <button onclick="signInWithEmail()">Войти</button>
+    <button onclick="signUpWithEmail()">Зарегистрироваться</button>
+  </div>
+
+  <!-- Выбор роли (скрыто по умолчанию) -->
+  <div id="roleSelection" class="hidden role-buttons">
+    <p>Выберите роль:</p>
+    <button onclick="setRole('student')">Ученик</button>
+    <button onclick="setRole('teacher')">Учитель</button>
+  </div>
+
+  <!-- reCAPTCHA для телефона -->
+  <div id="recaptcha-container"></div>
+
+  <!-- Firebase Конфигурация и Логика -->
+  <script>
+    // 🔧 Замените на ваши данные из Firebase Console
+const firebaseConfig = {
+  apiKey: "AIzaSyDdr_9yA391YOY08o3T3RXvjD1-dIdfCK0",
+  authDomain: "teacheruchit.firebaseapp.com",
+  projectId: "teacheruchit",
+  storageBucket: "teacheruchit.firebasestorage.app",
+  messagingSenderId: "762586190395",
+  appId: "1:762586190395:web:78333e7d5fa3dd6dd1021e",
+  measurementId: "G-K0BHLKHNHF"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+    // Вход через Google
+    function signInWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(() => handleRoleSelection())
+        .catch(error => alert(error.message));
+    }
+
+    // Вход через телефон
+    function signInWithPhone() {
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible'
+      });
+      const phoneNumber = prompt("Введите номер телефона:");
+      auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+        .then(confirmationResult => {
+          const code = prompt("Введите код из SMS:");
+          confirmationResult.confirm(code)
+            .then(() => handleRoleSelection());
+        })
+        .catch(error => alert(error.message));
+    }
+
+    // Вход по email/паролю
+    function signInWithEmail() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => handleRoleSelection())
+        .catch(error => alert(error.message));
+    }
+
+    // Регистрация по email/паролю
+    function signUpWithEmail() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          document.getElementById('roleSelection').classList.remove('hidden');
+        })
+        .catch(error => alert(error.message));
+    }
+
+    // Сохранение роли в Firestore
+    function setRole(role) {
+      const user = auth.currentUser;
+      if (!user) return;
+      
+      db.collection("users").doc(user.uid).set({ role })
+        .then(() => alert(`Роль "${role}" установлена!`))
+        .catch(error => alert(error.message));
+    }
+
+    // Проверка наличия роли
+    function handleRoleSelection() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      db.collection("users").doc(user.uid).get()
+        .then(doc => {
+          if (!doc.exists) {
+            document.getElementById('roleSelection').classList.remove('hidden');
+          } else {
+            alert(`Добро пожаловать, ${user.email}!`);
+            // Перенаправление на другую страницу (если нужно)
+            // window.location.href = "profile.html";
+          }
+        });
+    }
+
+    // Прослушиватель состояния аутентификации
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        handleRoleSelection();
+      }
+    });
+  </script>
+</body>
+</html>
+
+<!DOCTYPE html>
 HEAD
 <html>
 <head>
@@ -8,26 +152,7 @@ HEAD
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script> 
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script> 
 </head>
-<body>
-  <h1>Добро пожаловать!</h1>
 
-  <!-- Конфигурация Firebase -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyD8n5dz6...",
-      authDomain: "teacheruchit.firebaseapp.com",
-      projectId: "teacheruchit",
-      storageBucket: "teacheruchit.appspot.com",
-      messagingSenderId: "123456789012",
-      appId: "1:123456789012:web:abc123def456ghi789"
-    };
-
-    // Инициализация Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-  </script>
-</body>
 </html>
 <!DOCTYPE html>
 

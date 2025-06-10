@@ -7,20 +7,16 @@
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
   <!-- Конфигурация Firebase -->
   <script src="firebase.js"></script>
 
   <style>
-    /* Базовые стили */
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
@@ -41,17 +37,10 @@
       width: 100%;
     }
 
-    /* Логотип */
     .logo {
       display: block;
       margin: 0 auto 30px;
       max-width: 200px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #1a73e8;
-      margin-bottom: 24px;
     }
 
     .auth-button {
@@ -110,15 +99,12 @@
       transition: background 0.3s;
     }
 
-    /* Новые стили для кнопок */
-    .login-btn,
-    .register-btn {
-      background-color: #6a1b9a; /* Цвет из логотипа */
+    .login-btn, .register-btn {
+      background-color: #6a1b9a;
       color: white;
     }
 
-    .login-btn:hover,
-    .register-btn:hover {
+    .login-btn:hover, .register-btn:hover {
       background-color: #5a157d;
     }
 
@@ -195,9 +181,9 @@
 
   <!-- Логика Firebase -->
   <script>
-    // 🔧 Замените на ваши данные из Firebase Console
+    // Инициализация Firebase
     const firebaseConfig = {
-      apiKey: "AIzaSyD8n5dz6...",
+      apiKey: "AIzaSyD8n5dz6...", // Заменить на ваш API-ключ
       authDomain: "teacheruchit.firebaseapp.com",
       projectId: "teacheruchit",
       storageBucket: "teacheruchit.appspot.com",
@@ -205,7 +191,6 @@
       appId: "1:123456789012:web:abc123def456ghi789"
     };
 
-    // Инициализация Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -215,7 +200,10 @@
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
         .then(() => handleRoleSelection())
-        .catch(error => alert(error.message));
+        .catch(error => {
+          alert(error.message);
+          console.error(error);
+        });
     }
 
     // Вход через телефон
@@ -230,7 +218,10 @@
           confirmationResult.confirm(code)
             .then(() => handleRoleSelection());
         })
-        .catch(error => alert(error.message));
+        .catch(error => {
+          alert(error.message);
+          console.error(error);
+        });
     }
 
     // Вход по email/паролю
@@ -239,7 +230,10 @@
       const password = document.getElementById('password').value;
       auth.signInWithEmailAndPassword(email, password)
         .then(() => handleRoleSelection())
-        .catch(error => alert(error.message));
+        .catch(error => {
+          alert(error.message);
+          console.error(error);
+        });
     }
 
     // Регистрация по email/паролю
@@ -250,20 +244,25 @@
         .then(() => {
           document.getElementById('roleSelection').classList.remove('hidden');
         })
-        .catch(error => alert(error.message));
+        .catch(error => {
+          alert(error.message);
+          console.error(error);
+        });
     }
 
     // Сохранение роли в Firestore
     function setRole(role) {
       const user = auth.currentUser;
       if (!user) return;
-      
       db.collection("users").doc(user.uid).set({ role })
         .then(() => {
           alert(`Роль "${role}" установлена!`);
-          window.location.href = "index.html"; // Перенаправление на главную
+          window.location.href = "index.html";
         })
-        .catch(error => alert(error.message));
+        .catch(error => {
+          alert(error.message);
+          console.error(error);
+        });
     }
 
     // Проверка наличия роли
@@ -276,16 +275,14 @@
           if (!doc.exists) {
             document.getElementById('roleSelection').classList.remove('hidden');
           } else {
-            window.location.href = "index.html"; // Уже есть роль — перенаправление
+            window.location.href = "index.html";
           }
         });
     }
 
     // Прослушиватель состояния аутентификации
     auth.onAuthStateChanged(user => {
-      if (user) {
-        handleRoleSelection();
-      }
+      if (user) handleRoleSelection();
     });
   </script>
 </body>

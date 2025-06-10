@@ -13,6 +13,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <!-- Конфигурация Firebase -->
   <script src="firebase.js"></script>
 
@@ -20,7 +21,7 @@
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #f0f4f8, #d9e2ec); 
+      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);    
       display: flex;
       justify-content: center;
       align-items: center;
@@ -181,17 +182,11 @@
 
   <!-- Логика Firebase -->
   <script>
-    // Инициализация Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyD8n5dz6...", // Заменить на ваш API-ключ
-      authDomain: "teacheruchit.firebaseapp.com",
-      projectId: "teacheruchit",
-      storageBucket: "teacheruchit.appspot.com",
-      messagingSenderId: "123456789012",
-      appId: "1:123456789012:web:abc123def456ghi789"
-    };
+    // Проверка, что firebaseConfig уже загружен из firebase.js
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
 
-    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
@@ -208,12 +203,15 @@
 
     // Вход через телефон
     function signInWithPhone() {
-      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        'size': 'invisible'
-      });
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+          'size': 'invisible'
+        });
+      }
       const phoneNumber = prompt("Введите номер телефона:");
       auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
         .then(confirmationResult => {
+          window.confirmationResult = confirmationResult;
           const code = prompt("Введите код из SMS:");
           confirmationResult.confirm(code)
             .then(() => handleRoleSelection());
@@ -277,6 +275,9 @@
           } else {
             window.location.href = "index.html";
           }
+        })
+        .catch(error => {
+          console.error("Ошибка получения роли:", error);
         });
     }
 

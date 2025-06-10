@@ -17,11 +17,12 @@
   <!-- Конфигурация Firebase -->
   <script src="firebase.js"></script>
 
+  <!-- Стили -->
   <style>
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #f0f4f8, #d9e2ec); 
+      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);    
       display: flex;
       justify-content: center;
       align-items: center;
@@ -182,15 +183,7 @@
 
   <!-- Логика Firebase -->
   <script>
-    // ✅ Проверка, что Firebase не инициализирован дважды
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // ✅ Глобальные функции Firebase
+    // Глобальные функции Firebase
     function signInWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
@@ -276,7 +269,7 @@
         });
     }
 
-    // Прослушиватель состояния аутентификации
+    // Прослушиватель аутентификации
     auth.onAuthStateChanged(user => {
       if (user) handleRoleSelection();
     });

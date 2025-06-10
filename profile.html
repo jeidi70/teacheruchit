@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TeacherUchit</title>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script> 
+</head>
+<body>
+  <h1>Добро пожаловать!</h1>
+
+  <!-- Конфигурация Firebase -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD8n5dz6...",
+      authDomain: "teacheruchit.firebaseapp.com",
+      projectId: "teacheruchit",
+      storageBucket: "teacheruchit.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:abc123def456ghi789"
+    };
+
+    // Инициализация Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+</body>
+</html>

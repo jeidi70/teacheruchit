@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TeacherUchit</title>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script> 
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script> 
+</head>
+<body>
+  <h1>Добро пожаловать!</h1>
+
+  <!-- Конфигурация Firebase -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD8n5dz6...",
+      authDomain: "teacheruchit.firebaseapp.com",
+      projectId: "teacheruchit",
+      storageBucket: "teacheruchit.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:abc123def456ghi789"
+    };
+
+    // Инициализация Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ТичерУчит - Образовательная платформа</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        secondary: '#f97316',
+                        accent: '#10b981',
+                        dark: '#1f2937'
+                    }
+                }
+            }
+        }
+
+    
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9fafb;
+        }
+        
+        .lesson-card:hover, .material-card:hover, .task-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .achievement-card {
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        
+        .streak-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+        
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        .mobile-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .mobile-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .chat-message.user {
+            background-color: #e0e7ff;
+            border-radius: 18px 18px 0 18px;
+            align-self: flex-end;
+        }
+        
+        .chat-message.assistant {
+            background-color: #f3f4f6;
+            border-radius: 18px 18px 18px 0;
+            align-self: flex-start;
+        }
+        
+        .active-nav-item {
+            background-color: #f3f4f6;
+        }
+        
+        .active-nav-item i {
+            color: #4f46e5;
+        }
+        
+        .premium-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .premium-card:hover {
+            transform: scale(1.02);
+            border-color: #f97316;
+        }
+        
+        .task-card {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Mobile header -->
+    <header class="md:hidden bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-20">
+        <div class="flex items-center">
+            <div class="bg-indigo-600 text-white rounded-lg w-10 h-10 flex items-center justify-center mr-3">
+                <i class="fas fa-book text-xl"></i>
+            </div>
+            <h1 class="text-xl font-bold text-gray-800">ТичерУчит</h1>
+        </div>
+        <button id="menuToggle" class="text-gray-600">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+    </header>
+
+    <!-- Mobile menu overlay -->
+    <div id="mobileOverlay" class="mobile-overlay fixed inset-0 bg-black bg-opacity-50 z-30"></div>
+
+    <!-- Mobile sidebar menu -->
+    <aside id="mobileMenu" class="mobile-menu fixed top-0 left-0 h-full w-64 bg-white z-40 overflow-y-auto">
+        <div class="p-4 border-b flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="bg-indigo-600 text-white rounded-lg w-10 h-10 flex items-center justify-center mr-3">
+                    <i class="fas fa-book text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800">ТичерУчит</h1>
+                    <p class="text-xs text-gray-500">История и обществознание</p>
+                </div>
+            </div>
+            <button id="closeMenu" class="text-gray-500">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="px-2 py-4">
+            <ul>
+                <li class="mb-1">
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="home">
+                        <i class="fas fa-home w-5 h-5 mr-3"></i>
+                        Главная
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="materials">
+                        <i class="fas fa-book w-5 h-5 mr-3"></i>
+                        Материалы
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="tasks">
+                        <i class="fas fa-tasks w-5 h-5 mr-3"></i>
+                        Задания
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="premium">
+                        <i class="fas fa-crown w-5 h-5 mr-3"></i>
+                        Премиум
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="ai">
+                        <i class="fas fa-robot w-5 h-5 mr-3"></i>
+                        ИИ Помощник
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="profile">
+                        <i class="fas fa-user w-5 h-5 mr-3"></i>
+                        Профиль
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="px-4 py-3 border-t">
+            <h3 class="font-medium mb-2 text-gray-700">Статистика</h3>
+            <div class="space-y-3">
+                <div class="flex items-center p-2 bg-yellow-100 rounded-lg">
+                    <i class="fas fa-star text-yellow-500 mr-2 w-5 h-5"></i>
+                    <div>
+                        <p class="text-sm font-medium">Звезды</p>
+                        <p class="text-2xl font-bold">0</p>
+                    </div>
+                </div>
+                <div class="flex items-center p-2 bg-purple-100 rounded-lg">
+                    <i class="fas fa-chart-line text-purple-500 mr-2 w-5 h-5"></i>
+                    <div>
+                        <p class="text-sm font-medium">Опыт</p>
+                        <p class="text-2xl font-bold">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Desktop Sidebar -->
+        <aside class="hidden md:block w-64 bg-white shadow-md z-10">
+            <div class="p-4 border-b">
+                <div class="flex items-center">
+                    <div class="bg-indigo-600 text-white rounded-lg w-10 h-10 flex items-center justify-center mr-3">
+                        <i class="fas fa-book text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">ТичерУчит</h1>
+                        <p class="text-xs text-gray-500">Твой помощник по Истории и Обществознанию</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="px-2 py-4">
+                <ul>
+                    <li class="mb-1">
+                        <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="home">
+                            <i class="fas fa-home w-5 h-5 mr-3"></i>
+                            Главная
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="materials">
+                            <i class="fas fa-book w-5 h-5 mr-3"></i>
+                            Материалы
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="tasks">
+                            <i class="fas fa-tasks w-5 h-5 mr-3"></i>
+                            Задания
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="premium">
+                            <i class="fas fa-crown w-5 h-5 mr-3"></i>
+                            Премиум
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="ai">
+                            <i class="fas fa-robot w-5 h-5 mr-3"></i>
+                            ИИ Помощник
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md" data-page="profile">
+                            <i class="fas fa-user w-5 h-5 mr-3"></i>
+                            Профиль
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="px-4 py-3 border-t">
+                <h3 class="font-medium mb-2 text-gray-700">Статистика</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center p-2 bg-yellow-100 rounded-lg">
+                        <i class="fas fa-star text-yellow-500 mr-2 w-5 h-5"></i>
+                        <div>
+                            <p class="text-sm font-medium">Звезды</p>
+                            <p class="text-2xl font-bold">0</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-2 bg-purple-100 rounded-lg">
+                        <i class="fas fa-chart-line text-purple-500 mr-2 w-5 h-5"></i>
+                        <div>
+                            <p class="text-sm font-medium">Опыт</p>
+                            <p class="text-2xl font-bold">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="flex-1 p-4 md:p-6">
+            <!-- Home Page -->
+            <div id="home" class="page active">
+                <!-- Header -->
+                <header class="mb-6 md:mb-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Привет, Илья! 👋</h1>
+                            <p class="text-gray-600">Продолжайте изучать историю и обществознание</p>
+                        </div>
+                        <div class="flex items-center bg-gray-100 px-4 py-2 rounded-lg streak-pulse">
+                            <i class="fas fa-fire text-orange-500 mr-2"></i>
+                            <span class="text-sm font-medium">0 дней подряд</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Stats cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 md:mb-8">
+                    <div class="bg-indigo-500 rounded-xl p-4 md:p-6 text-white shadow-md">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs md:text-sm uppercase tracking-wider opacity-90">Опыт</p>
+                                <p class="text-2xl md:text-3xl font-bold mt-1">0</p>
+                                <p class="text-xs opacity-90 mt-1">накопленный XP</p>
+                            </div>
+                            <i class="fas fa-chart-line text-white text-xl md:text-2xl opacity-80"></i>
+                        </div>
+                    </div>
+                    <div class="bg-orange-500 rounded-xl p-4 md:p-6 text-white shadow-md">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs md:text-sm uppercase tracking-wider opacity-90">Звезды</p>
+                                <p class="text-2xl md:text-3xl font-bold mt-1">0</p>
+                                <p class="text-xs opacity-90 mt-1">Доступно для проведения</p>
+                            </div>
+                            <i class="fas fa-star text-white text-xl md:text-2xl opacity-80"></i>
+                        </div>
+                    </div>
+                    <div class="bg-green-500 rounded-xl p-4 md:p-6 text-white shadow-md">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs md:text-sm uppercase tracking-wider opacity-90">Прогресс</p>
+                                <p class="text-2xl md:text-3xl font-bold mt-1">0 / 4</p>
+                                <p class="text-xs opacity-90 mt-1">Урок пройден</p>
+                            </div>
+                            <i class="fas fa-trophy text-white text-xl md:text-2xl opacity-80"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lessons and Progress -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+                    <div class="lg:col-span-2">
+                        <!-- Recommended Lessons -->
+                        <div class="mb-6 md:mb-8 bg-white rounded-xl shadow-sm p-4 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6 gap-3">
+                                <h2 class="text-lg md:text-xl font-bold text-gray-800">Рекомендуемые материалы</h2>
+                                <button class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                                    Все материалы <i class="fas fa-arrow-right ml-1"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                                <!-- Lesson 1 - History -->
+                                <div class="lesson-card bg-white border border-gray-200 p-4 rounded-lg transition-all duration-300 cursor-pointer">
+                                    <span class="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded">История</span>
+                                    <h3 class="font-bold text-gray-800 mt-2">Крещение Руси и его последствия</h3>
+                                    <p class="text-gray-600 text-xs md:text-sm mt-2">Принятие христианства князем Владимиром и влияние на развитие русской культуры</p>
+                                    <div class="flex justify-between items-center mt-3">
+                                        <div class="flex items-center text-xs md:text-sm text-gray-500">
+                                            <i class="far fa-clock mr-1"></i>
+                                            <span>15-20 мин</span>
+                                            <span class="ml-3">
+                                                <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                                10
+                                            </span>
+                                        </div>
+                                        <button class="px-2 md:px-3 py-1 bg-indigo-600 text-white rounded-md text-xs md:text-sm hover:bg-indigo-700 transition font-medium">
+                                            Начать
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Lesson 2 - Social Studies -->
+                                <div class="lesson-card bg-white border border-gray-200 p-4 rounded-lg transition-all duration-300 cursor-pointer">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">Обществознание</span>
+                                    <h3 class="font-bold text-gray-800 mt-2">Государство и гражданское общество</h3>
+                                    <p class="text-gray-600 text-xs md:text-sm mt-2">Основы государственного устройства и взаимодействия с гражданским обществом</p>
+                                    <div class="flex justify-between items-center mt-3">
+                                        <div class="flex items-center text-xs md:text-sm text-gray-500">
+                                            <i class="far fa-clock mr-1"></i>
+                                            <span>20-25 мин</span>
+                                            <span class="ml-3">
+                                                <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                                12
+                                            </span>
+                                        </div>
+                                        <button class="px-2 md:px-3 py-1 bg-indigo-600 text-white rounded-md text-xs md:text-sm hover:bg-indigo-700 transition font-medium">
+                                            Начать
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Lesson 3 - History -->
+                                <div class="lesson-card bg-white border border-gray-200 p-4 rounded-lg transition-all duration-300 cursor-pointer">
+                                    <span class="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded">История</span>
+                                    <h3 class="font-bold text-gray-800 mt-2">Иван Грозный: реформы и опричнина</h3>
+                                    <p class="text-gray-600 text-xs md:text-sm mt-2">Правление первого русского царя, внутренняя и внешняя политика</p>
+                                    <div class="flex justify-between items-center mt-3">
+                                        <div class="flex items-center text-xs md:text-sm text-gray-500">
+                                            <i class="far fa-clock mr-1"></i>
+                                            <span>15-20 мин</span>
+                                            <span class="ml-3">
+                                                <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                                15
+                                            </span>
+                                        </div>
+                                        <button class="px-2 md:px-3 py-1 bg-indigo-600 text-white rounded-md text-xs md:text-sm hover:bg-indigo-700 transition font-medium">
+                                            Начать
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Lesson 4 - Social Studies -->
+                                <div class="lesson-card bg-white border border-gray-200 p-4 rounded-lg transition-all duration-300 cursor-pointer">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">Обществознание</span>
+                                    <h3 class="font-bold text-gray-800 mt-2">Права и обязанности граждан</h3>
+                                    <p class="text-gray-600 text-xs md:text-sm mt-2">Конституционные права, свободы и обязанности граждан РФ</p>
+                                    <div class="flex justify-between items-center mt-3">
+                                        <div class="flex items-center text-xs md:text-sm text-gray-500">
+                                            <i class="far fa-clock mr-1"></i>
+                                            <span>20-25 мин</span>
+                                            <span class="ml-3">
+                                                <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                                14
+                                            </span>
+                                        </div>
+                                        <button class="px-2 md:px-3 py-1 bg-indigo-600 text-white rounded-md text-xs md:text-sm hover:bg-indigo-700 transition font-medium">
+                                            Начать
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Achievements -->
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">Достижения</h2>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+                                <!-- Achievement 1 -->
+                                <div class="achievement-card bg-white border border-gray-200 p-3 rounded-lg text-center">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-plus text-blue-500 text-lg md:text-xl"></i>
+                                    </div>
+                                    <p class="font-medium text-gray-800 text-sm md:text-base">Первые шаги</p>
+                                    <p class="text-xs text-gray-500">Первый урок</p>
+                                </div>
+                                
+                                <!-- Achievement 2 -->
+                                <div class="achievement-card bg-white border border-gray-200 p-3 rounded-lg text-center">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-book text-purple-500 text-lg md:text-xl"></i>
+                                    </div>
+                                    <p class="font-medium text-gray-800 text-sm md:text-base">Знаток</p>
+                                    <p class="text-xs text-gray-500">5 уроков</p>
+                                </div>
+                                
+                                <!-- Achievement 3 -->
+                                <div class="achievement-card bg-white border border-gray-200 p-3 rounded-lg text-center">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-tasks text-green-500 text-lg md:text-xl"></i>
+                                    </div>
+                                    <p class="font-medium text-gray-800 text-sm md:text-base">Исполнитель</p>
+                                    <p class="text-xs text-gray-500">10 заданий</p>
+                                </div>
+                                
+                                <!-- Achievement 4 -->
+                                <div class="achievement-card bg-white border border-gray-200 p-3 rounded-lg text-center">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-crown text-yellow-500 text-lg md:text-xl"></i>
+                                    </div>
+                                    <p class="font-medium text-gray-800 text-sm md:text-base">Премиум</p>
+                                    <p class="text-xs text-gray-500">Активирован</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right column -->
+                    <div>
+                        <!-- Progress section -->
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-4 md:mb-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-3 md:mb-4">Общий прогресс</h2>
+                            <div>
+                                <p class="text-xs md:text-sm mb-2 text-gray-600">Прогресс обучения</p>
+                                <div class="w-full h-2 md:h-3 bg-gray-200 rounded-full mb-4 md:mb-6">
+                                    <div class="h-2 md:h-3 bg-indigo-600 rounded-full w-1/4 progress-bar"></div>
+                                </div>
+                                <div class="space-y-2 md:space-y-3">
+                                    <div class="flex justify-between text-gray-700 text-sm md:text-base">
+                                        <span>Пройденные уроки</span>
+                                        <span class="font-medium">0</span>
+                                    </div>
+                                    <div class="flex justify-between text-gray-700 text-sm md:text-base">
+                                        <span>Выполненные задания</span>
+                                        <span class="font-medium">0</span>
+                                    </div>
+                                    <div class="flex justify-between text-gray-700 text-sm md:text-base">
+                                        <span>Дней подряд</span>
+                                        <span class="font-medium">0</span>
+                                    </div>
+                                    <div class="flex justify-between text-gray-700 text-sm md:text-base">
+                                        <span>Премиум статус</span>
+                                        <span class="font-medium text-red-500">Не активен</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tasks section -->
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 md:mb-4 gap-2">
+                                <h2 class="text-lg md:text-xl font-bold text-gray-800">Активные задания</h2>
+                                <button class="text-indigo-600 hover:text-indigo-800 text-sm">
+                                    <i class="fas fa-plus mr-1"></i> Добавить
+                                </button>
+                            </div>
+                            <div class="text-center py-6">
+                                <i class="fas fa-clipboard-list text-gray-300 text-3xl md:text-4xl mb-3"></i>
+                                <p class="text-gray-500 text-sm md:text-base">Нет активных заданий</p>
+                                <button class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 transition font-medium">
+                                    Найти задания
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Materials Page -->
+            <div id="materials" class="page">
+                <header class="mb-6 md:mb-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Материалы</h1>
+                            <p class="text-gray-600">Все учебные материалы по истории и обществознанию</p>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="relative">
+                                <input type="text" placeholder="Поиск материалов..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="mb-6">
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm">Все</button>
+                        <button class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-sm">История</button>
+                        <button class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-sm">Обществознание</button>
+                        <button class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-sm">Видео</button>
+                        <button class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-sm">Статьи</button>
+                        <button class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-sm">Конспекты</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <!-- Material 1 -->
+                    <div class="material-card bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded">История</span>
+                                <span class="text-xs text-gray-500">15 мин</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-2">Крещение Руси</h3>
+                            <p class="text-gray-600 text-sm mb-4">Принятие христианства князем Владимиром и влияние на развитие русской культуры</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                    <span>10 XP</span>
+                                </div>
+                                <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Читать</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Material 2 -->
+                    <div class="material-card bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">Обществознание</span>
+                                <span class="text-xs text-gray-500">20 мин</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-2">Гражданское общество</h3>
+                            <p class="text-gray-600 text-sm mb-4">Основы государственного устройства и взаимодействия с гражданским обществом</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                    <span>12 XP</span>
+                                </div>
+                                <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Читать</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Material 3 -->
+                    <div class="material-card bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded">История</span>
+                                <span class="text-xs text-gray-500">25 мин</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-2">Петровские реформы</h3>
+                            <p class="text-gray-600 text-sm mb-4">Преобразования Петра I и их влияние на развитие России</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                    <span>15 XP</span>
+                                </div>
+                                <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Читать</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Material 4 -->
+                    <div class="material-card bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">Обществознание</span>
+                                <span class="text-xs text-gray-500">18 мин</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-2">Политические партии</h3>
+                            <p class="text-gray-600 text-sm mb-4">Роль политических партий в современном обществе</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                    <span>14 XP</span>
+                                </div>
+                                <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Читать</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Material 5 -->
+                    <div class="material-card bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded">История</span>
+                                <span class="text-xs text-gray-500">30 мин</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-2">Великая Отечественная война</h3>
+                            <p class="text-gray-600 text-sm mb-4">Основные этапы и ключевые сражения</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                    <span>18 XP</span>
+                                </div>
+                                <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Читать</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Material 6 -->
+                    <div class="material-card bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">Обществознание</span>
+                                <span class="text-xs text-gray-500">22 мин</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-800 mb-2">Экономические системы</h3>
+                            <p class="text-gray-600 text-sm mb-4">Типы экономических систем и их особенности</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                    <span>16 XP</span>
+                                </div>
+                                <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Читать</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Page -->
+            <div id="tasks" class="page">
+                <header class="mb-6 md:mb-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Задания</h1>
+                            <p class="text-gray-600">Учебные задания и тесты для проверки знаний</p>
+                        </div>
+                        <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-medium">
+                            <i class="fas fa-plus mr-2"></i> Новое задание
+                        </button>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-lg md:text-xl font-bold text-gray-800">Активные задания</h2>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-500 mr-2">Сортировка:</span>
+                                    <select class="border rounded-lg px-2 py-1 text-sm">
+                                        <option>По дате</option>
+                                        <option>По сложности</option>
+                                        <option>По предмету</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <!-- Task 1 -->
+                                <div class="task-card bg-white border border-gray-200 rounded-lg p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <span class="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded">История</span>
+                                            <h3 class="font-bold text-gray-800 mt-2">Тест: Древняя Русь</h3>
+                                        </div>
+                                        <span class="text-xs text-gray-500">До 15.06.2025</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-3">Проверка знаний о становлении Древнерусского государства</p>
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center text-sm text-gray-500">
+                                            <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                            <span>15 XP</span>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button class="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200">Позже</button>
+                                            <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Начать</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Task 2 -->
+                                <div class="task-card bg-white border border-gray-200 rounded-lg p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">Обществознание</span>
+                                            <h3 class="font-bold text-gray-800 mt-2">Эссе: Гражданское общество</h3>
+                                        </div>
+                                        <span class="text-xs text-gray-500">До 20.06.2025</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-3">Напишите эссе о роли гражданского общества в современной России</p>
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center text-sm text-gray-500">
+                                            <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                            <span>20 XP</span>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button class="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200">Позже</button>
+                                            <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Начать</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Task 3 -->
+                                <div class="task-card bg-white border border-gray-200 rounded-lg p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <span class="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded">История</span>
+                                            <h3 class="font-bold text-gray-800 mt-2">Викторина: Петр I</h3>
+                                        </div>
+                                        <span class="text-xs text-gray-500">До 10.06.2025</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-3">Проверьте свои знания о реформах Петра Великого</p>
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center text-sm text-gray-500">
+                                            <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                            <span>12 XP</span>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button class="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200">Позже</button>
+                                            <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">Начать</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Завершенные задания</h2>
+                            <div class="space-y-4">
+                                <!-- Completed Task 1 -->
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">Обществознание</span>
+                                            <h3 class="font-bold text-gray-800 mt-2">Тест: Политические системы</h3>
+                                        </div>
+                                        <span class="text-xs text-green-600">Выполнено 05.06.2025</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-3">Проверка знаний о различных политических системах</p>
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center text-sm text-gray-500">
+                                            <span class="font-bold text-green-600 mr-2">Оценка: 5/5</span>
+                                            <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                            <span>18 XP</span>
+                                        </div>
+                                        <button class="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200">Посмотреть</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Completed Task 2 -->
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <span class="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded">История</span>
+                                            <h3 class="font-bold text-gray-800 mt-2">Контрольная: Вторая мировая война</h3>
+                                        </div>
+                                        <span class="text-xs text-green-600">Выполнено 01.06.2025</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-3">Основные события и итоги Второй мировой войны</p>
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center text-sm text-gray-500">
+                                            <span class="font-bold text-green-600 mr-2">Оценка: 4/5</span>
+                                            <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                            <span>15 XP</span>
+                                        </div>
+                                        <button class="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200">Посмотреть</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Статистика заданий</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Выполнено заданий</span>
+                                        <span class="text-sm font-medium text-gray-700">2/10</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 20%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Средняя оценка</span>
+                                        <span class="text-sm font-medium text-gray-700">4.5</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="pt-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-700">История</span>
+                                        <span class="text-sm font-medium text-gray-700">1 задание</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium text-gray-700">Обществознание</span>
+                                        <span class="text-sm font-medium text-gray-700">1 задание</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Рекомендуемые задания</h2>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-blue-50 rounded-lg">
+                                    <div class="flex items-start">
+                                        <div class="bg-indigo-100 p-2 rounded-lg mr-3">
+                                            <i class="fas fa-question-circle text-indigo-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-gray-800">Тест: Конституция РФ</h3>
+                                            <p class="text-xs text-gray-600">Основные положения Конституции Российской Федерации</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-3 bg-amber-50 rounded-lg">
+                                    <div class="flex items-start">
+                                        <div class="bg-amber-100 p-2 rounded-lg mr-3">
+                                            <i class="fas fa-landmark text-amber-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-gray-800">Эссе: Куликовская битва</h3>
+                                            <p class="text-xs text-gray-600">Значение Куликовской битвы в истории России</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-3 bg-green-50 rounded-lg">
+                                    <div class="flex items-start">
+                                        <div class="bg-green-100 p-2 rounded-lg mr-3">
+                                            <i class="fas fa-chart-pie text-green-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-gray-800">Анализ: Экономика России</h3>
+                                            <p class="text-xs text-gray-600">Основные отрасли экономики и их развитие</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Page -->
+            <div id="premium" class="page">
+                <header class="mb-6 md:mb-8">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Премиум подписка</h1>
+                        <p class="text-gray-600">Расширьте свои возможности с премиум доступом</p>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="lg:col-span-2">
+                        <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-6 text-white mb-6">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                                <div class="mb-4 md:mb-0">
+                                    <h2 class="text-xl font-bold mb-2">Премиум статус</h2>
+                                    <p class="opacity-90">Откройте все возможности платформы без ограничений</p>
+                                </div>
+                                <div class="bg-yellow-400 text-yellow-900 px-4 py-2 rounded-lg font-bold">
+                                    <i class="fas fa-crown mr-2"></i>Не активен
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Преимущества премиум подписки</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="flex items-start">
+                                    <div class="bg-green-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-unlock text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800 mb-1">Все материалы без ограничений</h3>
+                                        <p class="text-sm text-gray-600">Полный доступ ко всем учебным материалам и курсам</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-indigo-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-robot text-indigo-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800 mb-1">Персональный ИИ-помощник</h3>
+                                        <p class="text-sm text-gray-600">Индивидуальные консультации с искусственным интеллектом</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-yellow-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-chart-line text-yellow-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800 mb-1">Расширенная статистика</h3>
+                                        <p class="text-sm text-gray-600">Подробный анализ вашего прогресса и рекомендации</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-purple-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-gift text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800 mb-1">Эксклюзивные материалы</h3>
+                                        <p class="text-sm text-gray-600">Дополнительные задания, тесты и учебные пособия</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-download text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800 mb-1">Скачивание материалов</h3>
+                                        <p class="text-sm text-gray-600">Возможность скачивать уроки и материалы для офлайн-доступа</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-pink-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-headset text-pink-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800 mb-1">Приоритетная поддержка</h3>
+                                        <p class="text-sm text-gray-600">Быстрые ответы от службы поддержки</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="bg-white rounded-xl shadow-sm p-6 sticky top-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Выберите тариф</h2>
+                            
+                            <div class="space-y-4">
+                                <!-- Monthly Plan -->
+                                <div class="premium-card border border-gray-200 rounded-xl p-5">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 class="font-bold text-lg text-gray-800">Месячная подписка</h3>
+                                            <p class="text-sm text-gray-600">Идеально для тех, кто хочет попробовать</p>
+                                        </div>
+                                        <div class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">
+                                            Популярный
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <span class="text-3xl font-bold text-gray-800">299 ₽</span>
+                                        <span class="text-gray-500">/месяц</span>
+                                    </div>
+                                    <button class="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                                        Выбрать
+                                    </button>
+                                </div>
+                                
+                                <!-- Annual Plan -->
+                                <div class="premium-card border border-gray-200 rounded-xl p-5">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 class="font-bold text-lg text-gray-800">Годовая подписка</h3>
+                                            <p class="text-sm text-gray-600">Экономия 40% по сравнению с помесячной оплатой</p>
+                                        </div>
+                                        <div class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
+                                            Выгодно
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <span class="text-3xl font-bold text-gray-800">2 399 ₽</span>
+                                        <span class="text-gray-500">/год</span>
+                                        <div class="text-sm text-gray-500 mt-1">199 ₽ в месяц</div>
+                                    </div>
+                                    <button class="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                                        Выбрать
+                                    </button>
+                                </div>
+                                
+                                <!-- Lifetime Plan -->
+                                <div class="premium-card border border-gray-200 rounded-xl p-5">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <h3 class="font-bold text-lg text-gray-800">Пожизненный доступ</h3>
+                                            <p class="text-sm text-gray-600">Одноразовый платеж, доступ навсегда</p>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <span class="text-3xl font-bold text-gray-800">9 999 ₽</span>
+                                        <span class="text-gray-500">однократно</span>
+                                    </div>
+                                    <button class="w-full py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 font-medium">
+                                        Выбрать
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Assistant Page -->
+            <div id="ai" class="page">
+                <header class="mb-6 md:mb-8">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">ИИ Помощник</h1>
+                        <p class="text-gray-600">Задайте вопрос по истории или обществознанию</p>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 h-[500px] flex flex-col">
+                            <div class="flex-1 overflow-y-auto mb-4" id="chat-container">
+                                <!-- Chat messages will appear here -->
+                                <div class="chat-message assistant mb-4 p-4 max-w-[80%]">
+                                    <div class="font-bold text-gray-700 mb-1">ИИ Помощник:</div>
+                                    <p>Привет, Илья! Я ваш ИИ-помощник по истории и обществознанию. Чем могу помочь?</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex">
+                                <input type="text" id="message-input" placeholder="Задайте ваш вопрос..." class="flex-1 border rounded-l-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <button id="send-button" class="bg-indigo-600 text-white px-6 rounded-r-lg hover:bg-indigo-700">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Примеры вопросов</h2>
+                            <div class="space-y-3">
+                                <button class="w-full text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <p class="font-medium">Объясните причины крещения Руси</p>
+                                </button>
+                                <button class="w-full text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <p class="font-medium">В чем разница между абсолютной и конституционной монархией?</p>
+                                </button>
+                                <button class="w-full text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <p class="font-medium">Каковы были основные реформы Петра I?</p>
+                                </button>
+                                <button class="w-full text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <p class="font-medium">Что такое гражданское общество и какова его роль?</p>
+                                </button>
+                                <button class="w-full text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                                    <p class="font-medium">Помогите подготовиться к тесту по Второй мировой войне</p>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Возможности ИИ-помощника</h2>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>Объяснение сложных тем простым языком</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>Помощь с домашними заданиями</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>Подготовка к экзаменам и тестам</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>Рекомендации по учебным материалам</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>Разбор исторических документов</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span>Анализ социальных явлений</span>
+                                </li>
+                            </ul>
+                            <div class="mt-4 p-3 bg-yellow-50 rounded-lg">
+                                <p class="text-sm text-yellow-800">Для полного доступа к ИИ-помощнику необходима премиум подписка</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile" class="page">
+                <header class="mb-6 md:mb-8">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Профиль</h1>
+                        <p class="text-gray-600">Управляйте вашей учетной записью и настройками</p>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Личная информация</h2>
+                            <div class="flex flex-col md:flex-row gap-6">
+                                <div class="flex flex-col items-center">
+                                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 md:w-24 md:h-24 mb-3 flex items-center justify-center">
+                                        <i class="fas fa-user text-gray-400 text-xl md:text-3xl"></i>
+                                    </div>
+                                    <button class="text-sm text-indigo-600 hover:text-indigo-800">Изменить фото</button>
+                                </div>
+                                
+                                <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Имя</label>
+                                        <input type="text" value="Илья" class="w-full border rounded-lg p-2">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Фамилия</label>
+                                        <input type="text" value="Петров" class="w-full border rounded-lg p-2">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                        <input type="email" value="ilya.petrov@example.com" class="w-full border rounded-lg p-2">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
+                                        <input type="tel" value="+7 (900) 123-45-67" class="w-full border rounded-lg p-2">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">О себе</label>
+                                        <textarea class="w-full border rounded-lg p-2 h-24">Ученик 10 класса, увлекаюсь историей России</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6 flex justify-end">
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Сохранить изменения</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Безопасность</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Текущий пароль</label>
+                                    <input type="password" class="w-full border rounded-lg p-2">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Новый пароль</label>
+                                    <input type="password" class="w-full border rounded-lg p-2">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Подтвердите пароль</label>
+                                    <input type="password" class="w-full border rounded-lg p-2">
+                                </div>
+                                <div class="flex justify-end">
+                                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Изменить пароль</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Статистика обучения</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Общий прогресс</span>
+                                        <span class="text-sm font-medium text-gray-700">25%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 25%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-gray-700">История</span>
+                                        <span class="text-sm font-medium text-gray-700">30%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-amber-500 h-2.5 rounded-full" style="width: 30%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Обществознание</span>
+                                        <span class="text-sm font-medium text-gray-700">18%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 18%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="pt-4">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-book text-gray-500 mr-2"></i>
+                                            <span class="text-sm font-medium text-gray-700">Уроки пройдено</span>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-700">5 из 20</span>
+                                    </div>
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-tasks text-gray-500 mr-2"></i>
+                                            <span class="text-sm font-medium text-gray-700">Заданий выполнено</span>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-700">3 из 15</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-fire text-orange-500 mr-2"></i>
+                                            <span class="text-sm font-medium text-gray-700">Дней подряд</span>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-700">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6">
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Настройки</h2>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Email уведомления</p>
+                                        <p class="text-sm text-gray-600">Получать уведомления о новых материалах</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Push уведомления</p>
+                                        <p class="text-sm text-gray-600">Напоминания о заданиях и уроках</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-gray-800">Темная тема</p>
+                                        <p class="text-sm text-gray-600">Использовать темный интерфейс</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="pt-4">
+                                    <button class="w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 font-medium">
+                                        <i class="fas fa-sign-out-alt mr-2"></i> Выйти из аккаунта
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile footer -->
+    <footer class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg p-3 z-10">
+        <div class="grid grid-cols-5 gap-2">
+            <a href="#" class="nav-link flex flex-col items-center" data-page="home">
+                <i class="fas fa-home mb-1"></i>
+                <span class="text-xs">Главная</span>
+            </a>
+            <a href="#" class="nav-link flex flex-col items-center" data-page="materials">
+                <i class="fas fa-book mb-1"></i>
+                <span class="text-xs">Материалы</span>
+            </a>
+            <a href="#" class="nav-link flex flex-col items-center" data-page="tasks">
+                <i class="fas fa-tasks mb-1"></i>
+                <span class="text-xs">Задания</span>
+            </a>
+            <a href="#" class="nav-link flex flex-col items-center" data-page="premium">
+                <i class="fas fa-crown mb-1"></i>
+                <span class="text-xs">Премиум</span>
+            </a>
+            <a href="#" class="nav-link flex flex-col items-center" data-page="profile">
+                <i class="fas fa-user mb-1"></i>
+                <span class="text-xs">Профиль</span>
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle functionality
+        const menuToggle = document.getElementById('menuToggle');
+        const closeMenu = document.getElementById('closeMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+            mobileOverlay.classList.add('open');
+        });
+        
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+            mobileOverlay.classList.remove('open');
+        });
+        
+        mobileOverlay.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+            mobileOverlay.classList.remove('open');
+        });
+        
+        // Progress bar animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBar = document.querySelector('.progress-bar');
+            setTimeout(() => {
+                progressBar.style.width = '40%';
+            }, 500);
+        });
+        
+        // Page navigation
+        const pages = document.querySelectorAll('.page');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.classList.remove('active');
+                if (page.id === pageId) {
+                    page.classList.add('active');
+                }
+            });
+            
+            // Update active nav item
+            navLinks.forEach(link => {
+                link.classList.remove('active-nav-item');
+                if (link.getAttribute('data-page') === pageId) {
+                    link.classList.add('active-nav-item');
+                }
+            });
+            
+            // Close mobile menu if open
+            mobileMenu.classList.remove('open');
+            mobileOverlay.classList.remove('open');
+        }
+        
+        // Set up navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                showPage(pageId);
+            });
+        });
+        
+        // Default to home page
+        showPage('home');
+        
+        // Chat functionality
+        const chatContainer = document.getElementById('chat-container');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        
+        function addMessage(message, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chat-message', isUser ? 'user' : 'assistant');
+            messageDiv.innerHTML = `
+                <div class="font-bold text-gray-700 mb-1">${isUser ? 'Вы:' : 'ИИ Помощник:'}</div>
+                <p>${message}</p>
+            `;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function getAIResponse(userMessage) {
+            // Simple response logic - in a real app, this would connect to an AI API
+            const responses = [
+                "Отличный вопрос! Крещение Руси произошло в 988 году при князе Владимире.",
+                "Гражданское общество - это сфера самопроявления свободных граждан и добровольно сформировавшихся ассоциаций и организаций.",
+                "Основные реформы Петра I включали создание регулярной армии, флота, реформу государственного управления и введение нового летоисчисления.",
+                "Конституционная монархия отличается от абсолютной наличием конституции, которая ограничивает власть монарха.",
+                "Вторая мировая война началась 1 сентября 1939 года и закончилась 2 сентября 1945 года."
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        sendButton.addEventListener('click', function() {
+            const message = messageInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                messageInput.value = '';
+                
+                // Simulate AI response with delay
+                setTimeout(() => {
+                    const response = getAIResponse(message);
+                    addMessage(response, false);
+                }, 1000);
+            }
+        });
+        
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+        
+        // Example question buttons
+        document.querySelectorAll('#ai button').forEach(button => {
+            button.addEventListener('click', function() {
+                const question = this.querySelector('p').textContent;
+                messageInput.value = question;
+                sendButton.click();
+            });
+        });
+    </script>
+</body>
+</html>

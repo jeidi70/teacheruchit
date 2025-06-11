@@ -9,181 +9,83 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
   <!-- Конфигурация Firebase -->
   <script src="firebase.js"></script>
 
-  <!-- Стили -->
   <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);    
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      padding: 20px;
-    }
-
-    .container {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      padding: 40px;
-      max-width: 400px;
-      width: 100%;
-    }
-
-    .logo {
-      display: block;
-      margin: 0 auto 30px;
-      max-width: 200px;
-    }
-
-    .auth-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .google-btn {
-      background-color: #4285F4;
-      color: white;
-    }
-
-    .phone-btn {
-      background-color: #34a853;
-      color: white;
-    }
-
-    .form-group {
-      margin-top: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    button[type="button"] {
-      flex: 1;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .login-btn, .register-btn {
-      background-color: #6a1b9a;
-      color: white;
-    }
-
-    .login-btn:hover, .register-btn:hover {
-      background-color: #5a157d;
-    }
-
-    .role-selection {
-      margin-top: 24px;
-      text-align: center;
-    }
-
-    .role-btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      font-size: 16px;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .student-btn {
-      background-color: #6a1b9a;
-      color: white;
-    }
-
-    .teacher-btn {
-      background-color: #2e7d32;
-      color: white;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    #recaptcha-container {
-      display: none;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+    body { font-family: 'Roboto', sans-serif; }
   </style>
 </head>
-<body>
-  <div class="container">
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-10 max-w-md">
     <!-- Логотип -->
-    <img src="logo-transparent.png" alt="TeacherUchit" class="logo">
+    <div class="text-center mb-8">
+      <img src="logo-transparent.png" alt="TeacherUchit" class="mx-auto max-w-[200px] mb-4">
+      <h1 class="text-2xl font-bold text-gray-800">TeacherUchit</h1>
+      <p class="text-gray-500">История и обществознание</p>
+    </div>
 
     <!-- Кнопки входа -->
-    <button class="auth-button google-btn" onclick="signInWithGoogle()">
-      <i class="fab fa-google"></i> Войти через Google
-    </button>
-    <button class="auth-button phone-btn" onclick="signInWithPhone()">
-      <i class="fas fa-phone"></i> Войти через телефон
-    </button>
+    <div class="space-y-4">
+      <button class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition"
+              onclick="signInWithGoogle()">
+        <i class="fab fa-google text-red-500 text-xl"></i>
+        <span>Войти через Google</span>
+      </button>
+
+      <button class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition"
+              onclick="signInWithPhone()">
+        <i class="fas fa-phone text-green-500 text-xl"></i>
+        <span>Войти через телефон</span>
+      </button>
+    </div>
 
     <!-- Форма регистрации/входа -->
-    <div class="form-group">
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Пароль" required />
-      <div class="form-actions">
-        <button class="login-btn" onclick="signInWithEmail()">Войти</button>
-        <button class="register-btn" onclick="signUpWithEmail()">Регистрация</button>
+    <div class="mt-8 bg-white rounded-xl shadow-sm p-6">
+      <h2 class="font-semibold text-lg mb-4">Вход или регистрация</h2>
+      <div class="space-y-4">
+        <input type="email" id="email" placeholder="Email" required 
+               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <input type="password" id="password" placeholder="Пароль" required
+               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <div class="flex gap-4">
+          <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg"
+                  onclick="signInWithEmail()">Войти</button>
+          <button class="w-full bg-amber-500 hover:bg-amber-600 text-white py-2 rounded-lg"
+                  onclick="signUpWithEmail()">Регистрация</button>
+        </div>
       </div>
     </div>
 
     <!-- Выбор роли -->
-    <div class="role-selection hidden" id="roleSelection">
-      <p>Выберите роль:</p>
-      <button class="role-btn student-btn" onclick="setRole('student')">🎓 Ученик</button>
-      <button class="role-btn teacher-btn" onclick="setRole('teacher')">🏫 Учитель</button>
+    <div id="roleSelection" class="hidden mt-8 bg-white rounded-xl shadow-sm p-6 text-center">
+      <p class="font-medium mb-6">Выберите роль:</p>
+      <div class="space-y-3">
+        <button class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
+                onclick="setRole('student')">
+          <i class="fas fa-graduation-cap mr-2"></i>Ученик
+        </button>
+        <button class="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg"
+                onclick="setRole('teacher')">
+          <i class="fas fa-chalkboard-teacher mr-2"></i>Учитель
+        </button>
+      </div>
     </div>
 
     <!-- reCAPTCHA -->
-    <div id="recaptcha-container"></div>
+    <div id="recaptcha-container" class="hidden"></div>
   </div>
 
   <!-- Логика Firebase -->
   <script>
-    // Глобальные функции Firebase
+    // Глобальные функции
     function signInWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
@@ -197,7 +99,7 @@
     function signInWithPhone() {
       if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          'size': 'invisible'
+          size: 'invisible'
         });
       }
       const phoneNumber = prompt("Введите номер телефона:");
@@ -241,7 +143,8 @@
     function setRole(role) {
       const user = auth.currentUser;
       if (!user) return;
-      db.collection("users").doc(user.uid).set({ role })
+
+      db.collection("users").doc(user.uid).set({ role }, { merge: true }) // merge: true - обновляет существующий документ
         .then(() => {
           alert(`Роль "${role}" установлена!`);
           window.location.href = "index.html";
@@ -258,7 +161,7 @@
 
       db.collection("users").doc(user.uid).get()
         .then(doc => {
-          if (!doc.exists) {
+          if (!doc.exists || !doc.data().role) {
             document.getElementById('roleSelection').classList.remove('hidden');
           } else {
             window.location.href = "index.html";
@@ -269,7 +172,7 @@
         });
     }
 
-    // Прослушиватель аутентификации
+    // Прослушиватель состояния аутентификации
     auth.onAuthStateChanged(user => {
       if (user) handleRoleSelection();
     });

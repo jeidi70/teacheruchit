@@ -1,3 +1,4 @@
+// firebase.js
 const firebaseConfig = {
   apiKey: "AIzaSyDdr_9yA391YOY08o3T3RXvjD1-dIdfCK0",
   authDomain: "teacheruchit.firebaseapp.com",
@@ -8,6 +9,10 @@ const firebaseConfig = {
   measurementId: "G-K0BHLKHNHF"
 };
 
-firebase.initializeApp(firebaseConfig);
+// Инициализация Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
 const auth = firebase.auth();
 const db = firebase.firestore();

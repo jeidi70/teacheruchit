@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Выбор роли - TeacherUchit</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Конфигурация Firebase -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+    
+    body { 
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+    
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .input-field {
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+      <img class="mx-auto h-12 w-auto" src="assets/logo.svg" alt="TeacherUchit">
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Выберите вашу роль
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        Пожалуйста, выберите роль и заполните дополнительную информацию
+      </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <form id="roleForm" class="space-y-6">
+          <!-- Выбор роли -->
+          <div>
+            <label class="form-label">Роль</label>
+            <div class="mt-2 space-y-4">
+              <div class="flex items-center">
+                <input id="student" name="role" type="radio" value="student" class="radio" checked>
+                <label for="student" class="ml-3 block text-sm font-medium text-gray-700">
+                  Ученик
+                </label>
+              </div>
+              <div class="flex items-center">
+                <input id="teacher" name="role" type="radio" value="teacher" class="radio">
+                <label for="teacher" class="ml-3 block text-sm font-medium text-gray-700">
+                  Учитель
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Город -->
+          <div>
+            <label for="city" class="form-label">Город</label>
+            <div class="mt-1">
+              <select id="city" name="city" class="select" required>
+                <option value="">Выберите город</option>
+                <option value="moscow">Москва</option>
+                <option value="spb">Санкт-Петербург</option>
+                <!-- Добавьте другие города -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Школа -->
+          <div>
+            <label for="school" class="form-label">Школа</label>
+            <div class="mt-1">
+              <select id="school" name="school" class="select" required disabled>
+                <option value="">Сначала выберите город</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Класс (только для учеников) -->
+          <div id="classSection">
+            <label for="class" class="form-label">Класс</label>
+            <div class="mt-1">
+              <select id="class" name="class" class="select" required>
+                <option value="">Выберите класс</option>
+                <option value="5">5 класс</option>
+                <option value="6">6 класс</option>
+                <option value="7">7 класс</option>
+                <option value="8">8 класс</option>
+                <option value="9">9 класс</option>
+                <option value="10">10 класс</option>
+                <option value="11">11 класс</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Буква класса (только для учеников) -->
+          <div id="letterSection">
+            <label for="letter" class="form-label">Буква класса</label>
+            <div class="mt-1">
+              <select id="letter" name="letter" class="select" required>
+                <option value="">Выберите букву</option>
+                <option value="А">А</option>
+                <option value="Б">Б</option>
+                <option value="В">В</option>
+                <option value="Г">Г</option>
+                <option value="Д">Д</option>
+                <option value="Е">Е</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <button type="submit" class="form-button">
+              Продолжить
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Обработка выбора роли
+    document.querySelectorAll('input[name="role"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const isStudent = this.value === 'student';
+        document.getElementById('classSection').style.display = isStudent ? 'block' : 'none';
+        document.getElementById('letterSection').style.display = isStudent ? 'block' : 'none';
+        
+        // Обновляем required атрибуты
+        document.getElementById('class').required = isStudent;
+        document.getElementById('letter').required = isStudent;
+      });
+    });
+
+    // Обработка выбора города
+    document.getElementById('city').addEventListener('change', function() {
+      const city = this.value;
+      const schoolSelect = document.getElementById('school');
+      
+      if (city) {
+        // Здесь можно загрузить список школ для выбранного города
+        // Например, через API или из предопределенного объекта
+        schoolSelect.disabled = false;
+        // Пример загрузки школ
+        const schools = {
+          moscow: [
+            { id: '1', name: 'Школа №1' },
+            { id: '2', name: 'Школа №2' },
+            // Добавьте другие школы
+          ],
+          spb: [
+            { id: '3', name: 'Школа №3' },
+            { id: '4', name: 'Школа №4' },
+            // Добавьте другие школы
+          ]
+        };
+
+        // Очищаем и заполняем список школ
+        schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
+        schools[city].forEach(school => {
+          const option = document.createElement('option');
+          option.value = school.id;
+          option.textContent = school.name;
+          schoolSelect.appendChild(option);
+        });
+      } else {
+        schoolSelect.disabled = true;
+        schoolSelect.innerHTML = '<option value="">Сначала выберите город</option>';
+      }
+    });
+
+    // Обработка отправки формы
+    document.getElementById('roleForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const userData = {
+        role: formData.get('role'),
+        city: formData.get('city'),
+        school: formData.get('school'),
+        class: formData.get('class'),
+        letter: formData.get('letter')
+      };
+
+      try {
+        // Здесь будет код для сохранения данных в Firebase
+        // и перенаправления на соответствующую страницу
+        if (userData.role === 'student') {
+          window.location.href = 'student-dashboard.html';
+        } else {
+          window.location.href = 'teacher-dashboard.html';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // Показать сообщение об ошибке
+      }
+    });
+  </script>
+</body>
+</html> 

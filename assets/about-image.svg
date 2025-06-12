@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="400" viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Фон -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:0.05"/>
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:0.05"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bgGradient)" rx="20"/>
+
+  <!-- Учитель -->
+  <g transform="translate(150, 200)">
+    <!-- Голова -->
+    <circle cx="0" cy="-40" r="20" fill="#4F46E5" opacity="0.1"/>
+    <circle cx="0" cy="-40" r="20" stroke="#4F46E5" stroke-width="2"/>
+    <!-- Тело -->
+    <path d="M-15 0 L15 0 L15 60 L-15 60 Z" fill="#4F46E5" opacity="0.1"/>
+    <path d="M-15 0 L15 0 L15 60 L-15 60 Z" stroke="#4F46E5" stroke-width="2"/>
+    <!-- Руки -->
+    <line x1="-15" y1="20" x2="-40" y2="40" stroke="#4F46E5" stroke-width="2"/>
+    <line x1="15" y1="20" x2="40" y2="40" stroke="#4F46E5" stroke-width="2"/>
+  </g>
+
+  <!-- Ученики -->
+  <g transform="translate(350, 200)">
+    <!-- Ученик 1 -->
+    <g transform="translate(-40, 0)">
+      <circle cx="0" cy="-30" r="15" fill="#7C3AED" opacity="0.1"/>
+      <circle cx="0" cy="-30" r="15" stroke="#7C3AED" stroke-width="2"/>
+      <path d="M-10 0 L10 0 L10 50 L-10 50 Z" fill="#7C3AED" opacity="0.1"/>
+      <path d="M-10 0 L10 0 L10 50 L-10 50 Z" stroke="#7C3AED" stroke-width="2"/>
+    </g>
+    <!-- Ученик 2 -->
+    <g transform="translate(40, 0)">
+      <circle cx="0" cy="-30" r="15" fill="#7C3AED" opacity="0.1"/>
+      <circle cx="0" cy="-30" r="15" stroke="#7C3AED" stroke-width="2"/>
+      <path d="M-10 0 L10 0 L10 50 L-10 50 Z" fill="#7C3AED" opacity="0.1"/>
+      <path d="M-10 0 L10 0 L10 50 L-10 50 Z" stroke="#7C3AED" stroke-width="2"/>
+    </g>
+  </g>
+
+  <!-- Соединительные линии -->
+  <g stroke-dasharray="5,5">
+    <line x1="200" y1="200" x2="300" y2="200" stroke="#4F46E5" stroke-width="2" opacity="0.5"/>
+    <line x1="200" y1="220" x2="300" y2="220" stroke="#7C3AED" stroke-width="2" opacity="0.5"/>
+    <line x1="200" y1="240" x2="300" y2="240" stroke="#4F46E5" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <!-- Декоративные элементы -->
+  <g transform="translate(100, 100)">
+    <circle cx="0" cy="0" r="10" fill="#4F46E5" opacity="0.2"/>
+    <circle cx="30" cy="0" r="8" fill="#7C3AED" opacity="0.2"/>
+    <circle cx="60" cy="0" r="12" fill="#4F46E5" opacity="0.2"/>
+  </g>
+
+  <g transform="translate(400, 300)">
+    <circle cx="0" cy="0" r="15" fill="#7C3AED" opacity="0.2"/>
+    <circle cx="40" cy="0" r="10" fill="#4F46E5" opacity="0.2"/>
+  </g>
+
+  <!-- Анимированные элементы -->
+  <g transform="translate(300, 150)">
+    <circle cx="0" cy="0" r="5" fill="#4F46E5">
+      <animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="20" cy="0" r="5" fill="#7C3AED">
+      <animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="40" cy="0" r="5" fill="#4F46E5">
+      <animate attributeName="opacity" values="0.2;0.8;0.2" dur="2s" begin="1s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Текст -->
+  <text x="300" y="50" text-anchor="middle" fill="#4F46E5" font-size="24" font-weight="bold">
+    Обучение и развитие
+  </text>
+</svg> 

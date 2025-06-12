@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Фон -->
+  <rect width="120" height="120" rx="60" fill="url(#gradient)"/>
+  
+  <!-- Градиент -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Книга -->
+  <path d="M30 40 L90 40 L90 80 L30 80 Z" fill="white" fill-opacity="0.9"/>
+  <path d="M40 45 L80 45 M40 55 L80 55 M40 65 L80 65 M40 75 L80 75" stroke="#4F46E5" stroke-width="2"/>
+  
+  <!-- Текст -->
+  <text x="60" y="100" font-family="Arial" font-size="12" fill="white" text-anchor="middle">TeacherUchit</text>
+</svg> 

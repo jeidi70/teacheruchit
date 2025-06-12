@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Вход | TeacherUchit</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Конфигурация Firebase -->
+  <script src="firebase-config.js"></script>
+  <script src="firebase.js"></script>
+  <script src="phone-auth.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+    
+    body { 
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+    
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 400px;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .history-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .btn-secondary {
+      background: white;
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .input-field {
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="container max-w-md">
+    <!-- Логотип -->
+    <div class="text-center mb-8">
+      <img src="assets/logo.svg" alt="TeacherUchit" class="mx-auto w-32 h-32 mb-4">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">TeacherUchit</h1>
+      <p class="text-gray-600">Платформа для изучения Истории и Обществознания</p>
+    </div>
+
+    <!-- Кнопки входа -->
+    <div class="space-y-4 mb-8">
+      <button class="w-full btn-secondary rounded-lg py-3 flex items-center justify-center gap-3"
+              onclick="signInWithGoogle()">
+        <i class="fab fa-google text-red-500 text-xl"></i>
+        <span>Войти через Google</span>
+      </button>
+
+      <button class="w-full btn-secondary rounded-lg py-3 flex items-center justify-center gap-3"
+              onclick="showPhoneModal()">
+        <i class="fas fa-phone text-green-500 text-xl"></i>
+        <span>Войти через телефон</span>
+      </button>
+    </div>
+
+    <!-- Форма регистрации/входа -->
+    <div class="glass-effect rounded-xl p-6 history-pattern">
+      <h2 class="font-semibold text-lg mb-4">Вход</h2>
+      <div class="space-y-4">
+        <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span class="block sm:inline"></span>
+        </div>
+        <input type="email" id="email" placeholder="Email" required 
+               class="w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <input type="password" id="password" placeholder="Пароль" required
+               class="w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <div class="flex gap-4">
+          <button id="signInBtn" class="w-full btn-primary text-white py-3 rounded-lg flex items-center justify-center"
+                  onclick="signInWithEmail()">
+            <span>Войти</span>
+            <div class="hidden ml-2 spinner"></div>
+          </button>
+        </div>
+        <div class="text-center space-y-2">
+          <button onclick="showResetPasswordModal()" class="text-indigo-600 hover:text-indigo-800 text-sm">
+            Забыли пароль?
+          </button>
+          <p class="text-sm text-gray-600">
+            Нет аккаунта? 
+            <a href="register.html" class="text-indigo-600 hover:text-indigo-800 font-medium">
+              Зарегистрироваться
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно для телефона -->
+    <div id="phoneModal" class="modal">
+      <div class="modal-content glass-effect">
+        <span class="close-modal" onclick="closePhoneModal()">&times;</span>
+        <h3 class="text-xl font-semibold mb-4">Вход по телефону</h3>
+        <div class="space-y-4">
+          <input type="tel" id="phoneNumber" placeholder="+7 (___) ___-__-__" required
+                 class="w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <div id="verificationCode" class="hidden space-y-4">
+            <input type="text" id="code" placeholder="Код из SMS" required
+                   class="w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <!-- reCAPTCHA -->
+          <div id="recaptcha-container" class="mt-4"></div>
+          <button id="phoneSubmitBtn" class="w-full btn-primary text-white py-3 rounded-lg flex items-center justify-center"
+                  onclick="handlePhoneAuth()">
+            <span>Отправить код</span>
+            <div class="hidden ml-2 spinner"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно выбора роли -->
+    <div id="roleModal" class="modal">
+      <div class="modal-content glass-effect">
+        <h3 class="text-xl font-semibold mb-4">Выберите роль</h3>
+        <div class="space-y-3">
+          <button class="w-full py-3 btn-primary text-white rounded-lg flex items-center justify-center"
+                  onclick="setRole('student')">
+            <i class="fas fa-graduation-cap mr-2"></i>Ученик
+          </button>
+          <button class="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center justify-center"
+                  onclick="setRole('teacher')">
+            <i class="fas fa-chalkboard-teacher mr-2"></i>Учитель
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно для сброса пароля -->
+    <div id="resetPasswordModal" class="modal">
+      <div class="modal-content glass-effect">
+        <span class="close-modal" onclick="closeResetPasswordModal()">&times;</span>
+        <h3 class="text-xl font-semibold mb-4">Восстановление пароля</h3>
+        <div class="space-y-4">
+          <p class="text-gray-600 text-sm">Введите email, указанный при регистрации. Мы отправим вам ссылку для сброса пароля.</p>
+          <input type="email" id="resetEmail" placeholder="Email" required
+                 class="w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <button id="resetPasswordBtn" class="w-full btn-primary text-white py-3 rounded-lg flex items-center justify-center"
+                  onclick="resetPassword()">
+            <span>Отправить ссылку</span>
+            <div class="hidden ml-2 spinner"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Глобальные переменные
+    let confirmationResult = null;
+    let isVerificationSent = false;
+    let recaptchaVerifier = null;
+    let phoneAuth = null;
+
+    // Инициализация при загрузке страницы
+    window.onload = function() {
+      phoneAuth = new PhoneAuth();
+      
+      // Маска для телефона
+      document.getElementById('phoneNumber').addEventListener('input', function(e) {
+        let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+        if (!x) return;
+        
+        let formatted = '';
+        if (x[1]) formatted += '+7';
+        if (x[2]) formatted += ' (' + x[2];
+        if (x[3]) formatted += ') ' + x[3];
+        if (x[4]) formatted += '-' + x[4];
+        if (x[5]) formatted += '-' + x[5];
+        
+        e.target.value = formatted;
+
+        // Проверяем формат номера и активируем/деактивируем кнопку
+        const submitBtn = document.getElementById('phoneSubmitBtn');
+        const isValid = /^\+7\s?\(?[0-9]{3}\)?\s?[0-9]{3}-?[0-9]{2}-?[0-9]{2}$/.test(formatted);
+        
+        submitBtn.disabled = !isValid;
+        submitBtn.classList.toggle('opacity-50', !isValid);
+      });
+    };
+
+    // Функции для модальных окон
+    function showPhoneModal() {
+      document.getElementById('phoneModal').classList.add('active');
+      // Скрываем reCAPTCHA при открытии модального окна
+      document.getElementById('recaptcha-container').classList.add('hidden');
+      // Деактивируем кнопку при открытии
+      const submitBtn = document.getElementById('phoneSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-50');
+      // Очищаем поле телефона
+      document.getElementById('phoneNumber').value = '';
+    }
+
+    function closePhoneModal() {
+      document.getElementById('phoneModal').classList.remove('active');
+      document.getElementById('verificationCode').classList.add('hidden');
+      document.getElementById('phoneSubmitBtn').querySelector('span').textContent = 'Отправить код';
+      document.getElementById('recaptcha-container').classList.add('hidden');
+      // Очищаем поле телефона
+      document.getElementById('phoneNumber').value = '';
+      if (phoneAuth) {
+        phoneAuth.reset();
+      }
+    }
+
+    function showRoleModal() {
+      document.getElementById('roleModal').classList.add('active');
+    }
+
+    function closeRoleModal() {
+      document.getElementById('roleModal').classList.remove('active');
+    }
+
+    function showResetPasswordModal() {
+      document.getElementById('resetPasswordModal').classList.add('active');
+    }
+
+    function closeResetPasswordModal() {
+      document.getElementById('resetPasswordModal').classList.remove('active');
+      document.getElementById('resetEmail').value = '';
+    }
+
+    // Функции для работы с ошибками
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.querySelector('span').textContent = message;
+      errorDiv.classList.remove('hidden');
+      setTimeout(() => errorDiv.classList.add('hidden'), 5000);
+    }
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    function validatePassword(password) {
+      return password.length >= 6;
+    }
+
+    function validatePhone(phone) {
+      const re = /^\+7\s?\(?[0-9]{3}\)?\s?[0-9]{3}-?[0-9]{2}-?[0-9]{2}$/;
+      return re.test(phone);
+    }
+
+    function setLoading(buttonId, isLoading) {
+      const button = document.getElementById(buttonId);
+      const spinner = button.querySelector('.spinner');
+      const text = button.querySelector('span');
+      
+      if (isLoading) {
+        button.disabled = true;
+        spinner.classList.remove('hidden');
+        text.classList.add('opacity-50');
+      } else {
+        button.disabled = false;
+        spinner.classList.add('hidden');
+        text.classList.remove('opacity-50');
+      }
+    }
+
+    // Функции аутентификации
+    function signInWithGoogle() {
+      setLoading('signInBtn', true);
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          // Проверяем, новый ли это пользователь
+          const isNewUser = result.additionalUserInfo.isNewUser;
+          if (isNewUser) {
+            window.location.href = "role-selection.html";
+          } else {
+            // Для существующего пользователя проверяем роль
+            return db.collection("users").doc(result.user.uid).get();
+          }
+        })
+        .then((doc) => {
+          if (doc && doc.exists) {
+            if (!doc.data().role) {
+              window.location.href = "role-selection.html";
+            } else {
+              window.location.href = doc.data().role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+            }
+          }
+        })
+        .catch(error => {
+          showError(getErrorMessage(error.code));
+          console.error(error);
+        })
+        .finally(() => setLoading('signInBtn', false));
+    }
+
+    async function handlePhoneAuth() {
+      const phoneNumber = document.getElementById('phoneNumber').value;
+      const submitBtn = document.getElementById('phoneSubmitBtn');
+      
+      if (!phoneAuth.isVerificationSent) {
+        if (!phoneNumber) {
+          showError('Введите номер телефона');
+          return;
+        }
+
+        if (!validatePhone(phoneNumber)) {
+          showError('Введите корректный номер телефона');
+          return;
+        }
+
+        setLoading('phoneSubmitBtn', true);
+        
+        try {
+          // Показываем reCAPTCHA только после ввода номера
+          document.getElementById('recaptcha-container').classList.remove('hidden');
+          
+          // Инициализируем reCAPTCHA при первом запросе
+          if (!recaptchaVerifier) {
+            recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+              'size': 'normal',
+              'callback': (response) => {
+                console.log('reCAPTCHA verified successfully');
+                // Активируем кнопку после успешной проверки reCAPTCHA
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50');
+              },
+              'expired-callback': () => {
+                console.log('reCAPTCHA expired');
+                showError('Время проверки reCAPTCHA истекло. Пожалуйста, попробуйте снова.');
+                document.getElementById('recaptcha-container').classList.add('hidden');
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50');
+              }
+            });
+            await recaptchaVerifier.render();
+          }
+
+          await phoneAuth.sendVerificationCode(phoneNumber);
+          document.getElementById('verificationCode').classList.remove('hidden');
+          submitBtn.querySelector('span').textContent = 'Подтвердить код';
+          document.getElementById('recaptcha-container').classList.add('hidden');
+        } catch (error) {
+          showError(getErrorMessage(error.code));
+          console.error(error);
+          // Сбрасываем reCAPTCHA при ошибке
+          if (recaptchaVerifier) {
+            recaptchaVerifier.clear();
+            recaptchaVerifier = null;
+          }
+          document.getElementById('recaptcha-container').classList.add('hidden');
+          submitBtn.disabled = true;
+          submitBtn.classList.add('opacity-50');
+        } finally {
+          setLoading('phoneSubmitBtn', false);
+        }
+      } else {
+        const code = document.getElementById('code').value;
+        if (!code) {
+          showError('Введите код из SMS');
+          return;
+        }
+
+        setLoading('phoneSubmitBtn', true);
+        
+        try {
+          const result = await phoneAuth.confirmCode(code);
+          const doc = await firebase.firestore().collection("users").doc(result.user.uid).get();
+          
+          if (doc.exists) {
+            if (!doc.data().role) {
+              window.location.href = "role-selection.html";
+            } else {
+              window.location.href = doc.data().role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+            }
+          }
+        } catch (error) {
+          showError(getErrorMessage(error.code));
+          console.error(error);
+        } finally {
+          setLoading('phoneSubmitBtn', false);
+        }
+      }
+    }
+
+    function signInWithEmail() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      if (!email || !password) {
+        showError('Пожалуйста, заполните все поля');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        showError('Введите корректный email');
+        return;
+      }
+      
+      setLoading('signInBtn', true);
+      auth.signInWithEmailAndPassword(email, password)
+        .then((result) => {
+          // Проверяем, подтвержден ли email
+          if (!result.user.emailVerified) {
+            showError('Пожалуйста, подтвердите ваш email. Проверьте вашу почту.');
+            return auth.signOut();
+          }
+          return db.collection("users").doc(result.user.uid).get();
+        })
+        .then((doc) => {
+          if (doc && doc.exists) {
+            if (!doc.data().role) {
+              window.location.href = "role-selection.html";
+            } else {
+              window.location.href = doc.data().role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+            }
+          }
+        })
+        .catch(error => {
+          showError(getErrorMessage(error.code));
+          console.error(error);
+        })
+        .finally(() => setLoading('signInBtn', false));
+    }
+
+    function signUpWithEmail() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      if (!email || !password) {
+        showError('Пожалуйста, заполните все поля');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        showError('Введите корректный email');
+        return;
+      }
+
+      if (!validatePassword(password)) {
+        showError('Пароль должен содержать минимум 6 символов');
+        return;
+      }
+      
+      setLoading('signUpBtn', true);
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Отправляем email для подтверждения
+          return userCredential.user.sendEmailVerification();
+        })
+        .then(() => {
+          showError('Письмо для подтверждения email отправлено. Пожалуйста, проверьте вашу почту.');
+          window.location.href = "role-selection.html";
+        })
+        .catch(error => {
+          showError(getErrorMessage(error.code));
+          console.error(error);
+        })
+        .finally(() => setLoading('signUpBtn', false));
+    }
+
+    function resetPassword() {
+      const email = document.getElementById('resetEmail').value;
+      
+      if (!email) {
+        showError('Введите email');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        showError('Введите корректный email');
+        return;
+      }
+
+      setLoading('resetPasswordBtn', true);
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          showError('Ссылка для сброса пароля отправлена на ваш email');
+          closeResetPasswordModal();
+        })
+        .catch(error => {
+          showError(getErrorMessage(error.code));
+          console.error(error);
+        })
+        .finally(() => setLoading('resetPasswordBtn', false));
+    }
+
+    // Функция для получения понятных сообщений об ошибках
+    function getErrorMessage(errorCode) {
+      const errorMessages = {
+        'auth/invalid-email': 'Неверный формат email',
+        'auth/user-disabled': 'Аккаунт отключен',
+        'auth/user-not-found': 'Пользователь не найден',
+        'auth/wrong-password': 'Неверный пароль',
+        'auth/email-already-in-use': 'Этот email уже используется',
+        'auth/weak-password': 'Пароль слишком простой',
+        'auth/operation-not-allowed': 'Операция не разрешена',
+        'auth/invalid-verification-code': 'Неверный код подтверждения',
+        'auth/invalid-phone-number': 'Неверный формат номера телефона',
+        'auth/too-many-requests': 'Слишком много попыток. Попробуйте позже',
+        'auth/popup-closed-by-user': 'Окно авторизации было закрыто',
+        'auth/cancelled-popup-request': 'Операция была отменена',
+        'auth/network-request-failed': 'Ошибка сети. Проверьте подключение',
+        'auth/popup-blocked': 'Всплывающее окно было заблокировано браузером'
+      };
+      return errorMessages[errorCode] || 'Произошла ошибка. Попробуйте еще раз';
+    }
+
+    function setRole(role) {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      setLoading('signInBtn', true);
+      db.collection("users").doc(user.uid).set({ role }, { merge: true })
+        .then(() => {
+          closeRoleModal();
+          window.location.href = "role-selection.html";
+        })
+        .catch(error => {
+          showError(error.message);
+          console.error(error);
+        })
+        .finally(() => setLoading('signInBtn', false));
+    }
+
+    // Прослушиватель состояния аутентификации
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        db.collection("users").doc(user.uid).get()
+          .then(doc => {
+            if (!doc.exists || !doc.data().role) {
+              window.location.href = "role-selection.html";
+            } else {
+              window.location.href = doc.data().role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+            }
+          })
+          .catch(error => {
+            console.error("Ошибка получения роли:", error);
+          });
+      }
+    });
+  </script>
+</body>
+</html>

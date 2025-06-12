@@ -10,68 +10,92 @@ service cloud.firestore {
       return request.auth.uid == userId;
     }
     
-    function hasRole(role) {
+    function isAdmin() {
       return isAuthenticated() && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isTeacher() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+    }
+    
+    function isStudent() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'student';
     }
     
     function isValidUserData() {
       let data = request.resource.data;
-      return data.keys().hasAll(['firstName', 'lastName', 'email', 'phone', 'createdAt']) &&
-        data.firstName is string && data.firstName.size() > 0 &&
-        data.lastName is string && data.lastName.size() > 0 &&
-        data.email is string && data.email.matches('^[^@]+@[^@]+\\.[^@]+$') &&
-        data.phone is string && data.phone.matches('^\\+7 \\(\\d{3}\\) \\d{3}-\\d{2}-\\d{2}$');
+      return data.keys().hasAll(['email', 'role', 'createdAt']) &&
+             data.email is string &&
+             data.role in ['student', 'teacher', 'admin'] &&
+             data.createdAt is timestamp;
     }
 
     // Правила для коллекции users
     match /users/{userId} {
-      allow read: if isAuthenticated() && (isOwner(userId) || hasRole('teacher'));
-      allow create: if isAuthenticated() && isOwner(userId) && isValidUserData();
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow create: if isAuthenticated() && isValidUserData();
       allow update: if isAuthenticated() && isOwner(userId);
-      allow delete: if false; // Запрещаем удаление пользователей
+      allow delete: if isAdmin();
       
       // Правила для подколлекции loginHistory
-      match /loginHistory/{historyId} {
-        allow read: if isAuthenticated() && isOwner(userId);
+      match /loginHistory/{logId} {
+        allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
         allow create: if isAuthenticated() && isOwner(userId);
-        allow update, delete: if false;
+        allow update, delete: if isAdmin();
       }
       
       // Правила для подколлекции progress (для учеников)
       match /progress/{progressId} {
-        allow read: if isAuthenticated() && (isOwner(userId) || hasRole('teacher'));
-        allow create, update: if isAuthenticated() && (isOwner(userId) || hasRole('teacher'));
-        allow delete: if false;
+        allow read: if isAuthenticated() && (isOwner(userId) || isTeacher() || isAdmin());
+        allow create, update: if isAuthenticated() && (isOwner(userId) || isTeacher() || isAdmin());
+        allow delete: if isAdmin();
       }
     }
 
     // Правила для коллекции materials
     match /materials/{materialId} {
       allow read: if isAuthenticated();
-      allow create, update: if hasRole('teacher');
-      allow delete: if hasRole('teacher');
+      allow create, update: if isAuthenticated() && (isTeacher() || isAdmin());
+      allow delete: if isAdmin();
     }
 
     // Правила для коллекции assignments
     match /assignments/{assignmentId} {
       allow read: if isAuthenticated();
-      allow create, update: if hasRole('teacher');
-      allow delete: if hasRole('teacher');
+      allow create, update: if isAuthenticated() && (isTeacher() || isAdmin());
+      allow delete: if isAdmin();
     }
 
     // Правила для коллекции submissions
     match /submissions/{submissionId} {
       allow read: if isAuthenticated() && (
-        isOwner(resource.data.studentId) || 
-        hasRole('teacher')
+        isOwner(resource.data.userId) || 
+        isTeacher() || 
+        isAdmin()
       );
-      allow create: if isAuthenticated() && isOwner(request.resource.data.studentId);
+      allow create: if isAuthenticated() && isStudent();
       allow update: if isAuthenticated() && (
-        isOwner(resource.data.studentId) || 
-        hasRole('teacher')
+        isOwner(resource.data.userId) || 
+        isTeacher() || 
+        isAdmin()
       );
-      allow delete: if false;
+      allow delete: if isAdmin();
+    }
+
+    // Правила для коллекции emailTemplates
+    match /emailTemplates/{templateId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Правила для коллекции emailLogs
+    match /emailLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
     }
   }
 } 

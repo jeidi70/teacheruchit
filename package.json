@@ -1,0 +1,16 @@
+{
+  "name": "teacheruchit",
+  "version": "1.0.0",
+  "description": "TeacherUchit - Платформа для изучения Истории и Обществознания",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "init-templates": "node init-email-templates.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "firebase-admin": "^11.11.1",
+    "nodemailer": "^6.10.1"
+  }
+}

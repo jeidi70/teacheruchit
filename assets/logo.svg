@@ -1,34 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Фон -->
-  <circle cx="60" cy="60" r="60" fill="url(#gradient)" />
+  <rect width="120" height="120" rx="60" fill="url(#gradient)"/>
   
-  <!-- Книга -->
-  <path d="M40 30H80C85.5228 30 90 34.4772 90 40V80C90 85.5228 85.5228 90 80 90H40C34.4772 90 30 85.5228 30 80V40C30 34.4772 34.4772 30 40 30Z" fill="white" fill-opacity="0.9"/>
-  
-  <!-- Страницы книги -->
-  <path d="M45 35H75V85H45V35Z" fill="url(#pageGradient)"/>
-  
-  <!-- Линии текста -->
-  <line x1="50" y1="45" x2="70" y2="45" stroke="#4F46E5" stroke-width="2"/>
-  <line x1="50" y1="55" x2="70" y2="55" stroke="#4F46E5" stroke-width="2"/>
-  <line x1="50" y1="65" x2="70" y2="65" stroke="#4F46E5" stroke-width="2"/>
-  <line x1="50" y1="75" x2="70" y2="75" stroke="#4F46E5" stroke-width="2"/>
-  
-  <!-- Часы -->
-  <circle cx="60" cy="60" r="20" stroke="#7C3AED" stroke-width="2" fill="none"/>
-  <line x1="60" y1="60" x2="60" y2="50" stroke="#7C3AED" stroke-width="2"/>
-  <line x1="60" y1="60" x2="70" y2="60" stroke="#7C3AED" stroke-width="2"/>
-  
-  <!-- Градиенты -->
+  <!-- Градиент -->
   <defs>
     <linearGradient id="gradient" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#4F46E5"/>
-      <stop offset="1" stop-color="#7C3AED"/>
-    </linearGradient>
-    <linearGradient id="pageGradient" x1="45" y1="35" x2="75" y2="85" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#F8FAFC"/>
-      <stop offset="1" stop-color="#E2E8F0"/>
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
     </linearGradient>
   </defs>
+  
+  <!-- Книга -->
+  <path d="M30 40 L90 40 L90 80 L30 80 Z" fill="white" fill-opacity="0.9"/>
+  <path d="M40 45 L80 45 M40 55 L80 55 M40 65 L80 65 M40 75 L80 75" stroke="#4F46E5" stroke-width="2"/>
+  
+  <!-- Текст -->
+  <text x="60" y="100" font-family="Arial" font-size="12" fill="white" text-anchor="middle">TeacherUchit</text>
 </svg> 

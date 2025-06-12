@@ -1,19 +1,20 @@
-# TeacherUchit - Платформа для изучения Истории и Обществознания
+# TeacherUchit
 
-## Описание
-TeacherUchit - это образовательная платформа, предоставляющая интерактивные уроки по истории и обществознанию, практические задания и тесты, а также возможность общения с преподавателями.
+Образовательная платформа для учителей и учеников, специализирующаяся на преподавании истории и обществознания.
 
-## Требования
-- Node.js 14.x или выше
-- npm 6.x или выше
-- Firebase проект
-- Gmail аккаунт для отправки email
+## Особенности
+
+- Авторизация для учителей и учеников
+- Управление уроками и тестами
+- Отслеживание прогресса обучения
+- Интерактивные материалы
+- Система оценок и отчетности
 
 ## Установка
 
 1. Клонируйте репозиторий:
 ```bash
-git clone https://github.com/your-username/teacheruchit.git
+git clone https://github.com/yourusername/teacheruchit.git
 cd teacheruchit
 ```
 
@@ -22,61 +23,48 @@ cd teacheruchit
 npm install
 ```
 
-3. Создайте файл .env на основе .env.example:
+3. Создайте файл конфигурации:
 ```bash
-cp .env.example .env
+cp serviceAccountKey.example.json serviceAccountKey.json
 ```
 
-4. Настройте переменные окружения в файле .env:
-- NODE_ENV: окружение (development/production)
-- PORT: порт сервера
-- EMAIL_USER: email для отправки писем
-- EMAIL_PASSWORD: пароль приложения Gmail
-- FIREBASE_PROJECT_ID: ID проекта Firebase
-- FIREBASE_PRIVATE_KEY: приватный ключ Firebase
-- FIREBASE_CLIENT_EMAIL: email клиента Firebase
-- ALLOWED_ORIGINS: разрешенные домены для CORS (для production)
-- JWT_SECRET: секрет для JWT
-- SESSION_SECRET: секрет для сессий
-
-5. Инициализируйте шаблоны email:
-```bash
-npm run init-templates
-```
+4. Заполните необходимые данные в файле `serviceAccountKey.json`
 
 ## Запуск
 
-### Разработка
+Для разработки:
 ```bash
 npm run dev
 ```
 
-### Продакшн
+Для продакшена:
 ```bash
 npm start
 ```
 
-## API Endpoints
+## Структура проекта
 
-### Email
-- POST /send-verification - Отправка письма для верификации email
-- POST /send-password-reset - Отправка письма для сброса пароля
-- POST /send-welcome - Отправка приветственного письма
+```
+teacheruchit/
+├── public/              # Статические файлы
+│   ├── assets/         # Изображения и медиа
+│   ├── css/            # Стили
+│   ├── js/             # Клиентские скрипты
+│   └── *.html          # HTML страницы
+├── server.js           # Основной файл сервера
+├── config.js           # Конфигурация сервера
+├── firebase-config.js  # Конфигурация Firebase
+└── package.json        # Зависимости и скрипты
+```
 
-### Система
-- GET /health - Проверка состояния сервера
+## Технологии
 
-## Безопасность
-- Используется helmet для защиты HTTP заголовков
-- Настроен CORS для контроля доступа
-- Реализован rate limiting для защиты от DDoS
-- Валидация всех входящих данных
-- Логирование всех действий
-
-## Логирование
-Логи сохраняются в файлы:
-- error.log - только ошибки
-- combined.log - все логи
+- Node.js
+- Express
+- Firebase
+- Tailwind CSS
+- HTML5/CSS3/JavaScript
 
 ## Лицензия
-MIT
+
+ISC

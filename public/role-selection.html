@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Выбор роли | TeacherUchit</title>
+  <title>Выбор роли - TeacherUchit</title>
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -67,185 +67,183 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-  <div class="container max-w-md">
-    <!-- Логотип -->
-    <div class="text-center mb-8">
-      <img src="assets/logo.svg" alt="TeacherUchit" class="mx-auto w-32 h-32 mb-4">
-      <h1 class="text-3xl font-bold text-gray-800 mb-2">TeacherUchit</h1>
-      <p class="text-gray-600">Заполните данные для продолжения</p>
+<body class="bg-gray-50">
+  <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+      <img class="mx-auto h-12 w-auto" src="assets/logo.svg" alt="TeacherUchit">
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Выберите вашу роль
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        Пожалуйста, выберите роль и заполните дополнительную информацию
+      </p>
     </div>
 
-    <!-- Форма выбора роли и данных -->
-    <div class="glass-effect rounded-xl p-6">
-      <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <span class="block sm:inline"></span>
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <form id="roleForm" class="space-y-6">
+          <!-- Выбор роли -->
+          <div>
+            <label class="form-label">Роль</label>
+            <div class="mt-2 space-y-4">
+              <div class="flex items-center">
+                <input id="student" name="role" type="radio" value="student" class="radio" checked>
+                <label for="student" class="ml-3 block text-sm font-medium text-gray-700">
+                  Ученик
+                </label>
+              </div>
+              <div class="flex items-center">
+                <input id="teacher" name="role" type="radio" value="teacher" class="radio">
+                <label for="teacher" class="ml-3 block text-sm font-medium text-gray-700">
+                  Учитель
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Город -->
+          <div>
+            <label for="city" class="form-label">Город</label>
+            <div class="mt-1">
+              <select id="city" name="city" class="select" required>
+                <option value="">Выберите город</option>
+                <option value="moscow">Москва</option>
+                <option value="spb">Санкт-Петербург</option>
+                <!-- Добавьте другие города -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Школа -->
+          <div>
+            <label for="school" class="form-label">Школа</label>
+            <div class="mt-1">
+              <select id="school" name="school" class="select" required disabled>
+                <option value="">Сначала выберите город</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Класс (только для учеников) -->
+          <div id="classSection">
+            <label for="class" class="form-label">Класс</label>
+            <div class="mt-1">
+              <select id="class" name="class" class="select" required>
+                <option value="">Выберите класс</option>
+                <option value="5">5 класс</option>
+                <option value="6">6 класс</option>
+                <option value="7">7 класс</option>
+                <option value="8">8 класс</option>
+                <option value="9">9 класс</option>
+                <option value="10">10 класс</option>
+                <option value="11">11 класс</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Буква класса (только для учеников) -->
+          <div id="letterSection">
+            <label for="letter" class="form-label">Буква класса</label>
+            <div class="mt-1">
+              <select id="letter" name="letter" class="select" required>
+                <option value="">Выберите букву</option>
+                <option value="А">А</option>
+                <option value="Б">Б</option>
+                <option value="В">В</option>
+                <option value="Г">Г</option>
+                <option value="Д">Д</option>
+                <option value="Е">Е</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <button type="submit" class="form-button">
+              Продолжить
+            </button>
+          </div>
+        </form>
       </div>
-
-      <form id="userDataForm" class="space-y-4">
-        <!-- Выбор роли -->
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">Выберите роль</label>
-          <div class="grid grid-cols-2 gap-4">
-            <button type="button" class="role-btn py-3 px-4 border rounded-lg text-center hover:bg-gray-50" data-role="student">
-              <i class="fas fa-graduation-cap text-xl mb-2"></i>
-              <div>Ученик</div>
-            </button>
-            <button type="button" class="role-btn py-3 px-4 border rounded-lg text-center hover:bg-gray-50" data-role="teacher">
-              <i class="fas fa-chalkboard-teacher text-xl mb-2"></i>
-              <div>Учитель</div>
-            </button>
-          </div>
-        </div>
-
-        <!-- Имя -->
-        <div>
-          <label for="name" class="block text-sm font-medium text-gray-700">Имя</label>
-          <input type="text" id="name" name="name" required
-                 class="mt-1 w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                 placeholder="Введите ваше имя">
-        </div>
-
-        <!-- Школа -->
-        <div>
-          <label for="school" class="block text-sm font-medium text-gray-700">Школа</label>
-          <input type="text" id="school" name="school" required
-                 class="mt-1 w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                 placeholder="Введите название школы">
-        </div>
-
-        <!-- Класс (только для учеников) -->
-        <div id="classGroup" class="hidden">
-          <label for="class" class="block text-sm font-medium text-gray-700">Класс</label>
-          <div class="grid grid-cols-2 gap-4">
-            <input type="number" id="class" name="class" min="1" max="11" required
-                   class="mt-1 w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                   placeholder="Номер класса">
-            <input type="text" id="classLetter" name="classLetter" maxlength="1" required
-                   class="mt-1 w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                   placeholder="Буква класса">
-          </div>
-        </div>
-
-        <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg flex items-center justify-center">
-          <span>Сохранить</span>
-          <div class="hidden ml-2 spinner"></div>
-        </button>
-      </form>
     </div>
   </div>
 
   <script>
-    // Глобальные переменные
-    let selectedRole = null;
-    const userDataForm = document.getElementById('userDataForm');
-    const classGroup = document.getElementById('classGroup');
-    const roleButtons = document.querySelectorAll('.role-btn');
-
-    // Проверка авторизации
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        window.location.href = 'login.html';
-      }
-    });
-
     // Обработка выбора роли
-    roleButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        // Убираем выделение со всех кнопок
-        roleButtons.forEach(btn => {
-          btn.classList.remove('bg-indigo-50', 'border-indigo-500');
-          btn.classList.add('border-gray-300');
-        });
-
-        // Выделяем выбранную кнопку
-        button.classList.remove('border-gray-300');
-        button.classList.add('bg-indigo-50', 'border-indigo-500');
-
-        // Сохраняем выбранную роль
-        selectedRole = button.dataset.role;
-
-        // Показываем/скрываем поля для класса
-        if (selectedRole === 'student') {
-          classGroup.classList.remove('hidden');
-          document.getElementById('class').required = true;
-          document.getElementById('classLetter').required = true;
-        } else {
-          classGroup.classList.add('hidden');
-          document.getElementById('class').required = false;
-          document.getElementById('classLetter').required = false;
-        }
+    document.querySelectorAll('input[name="role"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const isStudent = this.value === 'student';
+        document.getElementById('classSection').style.display = isStudent ? 'block' : 'none';
+        document.getElementById('letterSection').style.display = isStudent ? 'block' : 'none';
+        
+        // Обновляем required атрибуты
+        document.getElementById('class').required = isStudent;
+        document.getElementById('letter').required = isStudent;
       });
     });
 
-    // Обработка отправки формы
-    userDataForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    // Обработка выбора города
+    document.getElementById('city').addEventListener('change', function() {
+      const city = this.value;
+      const schoolSelect = document.getElementById('school');
+      
+      if (city) {
+        // Здесь можно загрузить список школ для выбранного города
+        // Например, через API или из предопределенного объекта
+        schoolSelect.disabled = false;
+        // Пример загрузки школ
+        const schools = {
+          moscow: [
+            { id: '1', name: 'Школа №1' },
+            { id: '2', name: 'Школа №2' },
+            // Добавьте другие школы
+          ],
+          spb: [
+            { id: '3', name: 'Школа №3' },
+            { id: '4', name: 'Школа №4' },
+            // Добавьте другие школы
+          ]
+        };
 
-      if (!selectedRole) {
-        showError('Пожалуйста, выберите роль');
-        return;
-      }
-
-      const user = firebase.auth().currentUser;
-      if (!user) {
-        showError('Пользователь не авторизован');
-        return;
-      }
-
-      const formData = {
-        role: selectedRole,
-        name: document.getElementById('name').value,
-        school: document.getElementById('school').value,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-      };
-
-      // Добавляем данные класса только для учеников
-      if (selectedRole === 'student') {
-        formData.class = document.getElementById('class').value;
-        formData.classLetter = document.getElementById('classLetter').value.toUpperCase();
-      }
-
-      try {
-        setLoading(true);
-        await firebase.firestore().collection('users').doc(user.uid).set(formData);
-        
-        // Перенаправляем на соответствующую страницу
-        window.location.href = selectedRole === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
-      } catch (error) {
-        console.error('Ошибка при сохранении данных:', error);
-        showError('Произошла ошибка при сохранении данных. Пожалуйста, попробуйте снова.');
-      } finally {
-        setLoading(false);
+        // Очищаем и заполняем список школ
+        schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
+        schools[city].forEach(school => {
+          const option = document.createElement('option');
+          option.value = school.id;
+          option.textContent = school.name;
+          schoolSelect.appendChild(option);
+        });
+      } else {
+        schoolSelect.disabled = true;
+        schoolSelect.innerHTML = '<option value="">Сначала выберите город</option>';
       }
     });
 
-    // Функции для работы с UI
-    function showError(message) {
-      const errorDiv = document.getElementById('errorMessage');
-      errorDiv.querySelector('span').textContent = message;
-      errorDiv.classList.remove('hidden');
-      setTimeout(() => errorDiv.classList.add('hidden'), 5000);
-    }
-
-    function setLoading(isLoading) {
-      const button = userDataForm.querySelector('button[type="submit"]');
-      const spinner = button.querySelector('.spinner');
-      const text = button.querySelector('span');
+    // Обработка отправки формы
+    document.getElementById('roleForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
       
-      if (isLoading) {
-        button.disabled = true;
-        spinner.classList.remove('hidden');
-        text.classList.add('opacity-50');
-      } else {
-        button.disabled = false;
-        spinner.classList.add('hidden');
-        text.classList.remove('opacity-50');
+      const formData = new FormData(this);
+      const userData = {
+        role: formData.get('role'),
+        city: formData.get('city'),
+        school: formData.get('school'),
+        class: formData.get('class'),
+        letter: formData.get('letter')
+      };
+
+      try {
+        // Здесь будет код для сохранения данных в Firebase
+        // и перенаправления на соответствующую страницу
+        if (userData.role === 'student') {
+          window.location.href = 'student-dashboard.html';
+        } else {
+          window.location.href = 'teacher-dashboard.html';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // Показать сообщение об ошибке
       }
-    }
+    });
   </script>
 </body>
 </html> 

@@ -1,4 +1,5 @@
-const { firebaseConfig, phoneAuthConfig } = require('./firebase-config');
+import { auth, phoneAuthConfig } from './firebase-config.js';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
 // Функции для работы с аутентификацией по телефону
 class PhoneAuth {
@@ -23,6 +24,17 @@ class PhoneAuth {
     throw new Error('Неверный формат номера телефона');
   }
 
+  // Инициализация reCAPTCHA
+  initRecaptcha() {
+    this.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'normal',
+      'callback': (response) => {
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+        console.log('reCAPTCHA verified');
+      }
+    });
+  }
+
   // Отправка кода подтверждения
   async sendVerificationCode(phoneNumber) {
     try {
@@ -38,23 +50,11 @@ class PhoneAuth {
 
       // Инициализируем reCAPTCHA если еще не инициализирована
       if (!this.recaptchaVerifier) {
-        this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          'size': 'normal',
-          'callback': (response) => {
-            console.log('reCAPTCHA verified successfully');
-          },
-          'expired-callback': () => {
-            console.log('reCAPTCHA expired');
-            this.reset();
-          }
-        });
+        this.initRecaptcha();
       }
 
       // Отправляем код подтверждения
-      this.confirmationResult = await firebase.auth().signInWithPhoneNumber(
-        formattedNumber,
-        this.recaptchaVerifier
-      );
+      this.confirmationResult = await signInWithPhoneNumber(auth, formattedNumber, this.recaptchaVerifier);
       
       console.log('Код подтверждения отправлен');
       this.isVerificationSent = true;
@@ -67,8 +67,8 @@ class PhoneAuth {
     }
   }
 
-  // Подтверждение кода
-  async confirmCode(code) {
+  // Проверка кода подтверждения
+  async verifyCode(code) {
     try {
       if (!this.confirmationResult) {
         throw new Error('Сначала необходимо отправить код подтверждения');

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание теста - TeacherUchit</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+</head>
+<body class="bg-gray-100">
+    <!-- Навигация -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img class="h-8 w-auto" src="assets/logo.svg" alt="TeacherUchit">
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="teacher-dashboard.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Главная
+                        </a>
+                        <a href="teacher-students.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Ученики
+                        </a>
+                        <a href="teacher-lessons.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Уроки
+                        </a>
+                        <a href="teacher-tests.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Тесты
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <button type="button" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <span class="sr-only">Уведомления</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                    </button>
+
+                    <!-- Профиль -->
+                    <div class="ml-3 relative">
+                        <div>
+                            <button type="button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu-button">
+                                <span class="sr-only">Открыть меню пользователя</span>
+                                <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="py-10">
+        <header>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h1 class="text-3xl font-bold text-gray-900">Создание теста</h1>
+            </div>
+        </header>
+        <main>
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="mt-8">
+                    <div class="md:grid md:grid-cols-3 md:gap-6">
+                        <div class="md:col-span-1">
+                            <div class="px-4 sm:px-0">
+                                <h3 class="text-lg font-medium leading-6 text-gray-900">Информация о тесте</h3>
+                                <p class="mt-1 text-sm text-gray-600">
+                                    Заполните основную информацию о тесте и добавьте вопросы. Все поля обязательны для заполнения.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-5 md:mt-0 md:col-span-2">
+                            <form id="testForm">
+                                <div class="shadow sm:rounded-md sm:overflow-hidden">
+                                    <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                                        <div>
+                                            <label for="title" class="block text-sm font-medium text-gray-700">
+                                                Название теста
+                                            </label>
+                                            <div class="mt-1">
+                                                <input type="text" name="title" id="title" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Введите название теста">
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label for="description" class="block text-sm font-medium text-gray-700">
+                                                Описание
+                                            </label>
+                                            <div class="mt-1">
+                                                <textarea id="description" name="description" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Введите описание теста"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-6 gap-6">
+                                            <div class="col-span-6 sm:col-span-3">
+                                                <label for="subject" class="block text-sm font-medium text-gray-700">Предмет</label>
+                                                <select id="subject" name="subject" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                    <option value="history">История</option>
+                                                    <option value="social">Обществознание</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-span-6 sm:col-span-3">
+                                                <label for="grade" class="block text-sm font-medium text-gray-700">Класс</label>
+                                                <select id="grade" name="grade" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                    <option value="5">5 класс</option>
+                                                    <option value="6">6 класс</option>
+                                                    <option value="7">7 класс</option>
+                                                    <option value="8">8 класс</option>
+                                                    <option value="9">9 класс</option>
+                                                    <option value="10">10 класс</option>
+                                                    <option value="11">11 класс</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label for="timeLimit" class="block text-sm font-medium text-gray-700">
+                                                Ограничение по времени (в минутах)
+                                            </label>
+                                            <div class="mt-1">
+                                                <input type="number" name="timeLimit" id="timeLimit" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Введите время в минутах">
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label for="passingScore" class="block text-sm font-medium text-gray-700">
+                                                Проходной балл
+                                            </label>
+                                            <div class="mt-1">
+                                                <input type="number" name="passingScore" id="passingScore" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Введите проходной балл">
+                                            </div>
+                                        </div>
+
+                                        <!-- Список вопросов -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">
+                                                Вопросы
+                                            </label>
+                                            <div id="questionsList" class="mt-4 space-y-4">
+                                                <!-- Здесь будут добавляться вопросы -->
+                                            </div>
+                                            <button type="button" id="addQuestion" class="mt-4 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                Добавить вопрос
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                                        <button type="button" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                            Сохранить черновик
+                                        </button>
+                                        <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                            Опубликовать
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Шаблон вопроса -->
+    <template id="questionTemplate">
+        <div class="question-item bg-gray-50 p-4 rounded-lg">
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">
+                            Текст вопроса
+                        </label>
+                        <div class="mt-1">
+                            <textarea class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" rows="2" placeholder="Введите текст вопроса"></textarea>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">
+                            Тип вопроса
+                        </label>
+                        <select class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="single">Один правильный ответ</option>
+                            <option value="multiple">Несколько правильных ответов</option>
+                            <option value="text">Текстовый ответ</option>
+                        </select>
+                    </div>
+                    <div class="answers-list space-y-2">
+                        <!-- Здесь будут добавляться варианты ответов -->
+                    </div>
+                    <button type="button" class="add-answer mt-2 inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Добавить вариант ответа
+                    </button>
+                </div>
+                <button type="button" class="remove-question ml-4 inline-flex items-center p-1 border border-transparent rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span class="sr-only">Удалить вопрос</span>
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Шаблон варианта ответа -->
+    <template id="answerTemplate">
+        <div class="answer-item flex items-center space-x-2">
+            <input type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+            <input type="text" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Введите вариант ответа">
+            <button type="button" class="remove-answer inline-flex items-center p-1 border border-transparent rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <span class="sr-only">Удалить вариант ответа</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    </template>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/firebase.js"></script>
+    <script>
+        // Проверка авторизации
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Загрузка данных учителя
+            firebase.firestore().collection('users').doc(user.uid).get()
+                .then(doc => {
+                    if (!doc.exists || doc.data().role !== 'teacher') {
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        // Обработка выхода
+        document.getElementById('user-menu-button').addEventListener('click', () => {
+            firebase.auth().signOut()
+                .then(() => {
+                    window.location.href = 'login.html';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        // Добавление вопроса
+        document.getElementById('addQuestion').addEventListener('click', () => {
+            const template = document.getElementById('questionTemplate');
+            const questionsList = document.getElementById('questionsList');
+            const questionNode = template.content.cloneNode(true);
+            
+            // Добавляем обработчики событий для кнопок
+            const removeButton = questionNode.querySelector('.remove-question');
+            removeButton.addEventListener('click', (e) => {
+                e.target.closest('.question-item').remove();
+            });
+
+            const addAnswerButton = questionNode.querySelector('.add-answer');
+            addAnswerButton.addEventListener('click', (e) => {
+                const answersList = e.target.closest('.question-item').querySelector('.answers-list');
+                const answerTemplate = document.getElementById('answerTemplate');
+                const answerNode = answerTemplate.content.cloneNode(true);
+
+                const removeAnswerButton = answerNode.querySelector('.remove-answer');
+                removeAnswerButton.addEventListener('click', (e) => {
+                    e.target.closest('.answer-item').remove();
+                });
+
+                answersList.appendChild(answerNode);
+            });
+
+            questionsList.appendChild(questionNode);
+        });
+
+        // Обработка отправки формы
+        document.getElementById('testForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const subject = document.getElementById('subject').value;
+            const grade = document.getElementById('grade').value;
+            const timeLimit = document.getElementById('timeLimit').value;
+            const passingScore = document.getElementById('passingScore').value;
+
+            // Собираем вопросы
+            const questions = [];
+            document.querySelectorAll('.question-item').forEach(questionItem => {
+                const questionText = questionItem.querySelector('textarea').value;
+                const questionType = questionItem.querySelector('select').value;
+                const answers = [];
+
+                questionItem.querySelectorAll('.answer-item').forEach(answerItem => {
+                    const isCorrect = answerItem.querySelector('input[type="checkbox"]').checked;
+                    const answerText = answerItem.querySelector('input[type="text"]').value;
+                    answers.push({ text: answerText, isCorrect });
+                });
+
+                questions.push({
+                    text: questionText,
+                    type: questionType,
+                    answers
+                });
+            });
+
+            // Здесь будет код для сохранения теста в Firebase
+
+            // После успешного сохранения перенаправляем на страницу тестов
+            window.location.href = 'teacher-tests.html';
+        });
+    </script>
+</body>
+</html> 

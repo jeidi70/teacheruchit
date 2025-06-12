@@ -1,0 +1,236 @@
+/* Дополнительные стили поверх Tailwind */
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Кастомные стили для форм */
+.form-input {
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500;
+}
+
+.form-label {
+    @apply block text-sm font-medium text-gray-700;
+}
+
+.form-button {
+    @apply w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+}
+
+/* Стили для карточек */
+.card {
+    @apply bg-white overflow-hidden shadow rounded-lg;
+}
+
+.card-header {
+    @apply px-4 py-5 sm:px-6;
+}
+
+.card-body {
+    @apply px-4 py-5 sm:p-6;
+}
+
+.card-footer {
+    @apply px-4 py-4 sm:px-6 bg-gray-50;
+}
+
+/* Стили для уведомлений */
+.notification {
+    @apply rounded-md p-4 mb-4;
+}
+
+.notification-success {
+    @apply bg-green-50 text-green-800;
+}
+
+.notification-error {
+    @apply bg-red-50 text-red-800;
+}
+
+.notification-warning {
+    @apply bg-yellow-50 text-yellow-800;
+}
+
+/* Стили для загрузки */
+.loading {
+    @apply animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-indigo-600;
+}
+
+/* Стили для мобильного меню */
+.mobile-menu {
+    @apply fixed inset-0 z-40 lg:hidden;
+}
+
+.mobile-menu-overlay {
+    @apply fixed inset-0 bg-gray-600 bg-opacity-75;
+}
+
+.mobile-menu-panel {
+    @apply relative flex-1 flex flex-col max-w-xs w-full bg-white;
+}
+
+/* Стили для аватаров */
+.avatar {
+    @apply h-10 w-10 rounded-full;
+}
+
+.avatar-sm {
+    @apply h-8 w-8 rounded-full;
+}
+
+.avatar-lg {
+    @apply h-12 w-12 rounded-full;
+}
+
+/* Стили для бейджей */
+.badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-success {
+    @apply bg-green-100 text-green-800;
+}
+
+.badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-error {
+    @apply bg-red-100 text-red-800;
+}
+
+/* Стили для таблиц */
+.table-container {
+    @apply flex flex-col;
+}
+
+.table {
+    @apply min-w-full divide-y divide-gray-200;
+}
+
+.table-header {
+    @apply bg-gray-50;
+}
+
+.table-header-cell {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+}
+
+.table-body {
+    @apply bg-white divide-y divide-gray-200;
+}
+
+.table-row {
+    @apply hover:bg-gray-50;
+}
+
+.table-cell {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-500;
+}
+
+/* Стили для модальных окон */
+.modal {
+    @apply fixed z-10 inset-0 overflow-y-auto;
+}
+
+.modal-overlay {
+    @apply fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity;
+}
+
+.modal-container {
+    @apply relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6;
+}
+
+/* Стили для кнопок */
+.btn {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+}
+
+.btn-secondary {
+    @apply bg-white text-gray-700 border-gray-300 hover:bg-gray-50;
+}
+
+.btn-danger {
+    @apply bg-red-600 hover:bg-red-700;
+}
+
+.btn-success {
+    @apply bg-green-600 hover:bg-green-700;
+}
+
+/* Стили для форм выбора */
+.select {
+    @apply mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md;
+}
+
+/* Стили для чекбоксов */
+.checkbox {
+    @apply h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded;
+}
+
+/* Стили для радио-кнопок */
+.radio {
+    @apply h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300;
+}
+
+/* Стили для переключателей */
+.toggle {
+    @apply relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+}
+
+.toggle-on {
+    @apply bg-indigo-600;
+}
+
+.toggle-off {
+    @apply bg-gray-200;
+}
+
+/* Стили для подсказок */
+.tooltip {
+    @apply relative inline-block;
+}
+
+.tooltip-text {
+    @apply invisible absolute z-10 p-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300;
+}
+
+.tooltip:hover .tooltip-text {
+    @apply visible opacity-100;
+}
+
+/* Стили для прогресс-баров */
+.progress {
+    @apply w-full bg-gray-200 rounded-full h-2.5;
+}
+
+.progress-bar {
+    @apply bg-indigo-600 h-2.5 rounded-full;
+}
+
+/* Стили для алертов */
+.alert {
+    @apply rounded-md p-4 mb-4;
+}
+
+.alert-info {
+    @apply bg-blue-50 text-blue-800;
+}
+
+.alert-success {
+    @apply bg-green-50 text-green-800;
+}
+
+.alert-warning {
+    @apply bg-yellow-50 text-yellow-800;
+}
+
+.alert-error {
+    @apply bg-red-50 text-red-800;
+}

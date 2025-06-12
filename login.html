@@ -244,15 +244,24 @@
     window.onload = function() {
       phoneAuth = new PhoneAuth();
       
-      // Добавляем обработчик изменения номера телефона
+      // Маска для телефона
       document.getElementById('phoneNumber').addEventListener('input', function(e) {
-        const phoneNumber = e.target.value;
+        let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+        if (!x) return;
+        
+        let formatted = '';
+        if (x[1]) formatted += '+7';
+        if (x[2]) formatted += ' (' + x[2];
+        if (x[3]) formatted += ') ' + x[3];
+        if (x[4]) formatted += '-' + x[4];
+        if (x[5]) formatted += '-' + x[5];
+        
+        e.target.value = formatted;
+
+        // Проверяем формат номера и активируем/деактивируем кнопку
         const submitBtn = document.getElementById('phoneSubmitBtn');
+        const isValid = /^\+7\s?\(?[0-9]{3}\)?\s?[0-9]{3}-?[0-9]{2}-?[0-9]{2}$/.test(formatted);
         
-        // Проверяем формат номера
-        const isValid = /^\+7\s?\(?[0-9]{3}\)?\s?[0-9]{3}-?[0-9]{2}-?[0-9]{2}$/.test(phoneNumber);
-        
-        // Активируем/деактивируем кнопку
         submitBtn.disabled = !isValid;
         submitBtn.classList.toggle('opacity-50', !isValid);
       });
@@ -267,6 +276,8 @@
       const submitBtn = document.getElementById('phoneSubmitBtn');
       submitBtn.disabled = true;
       submitBtn.classList.add('opacity-50');
+      // Очищаем поле телефона
+      document.getElementById('phoneNumber').value = '';
     }
 
     function closePhoneModal() {
@@ -274,6 +285,8 @@
       document.getElementById('verificationCode').classList.add('hidden');
       document.getElementById('phoneSubmitBtn').querySelector('span').textContent = 'Отправить код';
       document.getElementById('recaptcha-container').classList.add('hidden');
+      // Очищаем поле телефона
+      document.getElementById('phoneNumber').value = '';
       if (phoneAuth) {
         phoneAuth.reset();
       }

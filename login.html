@@ -163,6 +163,11 @@
             <div class="hidden ml-2 spinner"></div>
           </button>
         </div>
+        <div class="text-center">
+          <button onclick="showResetPasswordModal()" class="text-indigo-600 hover:text-indigo-800 text-sm">
+            Забыли пароль?
+          </button>
+        </div>
       </div>
     </div>
 
@@ -204,6 +209,24 @@
       </div>
     </div>
 
+    <!-- Модальное окно для сброса пароля -->
+    <div id="resetPasswordModal" class="modal">
+      <div class="modal-content glass-effect">
+        <span class="close-modal" onclick="closeResetPasswordModal()">&times;</span>
+        <h3 class="text-xl font-semibold mb-4">Восстановление пароля</h3>
+        <div class="space-y-4">
+          <p class="text-gray-600 text-sm">Введите email, указанный при регистрации. Мы отправим вам ссылку для сброса пароля.</p>
+          <input type="email" id="resetEmail" placeholder="Email" required
+                 class="w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <button id="resetPasswordBtn" class="w-full btn-primary text-white py-3 rounded-lg flex items-center justify-center"
+                  onclick="resetPassword()">
+            <span>Отправить ссылку</span>
+            <div class="hidden ml-2 spinner"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- reCAPTCHA -->
     <div id="recaptcha-container" class="hidden"></div>
   </div>
@@ -233,12 +256,35 @@
       document.getElementById('roleModal').classList.remove('active');
     }
 
+    function showResetPasswordModal() {
+      document.getElementById('resetPasswordModal').classList.add('active');
+    }
+
+    function closeResetPasswordModal() {
+      document.getElementById('resetPasswordModal').classList.remove('active');
+      document.getElementById('resetEmail').value = '';
+    }
+
     // Функции для работы с ошибками
     function showError(message) {
       const errorDiv = document.getElementById('errorMessage');
       errorDiv.querySelector('span').textContent = message;
       errorDiv.classList.remove('hidden');
       setTimeout(() => errorDiv.classList.add('hidden'), 5000);
+    }
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    function validatePassword(password) {
+      return password.length >= 6;
+    }
+
+    function validatePhone(phone) {
+      const re = /^\+7\s?\(?[0-9]{3}\)?\s?[0-9]{3}-?[0-9]{2}-?[0-9]{2}$/;
+      return re.test(phone);
     }
 
     function setLoading(buttonId, isLoading) {
@@ -262,9 +308,27 @@
       setLoading('signInBtn', true);
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
-        .then(() => showRoleModal())
+        .then((result) => {
+          // Проверяем, новый ли это пользователь
+          const isNewUser = result.additionalUserInfo.isNewUser;
+          if (isNewUser) {
+            window.location.href = "role-selection.html";
+          } else {
+            // Для существующего пользователя проверяем роль
+            return db.collection("users").doc(result.user.uid).get();
+          }
+        })
+        .then((doc) => {
+          if (doc && doc.exists) {
+            if (!doc.data().role) {
+              window.location.href = "role-selection.html";
+            } else {
+              window.location.href = doc.data().role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+            }
+          }
+        })
         .catch(error => {
-          showError(error.message);
+          showError(getErrorMessage(error.code));
           console.error(error);
         })
         .finally(() => setLoading('signInBtn', false));
@@ -280,10 +344,18 @@
           return;
         }
 
+        if (!validatePhone(phoneNumber)) {
+          showError('Введите корректный номер телефона в формате +7 (XXX) XXX-XX-XX');
+          return;
+        }
+
         setLoading('phoneSubmitBtn', true);
         if (!window.recaptchaVerifier) {
           window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            size: 'invisible'
+            size: 'invisible',
+            callback: () => {
+              // reCAPTCHA solved
+            }
           });
         }
 
@@ -295,7 +367,7 @@
             submitBtn.querySelector('span').textContent = 'Подтвердить код';
           })
           .catch(error => {
-            showError(error.message);
+            showError(getErrorMessage(error.code));
             console.error(error);
           })
           .finally(() => setLoading('phoneSubmitBtn', false));
@@ -308,12 +380,27 @@
 
         setLoading('phoneSubmitBtn', true);
         confirmationResult.confirm(code)
-          .then(() => {
-            closePhoneModal();
-            showRoleModal();
+          .then((result) => {
+            // Проверяем, новый ли это пользователь
+            const isNewUser = result.additionalUserInfo.isNewUser;
+            if (isNewUser) {
+              window.location.href = "role-selection.html";
+            } else {
+              // Для существующего пользователя проверяем роль
+              return db.collection("users").doc(result.user.uid).get();
+            }
+          })
+          .then((doc) => {
+            if (doc && doc.exists) {
+              if (!doc.data().role) {
+                window.location.href = "role-selection.html";
+              } else {
+                window.location.href = doc.data().role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+              }
+            }
           })
           .catch(error => {
-            showError(error.message);
+            showError(getErrorMessage(error.code));
             console.error(error);
           })
           .finally(() => setLoading('phoneSubmitBtn', false));
@@ -328,12 +415,33 @@
         showError('Пожалуйста, заполните все поля');
         return;
       }
+
+      if (!validateEmail(email)) {
+        showError('Введите корректный email');
+        return;
+      }
       
       setLoading('signInBtn', true);
       auth.signInWithEmailAndPassword(email, password)
-        .then(() => showRoleModal())
+        .then((result) => {
+          // Проверяем, подтвержден ли email
+          if (!result.user.emailVerified) {
+            showError('Пожалуйста, подтвердите ваш email. Проверьте вашу почту.');
+            return auth.signOut();
+          }
+          return db.collection("users").doc(result.user.uid).get();
+        })
+        .then((doc) => {
+          if (doc && doc.exists) {
+            if (!doc.data().role) {
+              window.location.href = "role-selection.html";
+            } else {
+              window.location.href = doc.data().role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+            }
+          }
+        })
         .catch(error => {
-          showError(error.message);
+          showError(getErrorMessage(error.code));
           console.error(error);
         })
         .finally(() => setLoading('signInBtn', false));
@@ -347,18 +455,86 @@
         showError('Пожалуйста, заполните все поля');
         return;
       }
+
+      if (!validateEmail(email)) {
+        showError('Введите корректный email');
+        return;
+      }
+
+      if (!validatePassword(password)) {
+        showError('Пароль должен содержать минимум 6 символов');
+        return;
+      }
       
       setLoading('signUpBtn', true);
       auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Отправляем email для подтверждения
+          return userCredential.user.sendEmailVerification();
+        })
         .then(() => {
-          showRoleModal();
+          showError('Письмо для подтверждения email отправлено. Пожалуйста, проверьте вашу почту.');
+          window.location.href = "role-selection.html";
         })
         .catch(error => {
-          showError(error.message);
+          showError(getErrorMessage(error.code));
           console.error(error);
         })
         .finally(() => setLoading('signUpBtn', false));
     }
+
+    function resetPassword() {
+      const email = document.getElementById('resetEmail').value;
+      
+      if (!email) {
+        showError('Введите email');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        showError('Введите корректный email');
+        return;
+      }
+
+      setLoading('resetPasswordBtn', true);
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          showError('Ссылка для сброса пароля отправлена на ваш email');
+          closeResetPasswordModal();
+        })
+        .catch(error => {
+          showError(getErrorMessage(error.code));
+          console.error(error);
+        })
+        .finally(() => setLoading('resetPasswordBtn', false));
+    }
+
+    // Функция для получения понятных сообщений об ошибках
+    function getErrorMessage(errorCode) {
+      const errorMessages = {
+        'auth/invalid-email': 'Неверный формат email',
+        'auth/user-disabled': 'Аккаунт отключен',
+        'auth/user-not-found': 'Пользователь не найден',
+        'auth/wrong-password': 'Неверный пароль',
+        'auth/email-already-in-use': 'Этот email уже используется',
+        'auth/weak-password': 'Пароль слишком простой',
+        'auth/operation-not-allowed': 'Операция не разрешена',
+        'auth/invalid-verification-code': 'Неверный код подтверждения',
+        'auth/invalid-phone-number': 'Неверный формат номера телефона',
+        'auth/too-many-requests': 'Слишком много попыток. Попробуйте позже',
+        'auth/popup-closed-by-user': 'Окно авторизации было закрыто',
+        'auth/cancelled-popup-request': 'Операция была отменена',
+        'auth/network-request-failed': 'Ошибка сети. Проверьте подключение',
+        'auth/popup-blocked': 'Всплывающее окно было заблокировано браузером'
+      };
+      return errorMessages[errorCode] || 'Произошла ошибка. Попробуйте еще раз';
+    }
+
+    // Маска для телефона
+    document.getElementById('phoneNumber').addEventListener('input', function(e) {
+      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+      e.target.value = !x[2] ? x[1] : '+7 (' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '') + (x[4] ? '-' + x[4] : '');
+    });
 
     function setRole(role) {
       const user = auth.currentUser;

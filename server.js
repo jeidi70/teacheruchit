@@ -3,9 +3,12 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
+const path = require('path');
+const { firebaseConfig } = require('./firebase-config');
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Инициализация Firebase Admin
 admin.initializeApp({
@@ -239,8 +242,34 @@ app.post('/send-welcome', async (req, res) => {
   }
 });
 
+// Статические файлы
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Маршруты
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+app.get('/role-selection', (req, res) => {
+  res.sendFile(path.join(__dirname, 'role-selection.html'));
+});
+
+app.get('/student-dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'student-dashboard.html'));
+});
+
+app.get('/teacher-dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'teacher-dashboard.html'));
+});
+
+// Обработка ошибок
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
 // Запуск сервера
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 }); 

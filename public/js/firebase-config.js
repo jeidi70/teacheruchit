@@ -1,12 +1,11 @@
 // Конфигурация Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyDdr_9yA391YOY08o3T3RXvjD1-dIdfCK0",
-  authDomain: "teacheruchit.firebaseapp.com",
-  projectId: "teacheruchit",
-  storageBucket: "teacheruchit.firebasestorage.app",
-  messagingSenderId: "762586190395",
-  appId: "1:762586190395:web:78333e7d5fa3dd6dd1021e",
-  measurementId: "G-K0BHLKHNHH"
+  apiKey: "AIzaSyDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", // Замените на ваш API ключ
+  authDomain: "your-project-id.firebaseapp.com", // Замените на ваш домен
+  projectId: "your-project-id", // Замените на ваш ID проекта
+  storageBucket: "your-project-id.appspot.com", // Замените на ваш bucket
+  messagingSenderId: "your-sender-id", // Замените на ваш sender ID
+  appId: "your-app-id" // Замените на ваш app ID
 };
 
 // Настройки для аутентификации по телефону
@@ -29,12 +28,15 @@ const phoneAuthConfig = {
   testPhoneNumbers: [
     // Добавьте ваши тестовые номера телефонов в формате +7XXXXXXXXXX
     // Эти номера будут работать только в режиме разработки
-    "+79001234567", // Замените на ваш тестовый номер
+    "+79001234567", // Добавьте тестовые номера для разработки
     "+79001234568"  // Замените на ваш тестовый номер
   ]
 };
 
-module.exports = {
-  firebaseConfig,
-  phoneAuthConfig
-}; 
+// Экспортируем конфигурацию
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { firebaseConfig, phoneAuthConfig };
+} else {
+  window.firebaseConfig = firebaseConfig;
+  window.phoneAuthConfig = phoneAuthConfig;
+} 

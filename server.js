@@ -5,10 +5,46 @@ const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
 const path = require('path');
 const { firebaseConfig } = require('./firebase-config');
+const helmet = require('helmet');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const morgan = require('morgan');
+const winston = require('winston');
+
+// Настройка логгера
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' })
+  ]
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(new winston.transports.Console({
+    format: winston.format.simple()
+  }));
+}
 
 const app = express();
+
+// Middleware
+app.use(helmet()); // Безопасность
+app.use(cors()); // CORS
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan('combined')); // Логирование HTTP запросов
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 минут
+  max: 100 // лимит запросов с одного IP
+});
+app.use(limiter);
 
 // Инициализация Firebase Admin
 admin.initializeApp({
@@ -73,8 +109,28 @@ async function getEmailTemplate(type) {
   }
 }
 
+// Валидация email
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Middleware для валидации
+const validateEmailRequest = (req, res, next) => {
+  const { email } = req.body;
+  if (!email || !isValidEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email address' });
+  }
+  next();
+};
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
+});
+
 // Обработчики для отправки email
-app.post('/send-verification', async (req, res) => {
+app.post('/send-verification', validateEmailRequest, async (req, res) => {
   try {
     const { email, actionUrl } = req.body;
     
@@ -129,7 +185,7 @@ app.post('/send-verification', async (req, res) => {
   }
 });
 
-app.post('/send-password-reset', async (req, res) => {
+app.post('/send-password-reset', validateEmailRequest, async (req, res) => {
   try {
     const { email, actionUrl } = req.body;
     
@@ -184,7 +240,7 @@ app.post('/send-password-reset', async (req, res) => {
   }
 });
 
-app.post('/send-welcome', async (req, res) => {
+app.post('/send-welcome', validateEmailRequest, async (req, res) => {
   try {
     const { email, actionUrl } = req.body;
     
@@ -247,25 +303,38 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Маршруты
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'login.html'));
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'register.html'));
 });
 
 app.get('/role-selection', (req, res) => {
-  res.sendFile(path.join(__dirname, 'role-selection.html'));
+  res.sendFile(path.join(__dirname, 'public', 'role-selection.html'));
 });
 
 app.get('/student-dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'student-dashboard.html'));
+  res.sendFile(path.join(__dirname, 'public', 'student-dashboard.html'));
 });
 
 app.get('/teacher-dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'teacher-dashboard.html'));
+  res.sendFile(path.join(__dirname, 'public', 'teacher-dashboard.html'));
 });
 
 // Обработка ошибок
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+  logger.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
 });
 
 // Запуск сервера

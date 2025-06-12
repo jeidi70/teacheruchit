@@ -6,7 +6,7 @@ const emailVerificationTemplate = {
   html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="text-align: center; padding: 20px;">
-        <img src="https://your-domain.com/assets/logo.svg" alt="TeacherUchit" style="width: 120px; height: 120px;">
+        <img src="https://teacheruchit.ru/assets/logo.svg" alt="TeacherUchit" style="width: 120px; height: 120px;">
       </div>
       <div style="background-color: #f8fafc; padding: 30px; border-radius: 8px;">
         <h1 style="color: #1e293b; margin-bottom: 20px;">Подтвердите ваш email</h1>
@@ -41,7 +41,7 @@ const passwordResetTemplate = {
   html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="text-align: center; padding: 20px;">
-        <img src="https://your-domain.com/assets/logo.svg" alt="TeacherUchit" style="width: 120px; height: 120px;">
+        <img src="https://teacheruchit.ru/assets/logo.svg" alt="TeacherUchit" style="width: 120px; height: 120px;">
       </div>
       <div style="background-color: #f8fafc; padding: 30px; border-radius: 8px;">
         <h1 style="color: #1e293b; margin-bottom: 20px;">Сброс пароля</h1>
@@ -76,7 +76,7 @@ const welcomeTemplate = {
   html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="text-align: center; padding: 20px;">
-        <img src="https://your-domain.com/assets/logo.svg" alt="TeacherUchit" style="width: 120px; height: 120px;">
+        <img src="https://teacheruchit.ru/assets/logo.svg" alt="TeacherUchit" style="width: 120px; height: 120px;">
       </div>
       <div style="background-color: #f8fafc; padding: 30px; border-radius: 8px;">
         <h1 style="color: #1e293b; margin-bottom: 20px;">Добро пожаловать!</h1>

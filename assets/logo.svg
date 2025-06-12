@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Фон -->
-  <circle cx="100" cy="100" r="90" fill="url(#gradient)" />
+  <circle cx="60" cy="60" r="60" fill="url(#gradient)" />
   
-  <!-- Книга (символ образования) -->
-  <path d="M60 50C60 45 65 40 70 40H130C135 40 140 45 140 50V150C140 155 135 160 130 160H70C65 160 60 155 60 150V50Z" fill="white" />
+  <!-- Книга -->
+  <path d="M40 30H80C85.5228 30 90 34.4772 90 40V80C90 85.5228 85.5228 90 80 90H40C34.4772 90 30 85.5228 30 80V40C30 34.4772 34.4772 30 40 30Z" fill="white" fill-opacity="0.9"/>
   
-  <!-- Линии текста в книге -->
-  <line x1="75" y1="70" x2="125" y2="70" stroke="#4F46E5" stroke-width="3" />
-  <line x1="75" y1="85" x2="125" y2="85" stroke="#4F46E5" stroke-width="3" />
-  <line x1="75" y1="100" x2="125" y2="100" stroke="#4F46E5" stroke-width="3" />
-  <line x1="75" y1="115" x2="125" y2="115" stroke="#4F46E5" stroke-width="3" />
-  <line x1="75" y1="130" x2="125" y2="130" stroke="#4F46E5" stroke-width="3" />
+  <!-- Страницы книги -->
+  <path d="M45 35H75V85H45V35Z" fill="url(#pageGradient)"/>
   
-  <!-- Часы (символ истории) -->
-  <circle cx="100" cy="100" r="30" stroke="#4F46E5" stroke-width="3" fill="none" />
-  <line x1="100" y1="100" x2="100" y2="85" stroke="#4F46E5" stroke-width="3" />
-  <line x1="100" y1="100" x2="115" y2="100" stroke="#4F46E5" stroke-width="3" />
+  <!-- Линии текста -->
+  <line x1="50" y1="45" x2="70" y2="45" stroke="#4F46E5" stroke-width="2"/>
+  <line x1="50" y1="55" x2="70" y2="55" stroke="#4F46E5" stroke-width="2"/>
+  <line x1="50" y1="65" x2="70" y2="65" stroke="#4F46E5" stroke-width="2"/>
+  <line x1="50" y1="75" x2="70" y2="75" stroke="#4F46E5" stroke-width="2"/>
   
-  <!-- Градиент -->
+  <!-- Часы -->
+  <circle cx="60" cy="60" r="20" stroke="#7C3AED" stroke-width="2" fill="none"/>
+  <line x1="60" y1="60" x2="60" y2="50" stroke="#7C3AED" stroke-width="2"/>
+  <line x1="60" y1="60" x2="70" y2="60" stroke="#7C3AED" stroke-width="2"/>
+  
+  <!-- Градиенты -->
   <defs>
-    <linearGradient id="gradient" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#4F46E5" />
-      <stop offset="100%" stop-color="#7C3AED" />
+    <linearGradient id="gradient" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="pageGradient" x1="45" y1="35" x2="75" y2="85" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#E2E8F0"/>
     </linearGradient>
   </defs>
 </svg> 

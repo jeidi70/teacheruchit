@@ -16,7 +16,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <!-- Конфигурация Firebase -->
+  <script src="firebase-config.js"></script>
   <script src="firebase.js"></script>
+  <script src="phone-auth.js"></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
@@ -229,7 +231,7 @@
     </div>
 
     <!-- reCAPTCHA -->
-    <div id="recaptcha-container" class="mt-4"></div>
+    <div id="recaptcha-container" class="hidden mt-4"></div>
   </div>
 
   <script>
@@ -237,29 +239,28 @@
     let confirmationResult = null;
     let isVerificationSent = false;
     let recaptchaVerifier = null;
+    let phoneAuth = null;
 
-    // Инициализация reCAPTCHA при загрузке страницы
+    // Инициализация при загрузке страницы
     window.onload = function() {
-      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        'size': 'normal',
-        'callback': (response) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-          console.log('reCAPTCHA verified');
-        }
-      });
-      recaptchaVerifier.render();
+      phoneAuth = new PhoneAuth();
     };
 
     // Функции для модальных окон
     function showPhoneModal() {
       document.getElementById('phoneModal').classList.add('active');
+      // Скрываем reCAPTCHA при открытии модального окна
+      document.getElementById('recaptcha-container').classList.add('hidden');
     }
 
     function closePhoneModal() {
       document.getElementById('phoneModal').classList.remove('active');
       document.getElementById('verificationCode').classList.add('hidden');
       document.getElementById('phoneSubmitBtn').querySelector('span').textContent = 'Отправить код';
-      isVerificationSent = false;
+      document.getElementById('recaptcha-container').classList.add('hidden');
+      if (phoneAuth) {
+        phoneAuth.reset();
+      }
     }
 
     function showRoleModal() {
@@ -363,44 +364,59 @@
       e.target.value = formatted;
     });
 
-    function handlePhoneAuth() {
+    async function handlePhoneAuth() {
       const phoneNumber = document.getElementById('phoneNumber').value;
       const submitBtn = document.getElementById('phoneSubmitBtn');
       
-      if (!isVerificationSent) {
+      if (!phoneAuth.isVerificationSent) {
         if (!phoneNumber) {
           showError('Введите номер телефона');
           return;
         }
 
-        // Форматируем номер телефона для Firebase
-        const formattedPhone = phoneNumber.replace(/\D/g, '');
-        if (formattedPhone.length !== 11) {
+        if (!validatePhone(phoneNumber)) {
           showError('Введите корректный номер телефона');
           return;
         }
 
         setLoading('phoneSubmitBtn', true);
         
-        // Используем глобальную переменную recaptchaVerifier
-        auth.signInWithPhoneNumber('+7' + formattedPhone.slice(1), recaptchaVerifier)
-          .then(result => {
-            confirmationResult = result;
-            isVerificationSent = true;
-            document.getElementById('verificationCode').classList.remove('hidden');
-            submitBtn.querySelector('span').textContent = 'Подтвердить код';
-            // Скрываем reCAPTCHA после успешной отправки кода
-            document.getElementById('recaptcha-container').style.display = 'none';
-          })
-          .catch(error => {
-            showError(getErrorMessage(error.code));
-            console.error(error);
-            // Сбрасываем reCAPTCHA при ошибке
-            recaptchaVerifier.render().then(function(widgetId) {
-              grecaptcha.reset(widgetId);
+        try {
+          // Показываем reCAPTCHA только после ввода номера
+          document.getElementById('recaptcha-container').classList.remove('hidden');
+          
+          // Инициализируем reCAPTCHA при первом запросе
+          if (!recaptchaVerifier) {
+            recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+              'size': 'normal',
+              'callback': (response) => {
+                console.log('reCAPTCHA verified successfully');
+              },
+              'expired-callback': () => {
+                console.log('reCAPTCHA expired');
+                showError('Время проверки reCAPTCHA истекло. Пожалуйста, попробуйте снова.');
+                document.getElementById('recaptcha-container').classList.add('hidden');
+              }
             });
-          })
-          .finally(() => setLoading('phoneSubmitBtn', false));
+            await recaptchaVerifier.render();
+          }
+
+          await phoneAuth.sendVerificationCode(phoneNumber);
+          document.getElementById('verificationCode').classList.remove('hidden');
+          submitBtn.querySelector('span').textContent = 'Подтвердить код';
+          document.getElementById('recaptcha-container').classList.add('hidden');
+        } catch (error) {
+          showError(getErrorMessage(error.code));
+          console.error(error);
+          // Сбрасываем reCAPTCHA при ошибке
+          if (recaptchaVerifier) {
+            recaptchaVerifier.clear();
+            recaptchaVerifier = null;
+          }
+          document.getElementById('recaptcha-container').classList.add('hidden');
+        } finally {
+          setLoading('phoneSubmitBtn', false);
+        }
       } else {
         const code = document.getElementById('code').value;
         if (!code) {
@@ -409,42 +425,24 @@
         }
 
         setLoading('phoneSubmitBtn', true);
-        confirmationResult.confirm(code)
-          .then((result) => {
-            // Проверяем, новый ли это пользователь
-            const isNewUser = result.additionalUserInfo.isNewUser;
-            if (isNewUser) {
-              // Сохраняем данные нового пользователя
-              return db.collection("users").doc(result.user.uid).set({
-                phone: document.getElementById('phoneNumber').value,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-              }).then(() => {
-                window.location.href = "role-selection.html";
-              });
+        
+        try {
+          const result = await phoneAuth.confirmCode(code);
+          const doc = await firebase.firestore().collection("users").doc(result.user.uid).get();
+          
+          if (doc.exists) {
+            if (!doc.data().role) {
+              window.location.href = "role-selection.html";
             } else {
-              // Обновляем время последнего входа
-              return db.collection("users").doc(result.user.uid).update({
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-              }).then(() => {
-                return db.collection("users").doc(result.user.uid).get();
-              });
+              window.location.href = doc.data().role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
             }
-          })
-          .then((doc) => {
-            if (doc && doc.exists) {
-              if (!doc.data().role) {
-                window.location.href = "role-selection.html";
-              } else {
-                window.location.href = doc.data().role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
-              }
-            }
-          })
-          .catch(error => {
-            showError(getErrorMessage(error.code));
-            console.error(error);
-          })
-          .finally(() => setLoading('phoneSubmitBtn', false));
+          }
+        } catch (error) {
+          showError(getErrorMessage(error.code));
+          console.error(error);
+        } finally {
+          setLoading('phoneSubmitBtn', false);
+        }
       }
     }
 

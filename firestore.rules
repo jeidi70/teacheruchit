@@ -1,101 +1,37 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Функции-помощники
+    // Функция для проверки аутентификации
     function isAuthenticated() {
       return request.auth != null;
     }
-    
+
+    // Функция для проверки владельца документа
     function isOwner(userId) {
       return request.auth.uid == userId;
-    }
-    
-    function isAdmin() {
-      return isAuthenticated() && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-    }
-    
-    function isTeacher() {
-      return isAuthenticated() && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
-    }
-    
-    function isStudent() {
-      return isAuthenticated() && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'student';
-    }
-    
-    function isValidUserData() {
-      let data = request.resource.data;
-      return data.keys().hasAll(['email', 'role', 'createdAt']) &&
-             data.email is string &&
-             data.role in ['student', 'teacher', 'admin'] &&
-             data.createdAt is timestamp;
     }
 
     // Правила для коллекции users
     match /users/{userId} {
-      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
-      allow create: if isAuthenticated() && isValidUserData();
-      allow update: if isAuthenticated() && isOwner(userId);
-      allow delete: if isAdmin();
+      // Разрешаем чтение только аутентифицированным пользователям
+      allow read: if isAuthenticated();
       
-      // Правила для подколлекции loginHistory
-      match /loginHistory/{logId} {
-        allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
-        allow create: if isAuthenticated() && isOwner(userId);
-        allow update, delete: if isAdmin();
-      }
+      // Разрешаем создание документа при регистрации
+      allow create: if isAuthenticated() 
+        && request.resource.data.keys().hasAll(['phoneNumber', 'createdAt', 'lastLogin'])
+        && request.resource.data.phoneNumber is string
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.lastLogin is timestamp;
       
-      // Правила для подколлекции progress (для учеников)
-      match /progress/{progressId} {
-        allow read: if isAuthenticated() && (isOwner(userId) || isTeacher() || isAdmin());
-        allow create, update: if isAuthenticated() && (isOwner(userId) || isTeacher() || isAdmin());
-        allow delete: if isAdmin();
-      }
+      // Разрешаем обновление только владельцу
+      allow update: if isOwner(userId)
+        && (!request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['phoneNumber', 'createdAt']));
     }
 
-    // Правила для коллекции materials
-    match /materials/{materialId} {
-      allow read: if isAuthenticated();
-      allow create, update: if isAuthenticated() && (isTeacher() || isAdmin());
-      allow delete: if isAdmin();
-    }
-
-    // Правила для коллекции assignments
-    match /assignments/{assignmentId} {
-      allow read: if isAuthenticated();
-      allow create, update: if isAuthenticated() && (isTeacher() || isAdmin());
-      allow delete: if isAdmin();
-    }
-
-    // Правила для коллекции submissions
-    match /submissions/{submissionId} {
-      allow read: if isAuthenticated() && (
-        isOwner(resource.data.userId) || 
-        isTeacher() || 
-        isAdmin()
-      );
-      allow create: if isAuthenticated() && isStudent();
-      allow update: if isAuthenticated() && (
-        isOwner(resource.data.userId) || 
-        isTeacher() || 
-        isAdmin()
-      );
-      allow delete: if isAdmin();
-    }
-
-    // Правила для коллекции emailTemplates
-    match /emailTemplates/{templateId} {
-      allow read: if isAuthenticated();
-      allow write: if isAdmin();
-    }
-
-    // Правила для коллекции emailLogs
-    match /emailLogs/{logId} {
-      allow read: if isAdmin();
-      allow create: if isAuthenticated();
-      allow update, delete: if isAdmin();
+    // Правила для других коллекций
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 } 

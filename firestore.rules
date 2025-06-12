@@ -13,20 +13,34 @@ service cloud.firestore {
 
     // Правила для коллекции users
     match /users/{userId} {
-      // Разрешаем чтение только аутентифицированным пользователям
+      allow read: if isAuthenticated() && isOwner(userId);
+      allow create: if isAuthenticated() && isOwner(userId);
+      allow update: if isAuthenticated() && isOwner(userId);
+      allow delete: if false; // Запрещаем удаление пользователей
+    }
+
+    // Правила для коллекции lessons
+    match /lessons/{lessonId} {
       allow read: if isAuthenticated();
-      
-      // Разрешаем создание документа при регистрации
-      allow create: if isAuthenticated() 
-        && request.resource.data.keys().hasAll(['phoneNumber', 'createdAt', 'lastLogin'])
-        && request.resource.data.phoneNumber is string
-        && request.resource.data.createdAt is timestamp
-        && request.resource.data.lastLogin is timestamp;
-      
-      // Разрешаем обновление только владельцу
-      allow update: if isOwner(userId)
-        && (!request.resource.data.diff(resource.data).affectedKeys()
-            .hasAny(['phoneNumber', 'createdAt']));
+      allow write: if isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+    }
+
+    // Правила для коллекции tests
+    match /tests/{testId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+    }
+
+    // Правила для коллекции results
+    match /results/{resultId} {
+      allow read: if isAuthenticated() && (
+        isOwner(resource.data.userId) || 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher'
+      );
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update, delete: if false;
     }
 
     // Правила для других коллекций

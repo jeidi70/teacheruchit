@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Выбор роли | TeacherUchit</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Конфигурация Firebase -->
+  <script src="firebase.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+    
+    body { 
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .role-card {
+      transition: all 0.3s ease;
+    }
+
+    .role-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .role-icon {
+      transition: all 0.3s ease;
+    }
+
+    .role-card:hover .role-icon {
+      transform: scale(1.1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="container max-w-4xl">
+    <!-- Логотип -->
+    <div class="text-center mb-12">
+      <img src="assets/logo.svg" alt="TeacherUchit" class="mx-auto w-32 h-32 mb-4">
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">Добро пожаловать в TeacherUchit!</h1>
+      <p class="text-xl text-gray-600">Выберите свою роль для продолжения</p>
+    </div>
+
+    <!-- Карточки ролей -->
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Карточка ученика -->
+      <div class="role-card glass-effect rounded-2xl p-8 cursor-pointer" onclick="setRole('student')">
+        <div class="text-center">
+          <div class="role-icon bg-blue-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-graduation-cap text-4xl text-blue-600"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">Ученик</h2>
+          <p class="text-gray-600 mb-6">Получите доступ к учебным материалам, тестам и заданиям. Отслеживайте свой прогресс и улучшайте знания.</p>
+          <button class="btn-primary text-white py-3 px-8 rounded-lg">
+            Выбрать роль ученика
+          </button>
+        </div>
+      </div>
+
+      <!-- Карточка учителя -->
+      <div class="role-card glass-effect rounded-2xl p-8 cursor-pointer" onclick="setRole('teacher')">
+        <div class="text-center">
+          <div class="role-icon bg-purple-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-chalkboard-teacher text-4xl text-purple-600"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">Учитель</h2>
+          <p class="text-gray-600 mb-6">Создавайте учебные материалы, управляйте заданиями и отслеживайте успеваемость учеников.</p>
+          <button class="btn-primary text-white py-3 px-8 rounded-lg">
+            Выбрать роль учителя
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Проверка авторизации
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        // Проверяем, не выбрана ли уже роль
+        db.collection("users").doc(user.uid).get()
+          .then(doc => {
+            if (doc.exists && doc.data().role) {
+              window.location.href = doc.data().role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+            }
+          })
+          .catch(error => {
+            console.error("Ошибка получения роли:", error);
+          });
+      }
+    });
+
+    // Функция установки роли
+    function setRole(role) {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      db.collection("users").doc(user.uid).set({ role }, { merge: true })
+        .then(() => {
+          window.location.href = role === 'student' ? 'student-dashboard.html' : 'teacher-dashboard.html';
+        })
+        .catch(error => {
+          console.error("Ошибка установки роли:", error);
+        });
+    }
+  </script>
+</body>
+</html> 

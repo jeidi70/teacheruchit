@@ -229,13 +229,26 @@
     </div>
 
     <!-- reCAPTCHA -->
-    <div id="recaptcha-container" class="hidden"></div>
+    <div id="recaptcha-container" class="mt-4"></div>
   </div>
 
   <script>
     // Глобальные переменные
     let confirmationResult = null;
     let isVerificationSent = false;
+    let recaptchaVerifier = null;
+
+    // Инициализация reCAPTCHA при загрузке страницы
+    window.onload = function() {
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'normal',
+        'callback': (response) => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+          console.log('reCAPTCHA verified');
+        }
+      });
+      recaptchaVerifier.render();
+    };
 
     // Функции для модальных окон
     function showPhoneModal() {
@@ -368,25 +381,24 @@
         }
 
         setLoading('phoneSubmitBtn', true);
-        if (!window.recaptchaVerifier) {
-          window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            size: 'invisible',
-            callback: () => {
-              // reCAPTCHA solved
-            }
-          });
-        }
-
-        auth.signInWithPhoneNumber('+7' + formattedPhone.slice(1), window.recaptchaVerifier)
+        
+        // Используем глобальную переменную recaptchaVerifier
+        auth.signInWithPhoneNumber('+7' + formattedPhone.slice(1), recaptchaVerifier)
           .then(result => {
             confirmationResult = result;
             isVerificationSent = true;
             document.getElementById('verificationCode').classList.remove('hidden');
             submitBtn.querySelector('span').textContent = 'Подтвердить код';
+            // Скрываем reCAPTCHA после успешной отправки кода
+            document.getElementById('recaptcha-container').style.display = 'none';
           })
           .catch(error => {
             showError(getErrorMessage(error.code));
             console.error(error);
+            // Сбрасываем reCAPTCHA при ошибке
+            recaptchaVerifier.render().then(function(widgetId) {
+              grecaptcha.reset(widgetId);
+            });
           })
           .finally(() => setLoading('phoneSubmitBtn', false));
       } else {

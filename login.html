@@ -20,62 +20,148 @@
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-    body { font-family: 'Roboto', sans-serif; }
+    body { 
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 400px;
+      width: 90%;
+      position: relative;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .history-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
   </style>
 </head>
-<body class="bg-gray-50">
+<body class="min-h-screen">
   <div class="container mx-auto px-4 py-10 max-w-md">
     <!-- Логотип -->
     <div class="text-center mb-8">
       <img src="logo-transparent.png" alt="TeacherUchit" class="mx-auto max-w-[200px] mb-4">
       <h1 class="text-2xl font-bold text-gray-800">TeacherUchit</h1>
-      <p class="text-gray-500">История и обществознание</p>
+      <p class="text-gray-600">Платформа для изучения Истории и Обществознания</p>
     </div>
 
     <!-- Кнопки входа -->
     <div class="space-y-4">
-      <button class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition"
+      <button class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition shadow-sm"
               onclick="signInWithGoogle()">
         <i class="fab fa-google text-red-500 text-xl"></i>
         <span>Войти через Google</span>
       </button>
 
-      <button class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition"
-              onclick="signInWithPhone()">
+      <button class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition shadow-sm"
+              onclick="showPhoneModal()">
         <i class="fas fa-phone text-green-500 text-xl"></i>
         <span>Войти через телефон</span>
       </button>
     </div>
 
     <!-- Форма регистрации/входа -->
-    <div class="mt-8 bg-white rounded-xl shadow-sm p-6">
+    <div class="mt-8 bg-white rounded-xl shadow-sm p-6 history-pattern">
       <h2 class="font-semibold text-lg mb-4">Вход или регистрация</h2>
       <div class="space-y-4">
+        <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span class="block sm:inline"></span>
+        </div>
         <input type="email" id="email" placeholder="Email" required 
                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
         <input type="password" id="password" placeholder="Пароль" required
                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
         <div class="flex gap-4">
-          <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg"
-                  onclick="signInWithEmail()">Войти</button>
-          <button class="w-full bg-amber-500 hover:bg-amber-600 text-white py-2 rounded-lg"
-                  onclick="signUpWithEmail()">Регистрация</button>
+          <button id="signInBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg flex items-center justify-center"
+                  onclick="signInWithEmail()">
+            <span>Войти</span>
+            <div class="hidden ml-2 spinner"></div>
+          </button>
+          <button id="signUpBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-white py-2 rounded-lg flex items-center justify-center"
+                  onclick="signUpWithEmail()">
+            <span>Регистрация</span>
+            <div class="hidden ml-2 spinner"></div>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Выбор роли -->
-    <div id="roleSelection" class="hidden mt-8 bg-white rounded-xl shadow-sm p-6 text-center">
-      <p class="font-medium mb-6">Выберите роль:</p>
-      <div class="space-y-3">
-        <button class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
-                onclick="setRole('student')">
-          <i class="fas fa-graduation-cap mr-2"></i>Ученик
-        </button>
-        <button class="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg"
-                onclick="setRole('teacher')">
-          <i class="fas fa-chalkboard-teacher mr-2"></i>Учитель
-        </button>
+    <!-- Модальное окно для телефона -->
+    <div id="phoneModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closePhoneModal()">&times;</span>
+        <h3 class="text-xl font-semibold mb-4">Вход по телефону</h3>
+        <div class="space-y-4">
+          <input type="tel" id="phoneNumber" placeholder="+7 (___) ___-__-__" required
+                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <div id="verificationCode" class="hidden space-y-4">
+            <input type="text" id="code" placeholder="Код из SMS" required
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <button id="phoneSubmitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg flex items-center justify-center"
+                  onclick="handlePhoneAuth()">
+            <span>Отправить код</span>
+            <div class="hidden ml-2 spinner"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно выбора роли -->
+    <div id="roleModal" class="modal">
+      <div class="modal-content">
+        <h3 class="text-xl font-semibold mb-4">Выберите роль</h3>
+        <div class="space-y-3">
+          <button class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg flex items-center justify-center"
+                  onclick="setRole('student')">
+            <i class="fas fa-graduation-cap mr-2"></i>Ученик
+          </button>
+          <button class="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center justify-center"
+                  onclick="setRole('teacher')">
+            <i class="fas fa-chalkboard-teacher mr-2"></i>Учитель
+          </button>
+        </div>
       </div>
     </div>
 
@@ -83,98 +169,190 @@
     <div id="recaptcha-container" class="hidden"></div>
   </div>
 
-  <!-- Логика Firebase -->
   <script>
-    // Глобальные функции
-    function signInWithGoogle() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then(() => handleRoleSelection())
-        .catch(error => {
-          alert(error.message);
-          console.error(error);
-        });
+    // Глобальные переменные
+    let confirmationResult = null;
+    let isVerificationSent = false;
+
+    // Функции для модальных окон
+    function showPhoneModal() {
+      document.getElementById('phoneModal').classList.add('active');
     }
 
-    function signInWithPhone() {
-      if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          size: 'invisible'
-        });
+    function closePhoneModal() {
+      document.getElementById('phoneModal').classList.remove('active');
+      document.getElementById('verificationCode').classList.add('hidden');
+      document.getElementById('phoneSubmitBtn').querySelector('span').textContent = 'Отправить код';
+      isVerificationSent = false;
+    }
+
+    function showRoleModal() {
+      document.getElementById('roleModal').classList.add('active');
+    }
+
+    function closeRoleModal() {
+      document.getElementById('roleModal').classList.remove('active');
+    }
+
+    // Функции для работы с ошибками
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.querySelector('span').textContent = message;
+      errorDiv.classList.remove('hidden');
+      setTimeout(() => errorDiv.classList.add('hidden'), 5000);
+    }
+
+    function setLoading(buttonId, isLoading) {
+      const button = document.getElementById(buttonId);
+      const spinner = button.querySelector('.spinner');
+      const text = button.querySelector('span');
+      
+      if (isLoading) {
+        button.disabled = true;
+        spinner.classList.remove('hidden');
+        text.classList.add('opacity-50');
+      } else {
+        button.disabled = false;
+        spinner.classList.add('hidden');
+        text.classList.remove('opacity-50');
       }
-      const phoneNumber = prompt("Введите номер телефона:");
-      auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-        .then(confirmationResult => {
-          window.confirmationResult = confirmationResult;
-          const code = prompt("Введите код из SMS:");
-          confirmationResult.confirm(code)
-            .then(() => handleRoleSelection());
-        })
+    }
+
+    // Функции аутентификации
+    function signInWithGoogle() {
+      setLoading('signInBtn', true);
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(() => showRoleModal())
         .catch(error => {
-          alert(error.message);
+          showError(error.message);
           console.error(error);
-        });
+        })
+        .finally(() => setLoading('signInBtn', false));
+    }
+
+    function handlePhoneAuth() {
+      const phoneNumber = document.getElementById('phoneNumber').value;
+      const submitBtn = document.getElementById('phoneSubmitBtn');
+      
+      if (!isVerificationSent) {
+        if (!phoneNumber) {
+          showError('Введите номер телефона');
+          return;
+        }
+
+        setLoading('phoneSubmitBtn', true);
+        if (!window.recaptchaVerifier) {
+          window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            size: 'invisible'
+          });
+        }
+
+        auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+          .then(result => {
+            confirmationResult = result;
+            isVerificationSent = true;
+            document.getElementById('verificationCode').classList.remove('hidden');
+            submitBtn.querySelector('span').textContent = 'Подтвердить код';
+          })
+          .catch(error => {
+            showError(error.message);
+            console.error(error);
+          })
+          .finally(() => setLoading('phoneSubmitBtn', false));
+      } else {
+        const code = document.getElementById('code').value;
+        if (!code) {
+          showError('Введите код из SMS');
+          return;
+        }
+
+        setLoading('phoneSubmitBtn', true);
+        confirmationResult.confirm(code)
+          .then(() => {
+            closePhoneModal();
+            showRoleModal();
+          })
+          .catch(error => {
+            showError(error.message);
+            console.error(error);
+          })
+          .finally(() => setLoading('phoneSubmitBtn', false));
+      }
     }
 
     function signInWithEmail() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
+      
+      if (!email || !password) {
+        showError('Пожалуйста, заполните все поля');
+        return;
+      }
+      
+      setLoading('signInBtn', true);
       auth.signInWithEmailAndPassword(email, password)
-        .then(() => handleRoleSelection())
+        .then(() => showRoleModal())
         .catch(error => {
-          alert(error.message);
+          showError(error.message);
           console.error(error);
-        });
+        })
+        .finally(() => setLoading('signInBtn', false));
     }
 
     function signUpWithEmail() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
+      
+      if (!email || !password) {
+        showError('Пожалуйста, заполните все поля');
+        return;
+      }
+      
+      setLoading('signUpBtn', true);
       auth.createUserWithEmailAndPassword(email, password)
         .then(() => {
-          document.getElementById('roleSelection').classList.remove('hidden');
+          showRoleModal();
         })
         .catch(error => {
-          alert(error.message);
+          showError(error.message);
           console.error(error);
-        });
+        })
+        .finally(() => setLoading('signUpBtn', false));
     }
 
     function setRole(role) {
       const user = auth.currentUser;
       if (!user) return;
 
-      db.collection("users").doc(user.uid).set({ role }, { merge: true }) // merge: true - обновляет существующий документ
+      setLoading('signInBtn', true);
+      db.collection("users").doc(user.uid).set({ role }, { merge: true })
         .then(() => {
-          alert(`Роль "${role}" установлена!`);
+          closeRoleModal();
           window.location.href = "index.html";
         })
         .catch(error => {
-          alert(error.message);
+          showError(error.message);
           console.error(error);
-        });
-    }
-
-    function handleRoleSelection() {
-      const user = auth.currentUser;
-      if (!user) return;
-
-      db.collection("users").doc(user.uid).get()
-        .then(doc => {
-          if (!doc.exists || !doc.data().role) {
-            document.getElementById('roleSelection').classList.remove('hidden');
-          } else {
-            window.location.href = "index.html";
-          }
         })
-        .catch(error => {
-          console.error("Ошибка получения роли:", error);
-        });
+        .finally(() => setLoading('signInBtn', false));
     }
 
     // Прослушиватель состояния аутентификации
     auth.onAuthStateChanged(user => {
-      if (user) handleRoleSelection();
+      if (user) {
+        db.collection("users").doc(user.uid).get()
+          .then(doc => {
+            if (!doc.exists || !doc.data().role) {
+              showRoleModal();
+            } else {
+              window.location.href = "index.html";
+            }
+          })
+          .catch(error => {
+            console.error("Ошибка получения роли:", error);
+          });
+      }
     });
   </script>
 </body>

@@ -19,65 +19,309 @@
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-    body { font-family: 'Roboto', sans-serif; }
+    body { 
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid #f3f3f3;
+      border-radius: 50%;
+      border-top-color: #3498db;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .history-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #e2e8f0;
+    }
+
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: -4px;
+      top: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #4f46e5;
+    }
   </style>
 </head>
-<body class="bg-gray-50">
-  <!-- Боковая панель -->
-  <aside class="hidden md:block w-64 bg-white shadow-md z-10">
-    <div class="p-4 border-b">
-      <div class="flex items-center">
-        <img src="logo-transparent.png" alt="Logo" class="max-w-10 mr-3">
-        <div>
-          <h1 class="text-xl font-bold text-gray-800">ТичерУчит</h1>
-          <p class="text-xs text-gray-500">История и обществознание</p>
-        </div>
-      </div>
-    </div>
-    <div class="px-4 py-3 border-t">
-      <h3 class="font-medium mb-2 text-gray-700">Статистика</h3>
-      <div class="space-y-3">
-        <div class="flex items-center p-2 bg-yellow-100 rounded-lg">
-          <i class="fas fa-star text-yellow-500 mr-2"></i>
+<body class="min-h-screen">
+  <div class="flex h-screen">
+    <!-- Боковая панель -->
+    <aside class="hidden md:block w-64 bg-white shadow-md">
+      <div class="p-4 border-b">
+        <div class="flex items-center">
+          <img src="logo-transparent.png" alt="Logo" class="max-w-10 mr-3">
           <div>
-            <p class="text-sm font-medium">Звезды</p>
-            <p class="text-2xl font-bold">0</p>
-          </div>
-        </div>
-        <div class="flex items-center p-2 bg-purple-100 rounded-lg">
-          <i class="fas fa-chart-line text-purple-500 mr-2"></i>
-          <div>
-            <p class="text-sm font-medium">Опыт</p>
-            <p class="text-2xl font-bold">0</p>
+            <h1 class="text-xl font-bold text-gray-800">ТичерУчит</h1>
+            <p class="text-xs text-gray-500">История и обществознание</p>
           </div>
         </div>
       </div>
-      <button onclick="logout()" class="w-full py-2 mt-4 bg-red-600 text-white rounded-lg hover:bg-red-700">
-        <i class="fas fa-sign-out-alt mr-2"></i> Выйти
-      </button>
-    </div>
-  </aside>
+      
+      <!-- Навигация -->
+      <nav class="p-4">
+        <ul class="space-y-2">
+          <li>
+            <a href="#" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-home w-6"></i>
+              <span>Главная</span>
+            </a>
+          </li>
+          <li id="teacherOnly" class="hidden">
+            <a href="#" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-book w-6"></i>
+              <span>Мои курсы</span>
+            </a>
+          </li>
+          <li id="studentOnly" class="hidden">
+            <a href="#" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-graduation-cap w-6"></i>
+              <span>Мои уроки</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-calendar-alt w-6"></i>
+              <span>Расписание</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-trophy w-6"></i>
+              <span>Достижения</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-cog w-6"></i>
+              <span>Настройки</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
 
-  <!-- Основное содержимое -->
-  <main class="flex-1 p-4 md:p-6">
-    <p id="userRole" class="text-lg font-semibold text-gray-800 mb-4">Загрузка...</p>
-    
-    <!-- Контент главной страницы -->
-    <div class="bg-white rounded-xl shadow-sm p-6">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">Добро пожаловать!</h2>
-      <p class="text-gray-600">Выберите раздел слева для начала работы.</p>
-    </div>
-  </main>
+      <!-- Статистика -->
+      <div class="px-4 py-3 border-t">
+        <h3 class="font-medium mb-2 text-gray-700">Статистика</h3>
+        <div class="space-y-3">
+          <div class="flex items-center p-2 bg-yellow-100 rounded-lg">
+            <i class="fas fa-star text-yellow-500 mr-2"></i>
+            <div>
+              <p class="text-sm font-medium">Звезды</p>
+              <p class="text-2xl font-bold">0</p>
+            </div>
+          </div>
+          <div class="flex items-center p-2 bg-purple-100 rounded-lg">
+            <i class="fas fa-chart-line text-purple-500 mr-2"></i>
+            <div>
+              <p class="text-sm font-medium">Опыт</p>
+              <p class="text-2xl font-bold">0</p>
+            </div>
+          </div>
+        </div>
+        <button onclick="logout()" class="w-full py-2 mt-4 bg-red-600 text-white rounded-lg hover:bg-red-700">
+          <i class="fas fa-sign-out-alt mr-2"></i> Выйти
+        </button>
+      </div>
+    </aside>
+
+    <!-- Основное содержимое -->
+    <main class="flex-1 p-4 md:p-6 overflow-auto">
+      <div class="max-w-4xl mx-auto">
+        <!-- Заголовок и информация о пользователе -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800">Добро пожаловать!</h1>
+            <p id="userInfo" class="text-gray-600">Загрузка...</p>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div id="loadingSpinner" class="spinner"></div>
+          </div>
+        </div>
+
+        <!-- Контент для учителя -->
+        <div id="teacherContent" class="hidden space-y-6">
+          <!-- Активные курсы -->
+          <div class="bg-white rounded-xl shadow-sm p-6 history-pattern">
+            <h2 class="text-xl font-semibold mb-4">Мои курсы</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="border rounded-lg p-4 hover:shadow-md transition">
+                <div class="flex items-center mb-3">
+                  <i class="fas fa-landmark text-indigo-600 text-xl mr-3"></i>
+                  <h3 class="font-medium">История России</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">Курс по истории России с древнейших времен до наших дней</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-gray-500">12 уроков</span>
+                  <button class="text-indigo-600 hover:text-indigo-700">Управлять курсом →</button>
+                </div>
+              </div>
+              <div class="border rounded-lg p-4 hover:shadow-md transition">
+                <div class="flex items-center mb-3">
+                  <i class="fas fa-balance-scale text-green-600 text-xl mr-3"></i>
+                  <h3 class="font-medium">Обществознание</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">Основы全社会знания для школьников</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-gray-500">8 уроков</span>
+                  <button class="text-indigo-600 hover:text-indigo-700">Управлять курсом →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Последние активности -->
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4">Последние активности</h2>
+            <div class="space-y-4">
+              <div class="timeline-item">
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <p class="text-sm text-gray-600">Добавлен новый урок "Революция 1917 года"</p>
+                  <p class="text-xs text-gray-500 mt-1">2 часа назад</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <p class="text-sm text-gray-600">Обновлен курс "Обществознание"</p>
+                  <p class="text-xs text-gray-500 mt-1">5 часов назад</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Контент для ученика -->
+        <div id="studentContent" class="hidden space-y-6">
+          <!-- Текущие уроки -->
+          <div class="bg-white rounded-xl shadow-sm p-6 history-pattern">
+            <h2 class="text-xl font-semibold mb-4">Мои уроки</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="border rounded-lg p-4 hover:shadow-md transition">
+                <div class="flex items-center mb-3">
+                  <i class="fas fa-landmark text-indigo-600 text-xl mr-3"></i>
+                  <h3 class="font-medium">История России</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">Прогресс: 0%</p>
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                  <div class="bg-indigo-600 h-2 rounded-full" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-gray-500">Следующий урок: Древняя Русь</span>
+                  <button class="text-indigo-600 hover:text-indigo-700">Продолжить →</button>
+                </div>
+              </div>
+              <div class="border rounded-lg p-4 hover:shadow-md transition">
+                <div class="flex items-center mb-3">
+                  <i class="fas fa-balance-scale text-green-600 text-xl mr-3"></i>
+                  <h3 class="font-medium">Обществознание</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">Прогресс: 0%</p>
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                  <div class="bg-indigo-600 h-2 rounded-full" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-gray-500">Следующий урок: Основы права</span>
+                  <button class="text-indigo-600 hover:text-indigo-700">Продолжить →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Достижения -->
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4">Достижения</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="text-center p-4">
+                <div class="w-16 h-16 mx-auto mb-2 bg-gray-100 rounded-full flex items-center justify-center">
+                  <i class="fas fa-book text-2xl text-gray-400"></i>
+                </div>
+                <p class="text-sm font-medium">Первый урок</p>
+                <p class="text-xs text-gray-500">Начните обучение</p>
+              </div>
+              <div class="text-center p-4">
+                <div class="w-16 h-16 mx-auto mb-2 bg-gray-100 rounded-full flex items-center justify-center">
+                  <i class="fas fa-star text-2xl text-gray-400"></i>
+                </div>
+                <p class="text-sm font-medium">Отличник</p>
+                <p class="text-xs text-gray-500">Получите 5 звезд</p>
+              </div>
+              <div class="text-center p-4">
+                <div class="w-16 h-16 mx-auto mb-2 bg-gray-100 rounded-full flex items-center justify-center">
+                  <i class="fas fa-clock text-2xl text-gray-400"></i>
+                </div>
+                <p class="text-sm font-medium">Регулярность</p>
+                <p class="text-xs text-gray-500">Занимайтесь 7 дней подряд</p>
+              </div>
+              <div class="text-center p-4">
+                <div class="w-16 h-16 mx-auto mb-2 bg-gray-100 rounded-full flex items-center justify-center">
+                  <i class="fas fa-trophy text-2xl text-gray-400"></i>
+                </div>
+                <p class="text-sm font-medium">Мастер</p>
+                <p class="text-xs text-gray-500">Завершите все курсы</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 
   <script>
     // Проверка аутентификации
     auth.onAuthStateChanged(user => {
-      if (!user) window.location.href = "login.html";
-      else {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        loadingSpinner.classList.remove('hidden');
+        
         db.collection("users").doc(user.uid).get()
           .then(doc => {
-            const role = doc.exists ? doc.data().role : "Неизвестен";
-            document.getElementById('userRole').textContent = `Роль: ${role}`;
+            const userData = doc.data();
+            const role = userData ? userData.role : "Неизвестен";
+            
+            // Обновляем информацию о пользователе
+            document.getElementById('userInfo').textContent = `Роль: ${role}`;
+            
+            // Показываем соответствующий контент
+            if (role === 'teacher') {
+              document.getElementById('teacherContent').classList.remove('hidden');
+              document.getElementById('teacherOnly').classList.remove('hidden');
+            } else if (role === 'student') {
+              document.getElementById('studentContent').classList.remove('hidden');
+              document.getElementById('studentOnly').classList.remove('hidden');
+            }
+          })
+          .catch(error => {
+            console.error("Ошибка получения данных пользователя:", error);
+            document.getElementById('userInfo').textContent = "Ошибка загрузки данных";
+          })
+          .finally(() => {
+            loadingSpinner.classList.add('hidden');
           });
       }
     });

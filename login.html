@@ -335,6 +335,21 @@
         .finally(() => setLoading('signInBtn', false));
     }
 
+    // Маска для телефона
+    document.getElementById('phoneNumber').addEventListener('input', function(e) {
+      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+      if (!x) return;
+      
+      let formatted = '';
+      if (x[1]) formatted += '+7';
+      if (x[2]) formatted += ' (' + x[2];
+      if (x[3]) formatted += ') ' + x[3];
+      if (x[4]) formatted += '-' + x[4];
+      if (x[5]) formatted += '-' + x[5];
+      
+      e.target.value = formatted;
+    });
+
     function handlePhoneAuth() {
       const phoneNumber = document.getElementById('phoneNumber').value;
       const submitBtn = document.getElementById('phoneSubmitBtn');
@@ -345,8 +360,10 @@
           return;
         }
 
-        if (!validatePhone(phoneNumber)) {
-          showError('Введите корректный номер телефона в формате +7 (XXX) XXX-XX-XX');
+        // Форматируем номер телефона для Firebase
+        const formattedPhone = phoneNumber.replace(/\D/g, '');
+        if (formattedPhone.length !== 11) {
+          showError('Введите корректный номер телефона');
           return;
         }
 
@@ -360,7 +377,7 @@
           });
         }
 
-        auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+        auth.signInWithPhoneNumber('+7' + formattedPhone.slice(1), window.recaptchaVerifier)
           .then(result => {
             confirmationResult = result;
             isVerificationSent = true;
@@ -385,10 +402,21 @@
             // Проверяем, новый ли это пользователь
             const isNewUser = result.additionalUserInfo.isNewUser;
             if (isNewUser) {
-              window.location.href = "role-selection.html";
+              // Сохраняем данные нового пользователя
+              return db.collection("users").doc(result.user.uid).set({
+                phone: document.getElementById('phoneNumber').value,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+              }).then(() => {
+                window.location.href = "role-selection.html";
+              });
             } else {
-              // Для существующего пользователя проверяем роль
-              return db.collection("users").doc(result.user.uid).get();
+              // Обновляем время последнего входа
+              return db.collection("users").doc(result.user.uid).update({
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+              }).then(() => {
+                return db.collection("users").doc(result.user.uid).get();
+              });
             }
           })
           .then((doc) => {
@@ -530,12 +558,6 @@
       };
       return errorMessages[errorCode] || 'Произошла ошибка. Попробуйте еще раз';
     }
-
-    // Маска для телефона
-    document.getElementById('phoneNumber').addEventListener('input', function(e) {
-      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
-      e.target.value = !x[2] ? x[1] : '+7 (' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '') + (x[4] ? '-' + x[4] : '');
-    });
 
     function setRole(role) {
       const user = auth.currentUser;

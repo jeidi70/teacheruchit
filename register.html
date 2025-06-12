@@ -114,6 +114,38 @@
           </div>
         </div>
 
+        <!-- Образовательная информация -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Тип образовательного учреждения *</label>
+            <select id="schoolType" required
+                    class="w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="">Выберите тип</option>
+              <option value="school">Школа</option>
+              <option value="gymnasium">Гимназия</option>
+              <option value="lyceum">Лицей</option>
+              <option value="college">Колледж</option>
+              <option value="university">ВУЗ</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Название учреждения *</label>
+            <input type="text" id="schoolName" required
+                   class="w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Класс/Курс *</label>
+            <input type="text" id="grade" required
+                   class="w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                   placeholder="Например: 9А или 1 курс">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Город *</label>
+            <input type="text" id="city" required
+                   class="w-full px-4 py-3 input-field border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+
         <!-- Контактная информация -->
         <div class="space-y-4">
           <div>
@@ -268,9 +300,14 @@
       const confirmPassword = document.getElementById('confirmPassword').value;
       const birthDate = document.getElementById('birthDate').value;
       const privacyConsent = document.getElementById('privacyConsent').checked;
+      const schoolType = document.getElementById('schoolType').value;
+      const schoolName = document.getElementById('schoolName').value;
+      const grade = document.getElementById('grade').value;
+      const city = document.getElementById('city').value;
 
       // Проверка обязательных полей
-      if (!firstName || !lastName || !email || !phone || !password || !confirmPassword || !birthDate || !privacyConsent) {
+      if (!firstName || !lastName || !email || !phone || !password || !confirmPassword || 
+          !birthDate || !privacyConsent || !schoolType || !schoolName || !grade || !city) {
         showError('Пожалуйста, заполните все обязательные поля');
         return false;
       }
@@ -283,9 +320,9 @@
       }
 
       // Проверка телефона
-      const phoneRegex = /^\+7\s?\(?[0-9]{3}\)?\s?[0-9]{3}-?[0-9]{2}-?[0-9]{2}$/;
-      if (!phoneRegex.test(phone)) {
-        showError('Введите корректный номер телефона в формате +7 (XXX) XXX-XX-XX');
+      const formattedPhone = phone.replace(/\D/g, '');
+      if (formattedPhone.length !== 11) {
+        showError('Введите корректный номер телефона');
         return false;
       }
 
@@ -345,45 +382,77 @@
       const buttonText = submitButton.querySelector('span');
 
       try {
-        // Показываем спиннер
         submitButton.disabled = true;
         spinner.classList.remove('hidden');
         buttonText.classList.add('opacity-50');
 
-        // Создаем пользователя
+        const phoneNumber = document.getElementById('phone').value;
+        const formattedPhone = phoneNumber.replace(/\D/g, '');
+        if (formattedPhone.length !== 11) {
+          throw new Error('Неверный формат номера телефона');
+        }
+
         const userCredential = await auth.createUserWithEmailAndPassword(
           document.getElementById('email').value,
           document.getElementById('password').value
         );
 
-        // Отправляем email для подтверждения
         await userCredential.user.sendEmailVerification();
 
-        // Сохраняем дополнительные данные пользователя
-        await db.collection("users").doc(userCredential.user.uid).set({
+        const userData = {
+          // Основная информация
           firstName: document.getElementById('firstName').value,
           lastName: document.getElementById('lastName').value,
-          middleName: document.getElementById('middleName').value,
+          middleName: document.getElementById('middleName').value || null,
           birthDate: document.getElementById('birthDate').value,
-          phone: document.getElementById('phone').value,
+          
+          // Образовательная информация
+          schoolType: document.getElementById('schoolType').value,
+          schoolName: document.getElementById('schoolName').value,
+          grade: document.getElementById('grade').value,
+          city: document.getElementById('city').value,
+          
+          // Контактная информация
+          phone: phoneNumber,
           email: document.getElementById('email').value,
+          
+          // Настройки и метаданные
           marketingConsent: document.getElementById('marketingConsent').checked,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          privacyConsentDate: firebase.firestore.FieldValue.serverTimestamp()
-        });
+          privacyConsentDate: firebase.firestore.FieldValue.serverTimestamp(),
+          emailVerified: false,
+          lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+          status: 'active',
+          
+          // Дополнительные поля
+          role: null, // Будет установлено позже
+          profileCompleted: true,
+          registrationSource: 'web',
+          lastActivity: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        await db.collection("users").doc(userCredential.user.uid).set(userData);
+
+        // Создаем подколлекцию для истории входов
+        await db.collection("users").doc(userCredential.user.uid)
+          .collection("loginHistory").add({
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            method: 'email',
+            ip: await getClientIP(),
+            userAgent: navigator.userAgent,
+            success: true
+          });
 
         showSuccess('Регистрация успешна! Пожалуйста, проверьте вашу почту для подтверждения email.');
         
-        // Перенаправляем на страницу входа через 3 секунды
         setTimeout(() => {
           window.location.href = 'login.html';
         }, 3000);
 
       } catch (error) {
-        showError(getErrorMessage(error.code));
+        showError(getErrorMessage(error.code) || error.message);
         console.error(error);
       } finally {
-        // Скрываем спиннер
         submitButton.disabled = false;
         spinner.classList.add('hidden');
         buttonText.classList.remove('opacity-50');
@@ -392,9 +461,30 @@
 
     // Маска для телефона
     document.getElementById('phone').addEventListener('input', function(e) {
-      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
-      e.target.value = !x[2] ? x[1] : '+7 (' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '') + (x[4] ? '-' + x[4] : '');
+      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+      if (!x) return;
+      
+      let formatted = '';
+      if (x[1]) formatted += '+7';
+      if (x[2]) formatted += ' (' + x[2];
+      if (x[3]) formatted += ') ' + x[3];
+      if (x[4]) formatted += '-' + x[4];
+      if (x[5]) formatted += '-' + x[5];
+      
+      e.target.value = formatted;
     });
+
+    // Функция для получения IP-адреса клиента
+    async function getClientIP() {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+      } catch (error) {
+        console.error('Ошибка при получении IP:', error);
+        return 'unknown';
+      }
+    }
 
     // Функция для получения понятных сообщений об ошибках
     function getErrorMessage(errorCode) {

@@ -14,25 +14,33 @@
   <meta property="og:url" content="https://teacheruchit.firebaseapp.com">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- CSS -->
   <style>
     :root {
-      --primary-color: #667eea;
-      --primary-dark: #5a67d8;
-      --secondary-color: #764ba2;
-      --accent-color: #f093fb;
-      --text-dark: #2d3748;
-      --text-light: #718096;
-      --background-light: #f7fafc;
-      --white: #ffffff;
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary-color: #0ea5e9;
+      --accent-color: #06b6d4;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --text-muted: #94a3b8;
+      --background-light: #f8fafc;
+      --background-white: #ffffff;
       --border-color: #e2e8f0;
-      --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --gradient-primary: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+      --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
     }
 
     * {
@@ -42,15 +50,74 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
       line-height: 1.6;
       color: var(--text-dark);
       overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* Custom Logo */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: var(--shadow);
+    }
+
+    .logo-icon::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 3px;
+      background: white;
+      border-radius: 2px;
+      top: 12px;
+      left: 10px;
+    }
+
+    .logo-icon::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 1px;
+      bottom: 12px;
+      left: 12px;
+    }
+
+    .logo-icon .logo-dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      top: 18px;
+      right: 8px;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.5px;
     }
 
     /* Header */
     .header {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      background: var(--gradient-primary);
       color: white;
       padding: 1rem 0;
       position: fixed;
@@ -59,12 +126,13 @@
       z-index: 1000;
       backdrop-filter: blur(10px);
       transition: all 0.3s ease;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .header.scrolled {
-      background: rgba(102, 126, 234, 0.95);
-      backdrop-filter: blur(15px);
-      box-shadow: var(--shadow);
+      background: rgba(37, 99, 235, 0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-lg);
     }
 
     .nav {
@@ -74,16 +142,6 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 2rem;
-    }
-
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-      text-decoration: none;
-      color: white;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
 
     .nav-links {
@@ -97,11 +155,25 @@
       color: white;
       text-decoration: none;
       font-weight: 500;
-      transition: opacity 0.3s ease;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      padding: 0.5rem 0;
+      position: relative;
     }
 
-    .nav-links a:hover {
-      opacity: 0.8;
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: white;
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
     }
 
     .btn {
@@ -114,35 +186,39 @@
       transition: all 0.3s ease;
       border: none;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.95rem;
+      font-family: inherit;
     }
 
     .btn-primary {
       background: white;
       color: var(--primary-color);
+      box-shadow: var(--shadow);
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-lg);
+      background: #f8fafc;
     }
 
     .btn-secondary {
       background: transparent;
       color: white;
-      border: 2px solid white;
+      border: 2px solid rgba(255, 255, 255, 0.8);
     }
 
     .btn-secondary:hover {
       background: white;
       color: var(--primary-color);
+      border-color: white;
     }
 
     /* Hero Section */
     .hero {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      background: var(--gradient-primary);
       color: white;
-      padding: 8rem 2rem 4rem;
+      padding: 8rem 2rem 6rem;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -155,7 +231,8 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
       z-index: 1;
     }
 
@@ -168,18 +245,21 @@
 
     .hero h1 {
       font-size: 3.5rem;
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 1.5rem;
-      line-height: 1.2;
+      line-height: 1.1;
+      letter-spacing: -1px;
     }
 
-    .hero p {
+    .hero .subtitle {
       font-size: 1.25rem;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
       opacity: 0.9;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      font-weight: 400;
+      line-height: 1.6;
     }
 
     .hero-buttons {
@@ -191,7 +271,7 @@
 
     /* Features Section */
     .features {
-      padding: 5rem 2rem;
+      padding: 6rem 2rem;
       background: var(--background-light);
     }
 
@@ -202,7 +282,7 @@
 
     .section-title {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 4rem;
     }
 
     .section-title h2 {
@@ -210,6 +290,7 @@
       font-weight: 700;
       margin-bottom: 1rem;
       color: var(--text-dark);
+      letter-spacing: -0.5px;
     }
 
     .section-title p {
@@ -221,34 +302,52 @@
 
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 2rem;
     }
 
     .feature-card {
       background: white;
-      padding: 2rem;
-      border-radius: 12px;
+      padding: 2.5rem;
+      border-radius: 16px;
       box-shadow: var(--shadow);
-      text-align: center;
-      transition: transform 0.3s ease;
+      transition: all 0.3s ease;
+      border: 1px solid var(--border-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-primary);
     }
 
     .feature-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
     }
 
     .feature-icon {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      background: var(--gradient-primary);
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1rem;
-      font-size: 1.5rem;
-      color: white;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .feature-icon svg {
+      width: 32px;
+      height: 32px;
+      fill: white;
     }
 
     .feature-card h3 {
@@ -265,15 +364,15 @@
 
     /* How it works */
     .how-it-works {
-      padding: 5rem 2rem;
+      padding: 6rem 2rem;
       background: white;
     }
 
     .steps {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
+      gap: 3rem;
+      margin-top: 4rem;
     }
 
     .step {
@@ -282,48 +381,68 @@
     }
 
     .step-number {
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      width: 60px;
+      height: 60px;
+      background: var(--gradient-primary);
       color: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 1.25rem;
-      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+      margin: 0 auto 1.5rem;
+      box-shadow: var(--shadow);
     }
 
     .step h3 {
-      font-size: 1.125rem;
+      font-size: 1.25rem;
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
       color: var(--text-dark);
     }
 
     .step p {
       color: var(--text-light);
-      font-size: 0.875rem;
+      line-height: 1.6;
     }
 
     /* CTA Section */
     .cta {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      background: var(--gradient-primary);
       color: white;
-      padding: 4rem 2rem;
+      padding: 5rem 2rem;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      z-index: 1;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 2;
     }
 
     .cta h2 {
       font-size: 2.5rem;
       font-weight: 700;
       margin-bottom: 1rem;
+      letter-spacing: -0.5px;
     }
 
     .cta p {
       font-size: 1.125rem;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
       opacity: 0.9;
     }
 
@@ -331,7 +450,7 @@
     .footer {
       background: var(--text-dark);
       color: white;
-      padding: 3rem 2rem 1rem;
+      padding: 4rem 2rem 2rem;
     }
 
     .footer-content {
@@ -345,14 +464,15 @@
     .footer-section h3 {
       font-size: 1.125rem;
       font-weight: 600;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .footer-section p, .footer-section a {
-      color: #a0aec0;
+      color: var(--text-muted);
       text-decoration: none;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
       display: block;
+      transition: color 0.3s ease;
     }
 
     .footer-section a:hover {
@@ -360,17 +480,31 @@
     }
 
     .footer-bottom {
-      margin-top: 2rem;
+      margin-top: 3rem;
       padding-top: 2rem;
-      border-top: 1px solid #4a5568;
+      border-top: 1px solid #374151;
       text-align: center;
-      color: #a0aec0;
+      color: var(--text-muted);
+    }
+
+    /* Mobile menu */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
     }
 
     /* Responsive */
     @media (max-width: 768px) {
       .nav-links {
         display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
       }
 
       .hero h1 {
@@ -389,6 +523,15 @@
       .cta h2 {
         font-size: 2rem;
       }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
     }
 
     /* Animations */
@@ -404,14 +547,21 @@
     }
 
     .fade-in-up {
-      animation: fadeInUp 0.6s ease-out;
+      animation: fadeInUp 0.8s ease-out;
     }
 
     /* Loading spinner */
     .loading {
       display: none;
-      text-align: center;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
       padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-xl);
+      z-index: 9999;
     }
 
     .spinner {
@@ -434,23 +584,27 @@
   <!-- Header -->
   <header class="header" id="header">
     <nav class="nav">
-      <a href="/" class="logo">
-        📚 TeacherUchit
-      </a>
+      <div class="logo-container">
+        <div class="logo-icon">
+          <div class="logo-dot"></div>
+        </div>
+        <span class="logo-text">TeacherUchit</span>
+      </div>
       <ul class="nav-links">
         <li><a href="#features">Возможности</a></li>
-        <li><a href="#how-it-works">Как это работает</a></li>
+        <li><a href="#how-it-works">Как работает</a></li>
         <li><a href="/public/login.html" class="btn btn-secondary">Войти</a></li>
         <li><a href="/public/register.html" class="btn btn-primary">Регистрация</a></li>
       </ul>
+      <button class="mobile-menu-btn">☰</button>
     </nav>
   </header>
 
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content fade-in-up">
-      <h1>Образование нового поколения</h1>
-      <p>TeacherUchit — современная платформа для эффективного взаимодействия учителей и учеников. Создавайте интерактивные уроки, проводите тесты и отслеживайте прогресс в реальном времени.</p>
+      <h1>Образование будущего</h1>
+      <p class="subtitle">Революционная платформа для современного образования. Создавайте интерактивные уроки, проводите тестирование и отслеживайте прогресс учеников в режиме реального времени.</p>
       <div class="hero-buttons">
         <a href="/public/register.html" class="btn btn-primary">Начать бесплатно</a>
         <a href="#features" class="btn btn-secondary">Узнать больше</a>
@@ -462,39 +616,63 @@
   <section class="features" id="features">
     <div class="container">
       <div class="section-title">
-        <h2>Возможности платформы</h2>
-        <p>Мы создали комплексное решение для современного образования</p>
+        <h2>Мощные возможности</h2>
+        <p>Комплексное решение для современного образовательного процесса</p>
       </div>
       <div class="features-grid">
         <div class="feature-card fade-in-up">
-          <div class="feature-icon">👥</div>
-          <h3>Управление классами</h3>
-          <p>Легко создавайте классы, добавляйте учеников и управляйте доступом к материалам</p>
-        </div>
-        <div class="feature-card fade-in-up">
-          <div class="feature-icon">📖</div>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2L13.09 8.26L19 9L13.09 9.74L12 16L10.91 9.74L5 9L10.91 8.26L12 2Z"/>
+            </svg>
+          </div>
           <h3>Интерактивные уроки</h3>
-          <p>Создавайте увлекательные уроки с мультимедийным контентом и интерактивными элементами</p>
+          <p>Создавайте увлекательные мультимедийные уроки с интерактивными элементами, видео и анимациями для максимального вовлечения учеников.</p>
         </div>
         <div class="feature-card fade-in-up">
-          <div class="feature-icon">✅</div>
-          <h3>Система тестирования</h3>
-          <p>Разрабатывайте тесты с автоматической проверкой и мгновенной обратной связью</p>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"/>
+            </svg>
+          </div>
+          <h3>Умное тестирование</h3>
+          <p>Автоматизированная система тестирования с мгновенной обратной связью и детальной аналитикой результатов.</p>
         </div>
         <div class="feature-card fade-in-up">
-          <div class="feature-icon">📊</div>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 13H11V3H3V13ZM3 21H11V15H3V21ZM13 21H21V11H13V21ZM13 3V9H21V3H13Z"/>
+            </svg>
+          </div>
           <h3>Аналитика прогресса</h3>
-          <p>Отслеживайте успехи учеников с помощью детальной аналитики и отчетов</p>
+          <p>Детальные отчеты и визуализация данных об успеваемости с персонализированными рекомендациями.</p>
         </div>
         <div class="feature-card fade-in-up">
-          <div class="feature-icon">📱</div>
-          <h3>Мобильная версия</h3>
-          <p>Полнофункциональный доступ с любого устройства — компьютер, планшет или смартфон</p>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M17 3H7C5.9 3 5 3.9 5 5V19L12 16L19 19V5C19 3.9 18.1 3 17 3Z"/>
+            </svg>
+          </div>
+          <h3>Управление классами</h3>
+          <p>Эффективное управление учебными группами с инструментами для коммуникации и организации учебного процесса.</p>
         </div>
         <div class="feature-card fade-in-up">
-          <div class="feature-icon">🔐</div>
-          <h3>Безопасность данных</h3>
-          <p>Надежная защита личных данных и учебных материалов с современными методами шифрования</p>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 1L9 9H1L7.5 14L5 22L12 17L19 22L16.5 14L23 9H15L12 1Z"/>
+            </svg>
+          </div>
+          <h3>Система достижений</h3>
+          <p>Мотивируйте учеников через систему наград, значков и рейтингов за выполнение заданий и достижения целей.</p>
+        </div>
+        <div class="feature-card fade-in-up">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.9 1 3 1.9 3 3V21C3 22.1 3.9 23 5 23H19C20.1 23 21 22.1 21 21V11L15 5V9H21Z"/>
+            </svg>
+          </div>
+          <h3>Облачное хранилище</h3>
+          <p>Безопасное хранение всех учебных материалов в облаке с доступом с любого устройства в любое время.</p>
         </div>
       </div>
     </div>
@@ -505,28 +683,28 @@
     <div class="container">
       <div class="section-title">
         <h2>Как это работает</h2>
-        <p>Простые шаги для начала работы с платформой</p>
+        <p>Простой процесс для начала работы с платформой</p>
       </div>
       <div class="steps">
         <div class="step fade-in-up">
           <div class="step-number">1</div>
-          <h3>Регистрация</h3>
-          <p>Создайте аккаунт учителя или ученика за несколько минут</p>
+          <h3>Быстрая регистрация</h3>
+          <p>Создайте аккаунт учителя или ученика за минуту, указав основную информацию</p>
         </div>
         <div class="step fade-in-up">
           <div class="step-number">2</div>
           <h3>Настройка профиля</h3>
-          <p>Заполните профиль и настройте параметры обучения</p>
+          <p>Персонализируйте свой профиль и настройте предпочтения для эффективной работы</p>
         </div>
         <div class="step fade-in-up">
           <div class="step-number">3</div>
           <h3>Создание контента</h3>
-          <p>Добавляйте уроки, создавайте тесты и организуйте материалы</p>
+          <p>Добавляйте уроки, создавайте тесты и организуйте учебные материалы</p>
         </div>
         <div class="step fade-in-up">
           <div class="step-number">4</div>
-          <h3>Обучение</h3>
-          <p>Начинайте обучение и отслеживайте прогресс в реальном времени</p>
+          <h3>Начало обучения</h3>
+          <p>Приглашайте учеников и начинайте эффективный образовательный процесс</p>
         </div>
       </div>
     </div>
@@ -534,9 +712,9 @@
 
   <!-- CTA Section -->
   <section class="cta">
-    <div class="container">
-      <h2>Готовы начать?</h2>
-      <p>Присоединяйтесь к тысячам учителей и учеников, которые уже используют TeacherUchit</p>
+    <div class="cta-content">
+      <h2>Готовы к новому уровню образования?</h2>
+      <p>Присоединяйтесь к тысячам преподавателей и учеников, которые уже используют TeacherUchit для достижения лучших результатов</p>
       <div class="hero-buttons">
         <a href="/public/register.html" class="btn btn-primary">Создать аккаунт</a>
         <a href="/public/login.html" class="btn btn-secondary">Войти в систему</a>
@@ -550,30 +728,32 @@
       <div class="footer-section">
         <h3>TeacherUchit</h3>
         <p>Современная образовательная платформа для эффективного взаимодействия учителей и учеников.</p>
+        <p>Мы делаем образование доступным, интерактивным и результативным.</p>
       </div>
       <div class="footer-section">
         <h3>Платформа</h3>
         <a href="/public/register.html">Регистрация</a>
-        <a href="/public/login.html">Вход</a>
+        <a href="/public/login.html">Вход в систему</a>
         <a href="#features">Возможности</a>
         <a href="#how-it-works">Как это работает</a>
       </div>
       <div class="footer-section">
         <h3>Поддержка</h3>
         <a href="mailto:support@teacheruchit.com">Техподдержка</a>
-        <a href="/help">Справка</a>
+        <a href="/help">Центр помощи</a>
         <a href="/docs">Документация</a>
-        <a href="/contact">Контакты</a>
+        <a href="/contact">Свяжитесь с нами</a>
       </div>
       <div class="footer-section">
         <h3>Правовая информация</h3>
         <a href="/privacy">Политика конфиденциальности</a>
         <a href="/terms">Условия использования</a>
-        <a href="/cookies">Использование cookies</a>
+        <a href="/cookies">Политика cookies</a>
+        <a href="/security">Безопасность</a>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2024 TeacherUchit. Все права защищены.</p>
+      <p>&copy; 2024 TeacherUchit. Все права защищены. Сделано с ❤️ для образования.</p>
     </div>
   </footer>
 
@@ -628,9 +808,13 @@
       observer.observe(el);
     });
 
-    // Simple loading function for navigation
+    // Loading functionality
     function showLoading() {
       document.getElementById('loading').style.display = 'block';
+    }
+
+    function hideLoading() {
+      document.getElementById('loading').style.display = 'none';
     }
 
     // Add loading to external links
@@ -639,11 +823,14 @@
     });
 
     // Hide loading when page loads
-    window.addEventListener('load', () => {
-      document.getElementById('loading').style.display = 'none';
+    window.addEventListener('load', hideLoading);
+
+    // Mobile menu functionality (basic)
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+      alert('Мобильное меню будет добавлено в следующей версии');
     });
 
-    console.log('🚀 TeacherUchit loaded successfully!');
+    console.log('🚀 TeacherUchit v2.0 loaded successfully!');
   </script>
 </body>
 </html>

@@ -929,6 +929,14 @@
             
             isAnimating = true;
             
+            // Очищаем только ошибки, но НЕ success message
+            document.querySelectorAll('.form-input.error').forEach(input => {
+                input.classList.remove('error');
+            });
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.style.display = 'none';
+            });
+            
             // Мгновенно обновляем кнопки табов
             tabButtons.forEach(button => button.classList.remove('active'));
             const targetButton = document.querySelector(`[data-form="${formType}"]`);
@@ -1023,14 +1031,29 @@
         }
 
         function showSuccess(message, showContinueButton = false) {
+            console.log('showSuccess called with:', message, 'showButton:', showContinueButton);
+            
             const successText = document.querySelector('.success-text');
             const continueButton = document.getElementById('continue-button');
+            
+            if (!successText) {
+                console.error('Success text element not found!');
+                return;
+            }
+            
+            if (!continueButton) {
+                console.error('Continue button element not found!');
+                return;
+            }
             
             successText.textContent = message;
             successMessage.style.display = 'block';
             
+            console.log('Success message should now be visible');
+            
             if (showContinueButton) {
                 continueButton.style.display = 'flex';
+                console.log('Continue button should now be visible');
             } else {
                 continueButton.style.display = 'none';
             }
@@ -1255,9 +1278,13 @@
             
             if (hasErrors) return;
             
+            console.log('Registration validation passed, proceeding with registration...');
+            
             // Сохраняем пользователя
             const userData = { name, email, password };
             saveUser(userData);
+            
+            console.log('User saved to localStorage:', userData);
             
             // Устанавливаем как текущего пользователя
             localStorage.setItem('currentUser', JSON.stringify({
@@ -1265,6 +1292,8 @@
                 email: email,
                 registeredAt: new Date().toISOString()
             }));
+            
+            console.log('Current user set in localStorage');
             
             showSuccess(`Аккаунт успешно создан! Добро пожаловать в TeacherUchit, ${name}! Нажмите "Продолжить" для выбора роли.`, true);
         });

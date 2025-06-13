@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация студента - TeacherUchit</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase CDN -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getStorage } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+
+        // Firebase конфигурация - ЗАМЕНИТЕ НА ВАШИ ДАННЫЕ
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        window.firebaseApp = initializeApp(firebaseConfig);
+        window.firebaseAuth = getAuth(window.firebaseApp);
+        window.firebaseDB = getFirestore(window.firebaseApp);
+        window.firebaseStorage = getStorage(window.firebaseApp);
+        
+        console.log('Firebase инициализирован для регистрации студента');
+    </script>
+
+    <!-- Firebase Forms Integration -->
+    <script type="module" src="/firebase-forms.js"></script>
+    
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
+        img-src 'self' data: https:;
+        connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com;
+    ">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .registration-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .registration-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .registration-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .registration-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .registration-form {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.875rem;
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: var(--error);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .class-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .loading-spinner {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .success-message {
+            background: var(--success);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .firebase-status {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--success);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .firebase-status.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 640px) {
+            .registration-container {
+                margin: 0.5rem;
+            }
+
+            .registration-header {
+                padding: 1.5rem;
+            }
+
+            .registration-form {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="firebase-status" id="firebaseStatus">
+        <i class="fas fa-check"></i> Firebase подключен
+    </div>
+
+    <div class="registration-container">
+        <div class="registration-header">
+            <h1><i class="fas fa-graduation-cap"></i> Регистрация студента</h1>
+            <p>Присоединяйтесь к образовательной платформе TeacherUchit</p>
+        </div>
+
+        <div class="registration-form">
+            <a href="/role-selection.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Назад к выбору роли
+            </a>
+
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check"></i>
+                Регистрация прошла успешно! Перенаправляем вас...
+            </div>
+
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="name" class="form-label required">Полное имя</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        class="form-input" 
+                        placeholder="Введите ваше полное имя"
+                        required
+                    >
+                    <div class="error-message" id="nameError">Пожалуйста, введите ваше полное имя</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label required">Email адрес</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="example@email.com"
+                        required
+                    >
+                    <div class="error-message" id="emailError">Пожалуйста, введите корректный email адрес</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label required">Пароль</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Создайте надежный пароль"
+                        required
+                        minlength="6"
+                    >
+                    <div class="error-message" id="passwordError">Пароль должен содержать минимум 6 символов</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="city" class="form-label required">Город</label>
+                    <input 
+                        type="text" 
+                        id="city" 
+                        name="city" 
+                        class="form-input" 
+                        placeholder="Ваш город"
+                        required
+                    >
+                    <div class="error-message" id="cityError">Пожалуйста, введите ваш город</div>
+                </div>
+
+                <div class="class-container">
+                    <div class="form-group">
+                        <label for="schoolClass" class="form-label required">Класс</label>
+                        <select id="schoolClass" name="schoolClass" class="form-input" required>
+                            <option value="">Выберите класс</option>
+                            <option value="5">5 класс</option>
+                            <option value="6">6 класс</option>
+                            <option value="7">7 класс</option>
+                            <option value="8">8 класс</option>
+                            <option value="9">9 класс</option>
+                            <option value="10">10 класс</option>
+                            <option value="11">11 класс</option>
+                        </select>
+                        <div class="error-message" id="classError">Выберите ваш класс</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="letter" class="form-label required">Буква</label>
+                        <input 
+                            type="text" 
+                            id="letter" 
+                            name="letter" 
+                            class="form-input" 
+                            placeholder="А"
+                            maxlength="1"
+                            style="text-transform: uppercase;"
+                            required
+                        >
+                        <div class="error-message" id="letterError">Введите букву класса</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <span id="submitText">
+                        <i class="fas fa-user-plus"></i>
+                        Зарегистрироваться
+                    </span>
+                    <div class="loading-spinner" id="loadingSpinner" style="display: none;"></div>
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-200);">
+                <p style="color: var(--gray-600); margin-bottom: 0.5rem;">Уже есть аккаунт?</p>
+                <a href="/login.html" class="btn btn-secondary" style="max-width: 200px; margin: 0 auto;">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Войти
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Проверяем подключение к Firebase
+        window.addEventListener('load', () => {
+            if (window.firebaseAuth && window.firebaseDB) {
+                const status = document.getElementById('firebaseStatus');
+                status.classList.add('show');
+                setTimeout(() => {
+                    status.classList.remove('show');
+                }, 3000);
+            }
+        });
+
+        // Обработка формы регистрации
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Показываем индикатор загрузки
+            submitBtn.disabled = true;
+            submitText.style.display = 'none';
+            loadingSpinner.style.display = 'block';
+            
+            // Очищаем предыдущие ошибки
+            clearErrors();
+            
+            try {
+                // Собираем данные формы
+                const formData = {
+                    name: document.getElementById('name').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    password: document.getElementById('password').value,
+                    city: document.getElementById('city').value.trim(),
+                    schoolClass: document.getElementById('schoolClass').value,
+                    letter: document.getElementById('letter').value.trim().toUpperCase()
+                };
+                
+                // Валидация
+                if (!validateForm(formData)) {
+                    throw new Error('Пожалуйста, исправьте ошибки в форме');
+                }
+                
+                // Ждем инициализации Firebase
+                if (!window.teacherUchitFirebase) {
+                    // Даем время Firebase инициализироваться
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    if (!window.teacherUchitFirebase) {
+                        throw new Error('Firebase не инициализирован. Пожалуйста, перезагрузите страницу.');
+                    }
+                }
+                
+                // Регистрируем студента
+                const result = await window.teacherUchitFirebase.registerStudent(formData);
+                
+                if (result.success) {
+                    // Показываем сообщение об успехе
+                    successMessage.style.display = 'block';
+                    
+                    // Перенаправляем на дашборд через 2 секунды
+                    setTimeout(() => {
+                        window.location.href = '/student-dashboard.html';
+                    }, 2000);
+                } else {
+                    throw new Error(result.error || 'Произошла ошибка при регистрации');
+                }
+                
+            } catch (error) {
+                console.error('Ошибка регистрации:', error);
+                showError('general', error.message);
+            } finally {
+                // Скрываем индикатор загрузки
+                submitBtn.disabled = false;
+                submitText.style.display = 'flex';
+                loadingSpinner.style.display = 'none';
+            }
+        });
+        
+        // Функция валидации формы
+        function validateForm(data) {
+            let isValid = true;
+            
+            if (!data.name || data.name.length < 2) {
+                showError('name', 'Имя должно содержать минимум 2 символа');
+                isValid = false;
+            }
+            
+            if (!data.email || !isValidEmail(data.email)) {
+                showError('email', 'Введите корректный email адрес');
+                isValid = false;
+            }
+            
+            if (!data.password || data.password.length < 6) {
+                showError('password', 'Пароль должен содержать минимум 6 символов');
+                isValid = false;
+            }
+            
+            if (!data.city || data.city.length < 2) {
+                showError('city', 'Введите название города');
+                isValid = false;
+            }
+            
+            if (!data.schoolClass) {
+                showError('class', 'Выберите ваш класс');
+                isValid = false;
+            }
+            
+            if (!data.letter || !/^[А-Я]$/.test(data.letter)) {
+                showError('letter', 'Введите букву класса (А-Я)');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // Функция проверки email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Функция показа ошибки
+        function showError(field, message) {
+            const input = document.getElementById(field === 'class' ? 'schoolClass' : field);
+            const errorDiv = document.getElementById(field === 'class' ? 'classError' : field + 'Error');
+            
+            if (input && errorDiv) {
+                input.classList.add('error');
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+        }
+        
+        // Функция очистки ошибок
+        function clearErrors() {
+            const inputs = document.querySelectorAll('.form-input');
+            const errors = document.querySelectorAll('.error-message');
+            
+            inputs.forEach(input => input.classList.remove('error'));
+            errors.forEach(error => error.style.display = 'none');
+        }
+        
+        // Автоматическое преобразование буквы в верхний регистр
+        document.getElementById('letter').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+        
+        // Очистка ошибок при вводе
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('error');
+                const errorId = this.id === 'schoolClass' ? 'classError' : this.id + 'Error';
+                const errorDiv = document.getElementById(errorId);
+                if (errorDiv) {
+                    errorDiv.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

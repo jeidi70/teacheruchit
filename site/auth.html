@@ -137,44 +137,31 @@
         }
 
         .auth-form {
-            opacity: 1;
+            opacity: 0;
             transform: translateX(0);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: block;
+            pointer-events: none;
         }
 
-        .auth-form.slide-out-left {
-            opacity: 0;
-            transform: translateX(-100%);
+        .auth-form.active {
+            opacity: 1;
+            pointer-events: all;
+            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        .auth-form.slide-out-right {
-            opacity: 0;
-            transform: translateX(100%);
+        .auth-form:not(.active) {
+            display: none;
         }
 
-        .auth-form.slide-in-left {
-            opacity: 0;
-            transform: translateX(-100%);
-            animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        .auth-form.slide-in-right {
-            opacity: 0;
-            transform: translateX(100%);
-            animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        @keyframes slideInLeft {
-            to {
-                opacity: 1;
-                transform: translateX(0);
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-        }
-
-        @keyframes slideInRight {
             to {
                 opacity: 1;
-                transform: translateX(0);
+                transform: translateY(0);
             }
         }
 
@@ -609,7 +596,7 @@
         </form>
 
         <!-- Форма регистрации -->
-        <form class="auth-form" id="registerForm" style="display: none;">
+        <form class="auth-form" id="registerForm">
             <div class="form-group">
                 <label class="form-label" for="register-name">Полное имя</label>
                 <input type="text" id="register-name" class="form-input" placeholder="Ваше имя и фамилия" required autocomplete="name">
@@ -697,52 +684,16 @@
         function showForm(formType) {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
-            const currentActive = document.querySelector('.auth-form:not([style*="display: none"])');
             
-            // Определяем направление анимации
-            const isLoginToRegister = formType === 'register' && currentActive === loginForm;
-            const isRegisterToLogin = formType === 'login' && currentActive === registerForm;
+            // Очищаем все активные классы
+            loginForm.classList.remove('active');
+            registerForm.classList.remove('active');
             
+            // Активируем нужную форму
             if (formType === 'login') {
-                if (isRegisterToLogin) {
-                    // Анимация: регистрация -> вход (слайд вправо)
-                    registerForm.classList.add('slide-out-right');
-                    
-                    setTimeout(() => {
-                        registerForm.style.display = 'none';
-                        registerForm.classList.remove('slide-out-right');
-                        
-                        loginForm.style.display = 'block';
-                        loginForm.classList.add('slide-in-left');
-                        
-                        setTimeout(() => {
-                            loginForm.classList.remove('slide-in-left');
-                        }, 500);
-                    }, 250);
-                } else {
-                    loginForm.style.display = 'block';
-                    registerForm.style.display = 'none';
-                }
+                loginForm.classList.add('active');
             } else {
-                if (isLoginToRegister) {
-                    // Анимация: вход -> регистрация (слайд влево)
-                    loginForm.classList.add('slide-out-left');
-                    
-                    setTimeout(() => {
-                        loginForm.style.display = 'none';
-                        loginForm.classList.remove('slide-out-left');
-                        
-                        registerForm.style.display = 'block';
-                        registerForm.classList.add('slide-in-right');
-                        
-                        setTimeout(() => {
-                            registerForm.classList.remove('slide-in-right');
-                        }, 500);
-                    }, 250);
-                } else {
-                    registerForm.style.display = 'block';
-                    loginForm.style.display = 'none';
-                }
+                registerForm.classList.add('active');
             }
             
             // Обновляем активные вкладки
@@ -750,6 +701,13 @@
                 tab.classList.remove('active');
             });
             document.querySelector(`[onclick="showForm('${formType}')"]`).classList.add('active');
+            
+            // Автофокус на первое поле активной формы
+            setTimeout(() => {
+                const activeForm = document.querySelector('.auth-form.active');
+                const firstInput = activeForm.querySelector('input');
+                if (firstInput) firstInput.focus();
+            }, 100);
         }
 
         function togglePassword(inputId) {
@@ -957,15 +915,12 @@
             const urlParams = new URLSearchParams(window.location.search);
             const mode = urlParams.get('mode');
             
+            // По умолчанию показываем форму входа
             if (mode === 'register') {
                 showForm('register');
+            } else {
+                showForm('login');
             }
-            
-            // Автофокус на первое поле
-            setTimeout(() => {
-                const firstInput = document.querySelector('.auth-form:not([style*="display: none"]) input');
-                if (firstInput) firstInput.focus();
-            }, 100);
         });
 
         // Обработка Enter для переключения между полями

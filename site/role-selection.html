@@ -514,7 +514,7 @@
                 </div>
             </div>
 
-            <button class="button" id="continue-btn" onclick="completeSetup()" disabled>
+            <button class="button" id="continue-btn" disabled>
                 Завершить настройку
             </button>
         </div>
@@ -543,6 +543,14 @@
 
         // Инициализация при загрузке
         checkAuthAndDisplayUser();
+
+        // Обработчик для кнопки "Завершить настройку"
+        document.addEventListener('DOMContentLoaded', function() {
+            const continueBtn = document.getElementById('continue-btn');
+            if (continueBtn) {
+                continueBtn.addEventListener('click', completeSetup);
+            }
+        });
 
         // Данные школ по городам
         const schoolsByCity = {
@@ -704,25 +712,39 @@
                 return;
             }
 
+            // Добавляем loading состояние кнопки
+            const continueBtn = document.getElementById('continue-btn');
+            const originalText = continueBtn.textContent;
+            continueBtn.textContent = 'Завершаем настройку...';
+            continueBtn.disabled = true;
+
             let profileData = { 
                 role: selectedRole,
                 profileCompleted: true,
-                completedAt: new Date().toISOString()
+                completedAt: new Date().toISOString(),
+                // Добавляем информацию о пользователе
+                userName: currentUser.name,
+                userEmail: currentUser.email
             };
             
             if (selectedRole === 'student') {
                 profileData = {
                     ...profileData,
                     city: document.getElementById('student-city').value,
+                    cityName: 'Санкт-Петербург',
                     school: document.getElementById('student-school').value,
                     class: document.getElementById('student-class').value,
-                    letter: document.getElementById('student-letter').value
+                    letter: document.getElementById('student-letter').value,
+                    // Создаем полное название класса
+                    fullClass: `${document.getElementById('student-class').value}${document.getElementById('student-letter').value}`
                 };
             } else {
                 profileData = {
                     ...profileData,
                     subject: document.getElementById('teacher-subject').value,
+                    subjectName: document.getElementById('teacher-subject').selectedOptions[0].textContent,
                     experience: document.getElementById('teacher-experience').value,
+                    experienceName: document.getElementById('teacher-experience').selectedOptions[0].textContent,
                     school: document.getElementById('teacher-school').value
                 };
             }
@@ -731,26 +753,35 @@
             const profileKey = `teacheruchit_profile_${currentUser.email}`;
             localStorage.setItem(profileKey, JSON.stringify(profileData));
             
+            // Обновляем currentUser с информацией о роли
+            const updatedUser = {
+                ...currentUser,
+                role: selectedRole,
+                profileCompleted: true
+            };
+            localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+            
             // Также сохраняем для обратной совместимости
             localStorage.setItem('userProfile', JSON.stringify(profileData));
             
             console.log('Profile saved:', profileData);
+            console.log('Updated user:', updatedUser);
             
             // Показываем сообщение об успехе
             const successMessage = document.getElementById('success-message');
             const roleName = selectedRole === 'student' ? 'ученика' : 'учителя';
-            successMessage.textContent = `Профиль ${roleName} успешно настроен! Перенаправляем на главную страницу...`;
+            successMessage.textContent = `Профиль ${roleName} успешно настроен! Перенаправляем на дашборд...`;
             successMessage.style.display = 'block';
             
             // Прокрутка к сообщению
             successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
             
-            // Перенаправление на главную страницу в зависимости от роли
+            // Перенаправление на дашборд в зависимости от роли
             setTimeout(() => {
                 if (selectedRole === 'student') {
-                    window.location.href = 'index.html?role=student';
+                    window.location.href = 'index.html?role=student&dashboard=true';
                 } else {
-                    window.location.href = 'index.html?role=teacher';
+                    window.location.href = 'index.html?role=teacher&dashboard=true';
                 }
             }, 2000);
         }

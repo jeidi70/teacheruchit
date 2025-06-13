@@ -763,6 +763,89 @@
         .feature-card:nth-child(4) .feature-icon { animation-delay: 1.5s; }
         .feature-card:nth-child(5) .feature-icon { animation-delay: 2s; }
         .feature-card:nth-child(6) .feature-icon { animation-delay: 2.5s; }
+
+        /* User Profile Section */
+        .user-profile {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--gray-200);
+            margin-top: 4rem;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-avatar {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .profile-details h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-details p {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        .profile-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .profile-card {
+            background: var(--gray-50);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+        }
+
+        .profile-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .profile-card p {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--gray-900);
+        }
+
+        .profile-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
     </style>
 </head>
 
@@ -994,8 +1077,32 @@
         </div>
     </nav>
 
+    <!-- Profile Section -->
+    <div id="user-profile-section" class="user-profile" style="display: none;">
+        <div class="container">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-details">
+                        <h2 id="profile-name">Имя пользователя</h2>
+                        <p id="profile-role">Роль</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Выйти
+                </button>
+            </div>
+            <div class="profile-data" id="profile-data">
+                <!-- Данные профиля будут загружены динамически -->
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="hero-section">
         <div class="container">
             <div class="hero-content fade-in">
                 <h1 class="hero-title">Революция в образовании</h1>
@@ -1247,64 +1354,179 @@
     </footer>
 
     <script>
+        // Проверка авторизации и загрузка профиля
+        function checkAuthAndLoadProfile() {
+            const currentUser = localStorage.getItem('currentUser');
+            const urlParams = new URLSearchParams(window.location.search);
+            const showDashboard = urlParams.get('dashboard') === 'true' || urlParams.get('role');
+
+            if (currentUser && showDashboard) {
+                const user = JSON.parse(currentUser);
+                const profile = localStorage.getItem(`teacheruchit_profile_${user.email}`);
+                
+                if (profile) {
+                    displayUserProfile(user, JSON.parse(profile));
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function displayUserProfile(user, profileData) {
+            // Показываем секцию профиля
+            document.getElementById('user-profile-section').style.display = 'block';
+            
+            // Скрываем или изменяем hero секцию для дашборда
+            const heroSection = document.getElementById('hero-section');
+            if (heroSection) {
+                heroSection.style.display = 'none';
+            }
+
+            // Заполняем основную информацию
+            document.getElementById('profile-name').textContent = user.name;
+            document.getElementById('profile-role').textContent = 
+                profileData.role === 'student' ? 'Ученик' : 'Учитель';
+
+            // Заполняем данные профиля
+            const profileDataContainer = document.getElementById('profile-data');
+            let profileCards = '';
+
+            if (profileData.role === 'student') {
+                profileCards = `
+                    <div class="profile-card">
+                        <h3>Город</h3>
+                        <p>${profileData.cityName || 'Санкт-Петербург'}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Школа</h3>
+                        <p>${profileData.school}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Класс</h3>
+                        <p><span class="profile-badge">${profileData.fullClass || profileData.class + profileData.letter}</span></p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Email</h3>
+                        <p>${user.email}</p>
+                    </div>
+                `;
+            } else {
+                profileCards = `
+                    <div class="profile-card">
+                        <h3>Предмет</h3>
+                        <p><span class="profile-badge">${profileData.subjectName || profileData.subject}</span></p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Опыт работы</h3>
+                        <p>${profileData.experienceName || profileData.experience}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Учреждение</h3>
+                        <p>${profileData.school}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Email</h3>
+                        <p>${user.email}</p>
+                    </div>
+                `;
+            }
+
+            profileDataContainer.innerHTML = profileCards;
+        }
+
+        function logout() {
+            // Очищаем данные пользователя
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('userProfile');
+            
+            // Перенаправляем на страницу входа
+            window.location.href = 'auth.html';
+        }
+
+        // Убираем inline onclick и добавляем обработчик
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем авторизацию при загрузке
+            const isLoggedIn = checkAuthAndLoadProfile();
+            
+            // Обработчик кнопки выхода
+            const logoutBtn = document.querySelector('button[onclick="logout()"]');
+            if (logoutBtn) {
+                logoutBtn.removeAttribute('onclick');
+                logoutBtn.addEventListener('click', logout);
+            }
+            
+            console.log('User logged in:', isLoggedIn);
+        });
+
+        // Остальной JavaScript код страницы...
+        
+        // Инициализация чата и других функций только если пользователь не авторизован
         document.addEventListener('DOMContentLoaded', function() {
             const chatMessages = document.getElementById('chat-messages');
             const chatInput = document.getElementById('chat-input');
             const sendBtn = document.getElementById('send-btn');
             const demoQuestions = document.querySelectorAll('.demo-question');
             
-            // Demo responses
-            const responses = {
-                'великая отечественная война': 'Великая Отечественная война (1941-1945) - важнейший период в истории России. Это была война против фашистской Германии и её союзников. Война началась 22 июня 1941 года и закончилась победой СССР 9 мая 1945 года.',
-                'феодализм': 'Феодализм - это общественный строй, где земля принадлежит феодалам (дворянам), а крестьяне работают на этой земле. Главные черты: личная зависимость крестьян, натуральное хозяйство, иерархия власти.',
-                'наполеон': 'Наполеон Бонапарт (1769-1821) - французский император и полководец. Провёл множество реформ во Франции, завоевал большую часть Европы. В 1812 году вторгся в Россию, но потерпел поражение.',
-                'default': 'Отличный вопрос! В полной версии платформы я дам подробный ответ с учётом вашего класса и программы обучения.'
-            };
-            
-            function addMessage(text, isUser = false) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
-                messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-            
-            function sendMessage(text) {
-                if (!text.trim()) return;
+            // Запускаем чат только если не показан дашборд
+            if (chatMessages && !document.getElementById('user-profile-section').style.display !== 'none') {
+                // Demo responses
+                const responses = {
+                    'великая отечественная война': 'Великая Отечественная война (1941-1945) - важнейший период в истории России. Это была война против фашистской Германии и её союзников. Война началась 22 июня 1941 года и закончилась победой СССР 9 мая 1945 года.',
+                    'феодализм': 'Феодализм - это общественный строй, где земля принадлежит феодалам (дворянам), а крестьяне работают на этой земле. Главные черты: личная зависимость крестьян, натуральное хозяйство, иерархия власти.',
+                    'наполеон': 'Наполеон Бонапарт (1769-1821) - французский император и полководец. Провёл множество реформ во Франции, завоевал большую часть Европы. В 1812 году вторгся в Россию, но потерпел поражение.',
+                    'default': 'Отличный вопрос! В полной версии платформы я дам подробный ответ с учётом вашего класса и программы обучения.'
+                };
                 
-                addMessage(text, true);
-                chatInput.value = '';
+                function addMessage(text, isUser = false) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+                    messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
+                    chatMessages.appendChild(messageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
                 
-                // Simulate AI response
-                setTimeout(() => {
-                    const lowerText = text.toLowerCase();
-                    let response = responses.default;
+                function sendMessage(text) {
+                    if (!text.trim()) return;
                     
-                    for (const key in responses) {
-                        if (lowerText.includes(key)) {
-                            response = responses[key];
-                            break;
+                    addMessage(text, true);
+                    chatInput.value = '';
+                    
+                    // Simulate AI response
+                    setTimeout(() => {
+                        const lowerText = text.toLowerCase();
+                        let response = responses.default;
+                        
+                        for (const key in responses) {
+                            if (lowerText.includes(key)) {
+                                response = responses[key];
+                                break;
+                            }
                         }
-                    }
-                    
-                    addMessage(response);
-                }, 1000);
+                        
+                        addMessage(response);
+                    }, 1000);
+                }
+                
+                // Event listeners для чата
+                if (sendBtn) {
+                    sendBtn.addEventListener('click', () => sendMessage(chatInput.value));
+                }
+                if (chatInput) {
+                    chatInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') sendMessage(chatInput.value);
+                    });
+                }
+                
+                // Demo questions
+                demoQuestions.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        chatInput.value = btn.textContent.replace(/"/g, '');
+                        sendMessage(chatInput.value);
+                    });
+                });
             }
             
-            // Event listeners
-            sendBtn.addEventListener('click', () => sendMessage(chatInput.value));
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessage(chatInput.value);
-            });
-            
-            // Demo questions
-            demoQuestions.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    chatInput.value = btn.textContent.replace(/"/g, '');
-                    sendMessage(chatInput.value);
-                });
-            });
-            
+            // Общие функции для всех пользователей
             // Smooth scrolling
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -1339,7 +1561,7 @@
                 observer.observe(el);
             });
             
-            console.log('✅ TeacherUchit - Обновленная версия с новым логотипом и улучшенной читабельностью загружена!');
+            console.log('✅ TeacherUchit - Загружена версия с профилем пользователя!');
         });
     </script>
 </body>

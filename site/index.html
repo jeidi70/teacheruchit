@@ -127,37 +127,34 @@
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            border-radius: 1rem;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 0.75rem;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             border: none;
             cursor: pointer;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: 0.95rem;
             position: relative;
             overflow: hidden;
-            text-align: center;
-            justify-content: center;
-            white-space: nowrap;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
         }
 
         .btn::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.6s ease;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            z-index: 1;
+            transition: opacity 0.3s ease;
         }
 
         .btn:hover::before {
-            left: 100%;
+            opacity: 0.8;
         }
 
         .btn > * {
@@ -168,57 +165,28 @@
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+            box-shadow: var(--btn-shadow);
             border: 2px solid transparent;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.45);
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow-hover);
             background: linear-gradient(135deg, #5856eb, #7c3aed);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
 
         .btn-secondary {
             background: white;
             color: var(--primary);
             border: 2px solid var(--primary);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.2);
+            box-shadow: var(--btn-shadow);
         }
 
         .btn-secondary:hover {
             background: var(--primary);
             color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 28px rgba(99, 102, 241, 0.35);
-            border-color: var(--primary);
-        }
-
-        .btn-secondary:active {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
-        }
-
-        /* Hero buttons specific styling */
-        .hero-buttons .btn {
-            padding: 1.25rem 2.5rem;
-            font-size: 1.125rem;
-            font-weight: 700;
-            min-width: 200px;
-        }
-
-        .hero-buttons .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
-        }
-
-        .hero-buttons .btn-primary:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow-hover);
         }
 
         /* Hero Section */
@@ -467,113 +435,56 @@
         }
 
         .chat-input-container {
-            padding: 1.5rem;
+            padding: 1rem;
             background: white;
             border-top: 1px solid var(--gray-200);
             display: flex;
-            gap: 1rem;
-            align-items: center;
+            gap: 0.5rem;
         }
 
         .chat-input {
             flex: 1;
-            padding: 1rem 1.25rem;
+            padding: 0.75rem;
             border: 2px solid var(--gray-300);
-            border-radius: 1rem;
+            border-radius: 0.5rem;
             outline: none;
             font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: var(--gray-50);
+            transition: border-color 0.3s ease;
         }
 
         .chat-input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            background: white;
-            transform: translateY(-1px);
         }
 
         .send-btn {
-            padding: 1rem;
-            width: 3.5rem;
-            height: 3.5rem;
+            padding: 0.75rem 1rem;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            border-radius: 1rem;
+            border-radius: 0.5rem;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .send-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .send-btn:hover::before {
-            left: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
         }
 
         .send-btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        .send-btn:active {
-            transform: translateY(0) scale(0.98);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-        .send-btn .custom-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-            z-index: 2;
-            position: relative;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
 
         /* Demo question buttons with better contrast */
         .demo-question {
             background: white !important;
             border: 2px solid var(--gray-300) !important;
-            padding: 1rem 1.25rem !important;
-            border-radius: 1rem !important;
+            padding: 0.75rem !important;
+            border-radius: 0.75rem !important;
             text-align: left !important;
             cursor: pointer !important;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            transition: all 0.3s ease !important;
             color: var(--gray-700) !important;
             font-weight: 500 !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-            position: relative !important;
-            overflow: hidden !important;
-            font-size: 0.95rem !important;
-        }
-
-        .demo-question::before {
-            content: '' !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: -100% !important;
-            width: 100% !important;
-            height: 100% !important;
-            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.05), transparent) !important;
-            transition: left 0.5s ease !important;
-        }
-
-        .demo-question:hover::before {
-            left: 100% !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
         }
 
         .demo-question:hover {
@@ -581,7 +492,7 @@
             background: var(--primary) !important;
             color: white !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.25) !important;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
         }
 
         /* Pricing Section */
@@ -751,38 +662,16 @@
         .pricing-card .btn {
             width: 100%;
             justify-content: center;
-            padding: 1.125rem 2rem;
-            font-size: 1rem;
-            font-weight: 600;
-            margin-top: 1rem;
-        }
-
-        .pricing-card .btn-secondary {
-            background: var(--gray-100);
-            color: var(--gray-700);
-            border: 2px solid var(--gray-300);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .pricing-card .btn-secondary:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
         }
 
         .pricing-card.featured .btn-primary {
             background: var(--accent);
             border-color: var(--accent);
-            box-shadow: 0 6px 18px rgba(6, 182, 212, 0.3);
         }
 
         .pricing-card.featured .btn-primary:hover {
             background: #0891b2;
             border-color: #0891b2;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.4);
         }
 
         /* Footer */
@@ -874,6 +763,89 @@
         .feature-card:nth-child(4) .feature-icon { animation-delay: 1.5s; }
         .feature-card:nth-child(5) .feature-icon { animation-delay: 2s; }
         .feature-card:nth-child(6) .feature-icon { animation-delay: 2.5s; }
+
+        /* User Profile Section */
+        .user-profile {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--gray-200);
+            margin-top: 4rem;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-avatar {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .profile-details h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-details p {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        .profile-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .profile-card {
+            background: var(--gray-50);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+        }
+
+        .profile-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .profile-card p {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--gray-900);
+        }
+
+        .profile-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
     </style>
 </head>
 
@@ -897,24 +869,13 @@
                     <circle cx="12" cy="12" r="11" fill="url(#logoGradient)" opacity="0.9"/>
                     <circle cx="12" cy="12" r="11" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
                     
-                    <!-- Book/Knowledge symbol with T -->
+                    <!-- Book/Knowledge symbol -->
                     <path d="M7 6 L17 6 Q18 6 18 7 L18 17 Q18 18 17 18 L7 18 Q6 18 6 17 L6 7 Q6 6 7 6 Z" 
                           fill="white" opacity="0.9"/>
-                    
-                    <!-- Beautiful Letter T -->
-                    <path d="M9 8.5 L15 8.5" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M12 8.5 L12 15.5" stroke="url(#logoGradient)" stroke-width="2.5" stroke-linecap="round"/>
-                    
-                    <!-- Decorative elements for T -->
-                    <circle cx="9" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
-                    <circle cx="15" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
-                    <circle cx="12" cy="15.5" r="1.2" fill="url(#logoGradient)" opacity="0.8"/>
-                    
-                    <!-- Book lines around T -->
-                    <path d="M8 11 L10.5 11" stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-                    <path d="M13.5 11 L16 11" stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-                    <path d="M8 13 L10.5 13" stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-                    <path d="M13.5 13 L16 13" stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+                    <path d="M12 6 L12 18" stroke="url(#logoGradient)" stroke-width="2"/>
+                    <path d="M8 9 L11 9 M13 9 L16 9" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M8 12 L11 12 M13 12 L16 12" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M8 15 L11 15 M13 15 L16 15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
                     
                     <!-- AI brain/neural network element -->
                     <circle cx="19" cy="5" r="3.5" fill="white" opacity="0.95"/>
@@ -1045,7 +1006,7 @@
                 <!-- Paper Plane Send Icon -->
                 <g id="icon-send">
                     <path d="M22 2 L11 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M22 2 L15 22 L11 13 L2 9 L22 2 Z" fill="currentColor" opacity="0.2"/>
+                    <path d="M22 2 L15 22 L11 13 L2 9 L22 2 Z" fill="currentColor" opacity="0.1"/>
                     <path d="M22 2 L15 22 L11 13 L2 9 L22 2 Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </g>
 
@@ -1116,8 +1077,32 @@
         </div>
     </nav>
 
+    <!-- Profile Section -->
+    <div id="user-profile-section" class="user-profile" style="display: none;">
+        <div class="container">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-details">
+                        <h2 id="profile-name">Имя пользователя</h2>
+                        <p id="profile-role">Роль</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Выйти
+                </button>
+            </div>
+            <div class="profile-data" id="profile-data">
+                <!-- Данные профиля будут загружены динамически -->
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="hero-section">
         <div class="container">
             <div class="hero-content fade-in">
                 <h1 class="hero-title">Революция в образовании</h1>
@@ -1257,7 +1242,7 @@
                 
                 <div class="chat-container">
                     <div class="chat-header">
-                        <svg class="custom-icon" viewBox="0 0 24 24" style="width: 2rem; height: 2rem;">
+                        <svg class="custom-icon" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;">
                             <use href="#icon-robot-teacher"></use>
                         </svg>
                         <span>ИИ-помощник ТичерНаучит</span>
@@ -1369,64 +1354,179 @@
     </footer>
 
     <script>
+        // Проверка авторизации и загрузка профиля
+        function checkAuthAndLoadProfile() {
+            const currentUser = localStorage.getItem('currentUser');
+            const urlParams = new URLSearchParams(window.location.search);
+            const showDashboard = urlParams.get('dashboard') === 'true' || urlParams.get('role');
+
+            if (currentUser && showDashboard) {
+                const user = JSON.parse(currentUser);
+                const profile = localStorage.getItem(`teacheruchit_profile_${user.email}`);
+                
+                if (profile) {
+                    displayUserProfile(user, JSON.parse(profile));
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function displayUserProfile(user, profileData) {
+            // Показываем секцию профиля
+            document.getElementById('user-profile-section').style.display = 'block';
+            
+            // Скрываем или изменяем hero секцию для дашборда
+            const heroSection = document.getElementById('hero-section');
+            if (heroSection) {
+                heroSection.style.display = 'none';
+            }
+
+            // Заполняем основную информацию
+            document.getElementById('profile-name').textContent = user.name;
+            document.getElementById('profile-role').textContent = 
+                profileData.role === 'student' ? 'Ученик' : 'Учитель';
+
+            // Заполняем данные профиля
+            const profileDataContainer = document.getElementById('profile-data');
+            let profileCards = '';
+
+            if (profileData.role === 'student') {
+                profileCards = `
+                    <div class="profile-card">
+                        <h3>Город</h3>
+                        <p>${profileData.cityName || 'Санкт-Петербург'}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Школа</h3>
+                        <p>${profileData.school}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Класс</h3>
+                        <p><span class="profile-badge">${profileData.fullClass || profileData.class + profileData.letter}</span></p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Email</h3>
+                        <p>${user.email}</p>
+                    </div>
+                `;
+            } else {
+                profileCards = `
+                    <div class="profile-card">
+                        <h3>Предмет</h3>
+                        <p><span class="profile-badge">${profileData.subjectName || profileData.subject}</span></p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Опыт работы</h3>
+                        <p>${profileData.experienceName || profileData.experience}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Учреждение</h3>
+                        <p>${profileData.school}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Email</h3>
+                        <p>${user.email}</p>
+                    </div>
+                `;
+            }
+
+            profileDataContainer.innerHTML = profileCards;
+        }
+
+        function logout() {
+            // Очищаем данные пользователя
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('userProfile');
+            
+            // Перенаправляем на страницу входа
+            window.location.href = 'auth.html';
+        }
+
+        // Убираем inline onclick и добавляем обработчик
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем авторизацию при загрузке
+            const isLoggedIn = checkAuthAndLoadProfile();
+            
+            // Обработчик кнопки выхода
+            const logoutBtn = document.querySelector('button[onclick="logout()"]');
+            if (logoutBtn) {
+                logoutBtn.removeAttribute('onclick');
+                logoutBtn.addEventListener('click', logout);
+            }
+            
+            console.log('User logged in:', isLoggedIn);
+        });
+
+        // Остальной JavaScript код страницы...
+        
+        // Инициализация чата и других функций только если пользователь не авторизован
         document.addEventListener('DOMContentLoaded', function() {
             const chatMessages = document.getElementById('chat-messages');
             const chatInput = document.getElementById('chat-input');
             const sendBtn = document.getElementById('send-btn');
             const demoQuestions = document.querySelectorAll('.demo-question');
             
-            // Demo responses
-            const responses = {
-                'великая отечественная война': 'Великая Отечественная война (1941-1945) - важнейший период в истории России. Это была война против фашистской Германии и её союзников. Война началась 22 июня 1941 года и закончилась победой СССР 9 мая 1945 года.',
-                'феодализм': 'Феодализм - это общественный строй, где земля принадлежит феодалам (дворянам), а крестьяне работают на этой земле. Главные черты: личная зависимость крестьян, натуральное хозяйство, иерархия власти.',
-                'наполеон': 'Наполеон Бонапарт (1769-1821) - французский император и полководец. Провёл множество реформ во Франции, завоевал большую часть Европы. В 1812 году вторгся в Россию, но потерпел поражение.',
-                'default': 'Отличный вопрос! В полной версии платформы я дам подробный ответ с учётом вашего класса и программы обучения.'
-            };
-            
-            function addMessage(text, isUser = false) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
-                messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-            
-            function sendMessage(text) {
-                if (!text.trim()) return;
+            // Запускаем чат только если не показан дашборд
+            if (chatMessages && !document.getElementById('user-profile-section').style.display !== 'none') {
+                // Demo responses
+                const responses = {
+                    'великая отечественная война': 'Великая Отечественная война (1941-1945) - важнейший период в истории России. Это была война против фашистской Германии и её союзников. Война началась 22 июня 1941 года и закончилась победой СССР 9 мая 1945 года.',
+                    'феодализм': 'Феодализм - это общественный строй, где земля принадлежит феодалам (дворянам), а крестьяне работают на этой земле. Главные черты: личная зависимость крестьян, натуральное хозяйство, иерархия власти.',
+                    'наполеон': 'Наполеон Бонапарт (1769-1821) - французский император и полководец. Провёл множество реформ во Франции, завоевал большую часть Европы. В 1812 году вторгся в Россию, но потерпел поражение.',
+                    'default': 'Отличный вопрос! В полной версии платформы я дам подробный ответ с учётом вашего класса и программы обучения.'
+                };
                 
-                addMessage(text, true);
-                chatInput.value = '';
+                function addMessage(text, isUser = false) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+                    messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
+                    chatMessages.appendChild(messageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
                 
-                // Simulate AI response
-                setTimeout(() => {
-                    const lowerText = text.toLowerCase();
-                    let response = responses.default;
+                function sendMessage(text) {
+                    if (!text.trim()) return;
                     
-                    for (const key in responses) {
-                        if (lowerText.includes(key)) {
-                            response = responses[key];
-                            break;
+                    addMessage(text, true);
+                    chatInput.value = '';
+                    
+                    // Simulate AI response
+                    setTimeout(() => {
+                        const lowerText = text.toLowerCase();
+                        let response = responses.default;
+                        
+                        for (const key in responses) {
+                            if (lowerText.includes(key)) {
+                                response = responses[key];
+                                break;
+                            }
                         }
-                    }
-                    
-                    addMessage(response);
-                }, 1000);
+                        
+                        addMessage(response);
+                    }, 1000);
+                }
+                
+                // Event listeners для чата
+                if (sendBtn) {
+                    sendBtn.addEventListener('click', () => sendMessage(chatInput.value));
+                }
+                if (chatInput) {
+                    chatInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') sendMessage(chatInput.value);
+                    });
+                }
+                
+                // Demo questions
+                demoQuestions.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        chatInput.value = btn.textContent.replace(/"/g, '');
+                        sendMessage(chatInput.value);
+                    });
+                });
             }
             
-            // Event listeners
-            sendBtn.addEventListener('click', () => sendMessage(chatInput.value));
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessage(chatInput.value);
-            });
-            
-            // Demo questions
-            demoQuestions.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    chatInput.value = btn.textContent.replace(/"/g, '');
-                    sendMessage(chatInput.value);
-                });
-            });
-            
+            // Общие функции для всех пользователей
             // Smooth scrolling
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -1461,7 +1561,7 @@
                 observer.observe(el);
             });
             
-            console.log('✅ TeacherUchit - Обновленная версия с новым логотипом и улучшенной читабельностью загружена!');
+            console.log('✅ TeacherUchit - Загружена версия с профилем пользователя!');
         });
     </script>
 </body>

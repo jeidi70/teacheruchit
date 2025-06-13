@@ -354,7 +354,7 @@ app.get('/designs', (req, res) => {
 
 // Новая улучшенная версия лендинга
 app.get('/improved', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'improved-landing.html'));
+  res.sendFile(path.join(__dirname, 'public', 'improved-fixed.html'));
 });
 
 // Новая минималистичная версия в стиле Apple

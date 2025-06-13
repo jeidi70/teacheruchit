@@ -534,10 +534,10 @@
         .pricing-card.featured::before {
             content: '';
             position: absolute;
-            top: 8px;
-            right: -55px;
-            width: 180px;
-            height: 40px;
+            top: 5px;
+            right: -65px;
+            width: 220px;
+            height: 45px;
             background: var(--accent);
             transform: rotate(45deg);
             z-index: 1;
@@ -546,10 +546,10 @@
         .pricing-card.featured::after {
             content: '';
             position: absolute;
-            top: 16px;
-            right: -30px;
-            width: 24px;
-            height: 24px;
+            top: 14px;
+            right: -35px;
+            width: 26px;
+            height: 26px;
             background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2 L14.4 8.8 L22 8.8 L16.8 13.2 L19.2 20 L12 15.6 L4.8 20 L7.2 13.2 L2 8.8 L9.6 8.8 Z' fill='white'/%3E%3C/svg%3E") no-repeat center;
             background-size: contain;
             transform: rotate(45deg);
@@ -558,14 +558,15 @@
 
         .pricing-card.featured .popular-badge {
             position: absolute;
-            top: 18px;
-            right: -25px;
+            top: 16px;
+            right: -30px;
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
             transform: rotate(45deg);
             z-index: 3;
             white-space: nowrap;
+            letter-spacing: 0.5px;
         }
 
         .pricing-card:hover {

@@ -21,43 +21,55 @@
             position: fixed;
             height: 100vh;
             overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .logo {
+            font-size: var(--text-xl);
+            font-weight: var(--font-bold);
+            color: var(--primary-600);
+            margin-bottom: var(--spacing-xs);
         }
 
         .main-content {
             flex: 1;
             margin-left: 280px;
             padding: var(--spacing-lg);
+            min-height: 100vh;
         }
 
         .dashboard-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: var(--spacing-xl);
             background: var(--surface-primary);
-            padding: var(--spacing-lg);
+            padding: var(--spacing-xl);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+            border: 1px solid var(--border-primary);
         }
 
-        .welcome-section {
-            flex: 1;
-        }
-
-        .welcome-title {
-            font-size: var(--text-2xl);
+        .welcome-section h1 {
+            font-size: var(--text-3xl);
             font-weight: var(--font-bold);
             color: var(--text-primary);
-            margin-bottom: var(--spacing-xs);
+            margin-bottom: var(--spacing-sm);
         }
 
-        .welcome-subtitle {
+        .welcome-section p {
             color: var(--text-secondary);
+            font-size: var(--text-lg);
         }
 
         .header-actions {
             display: flex;
-            gap: var(--spacing-sm);
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
         }
 
         .stats-grid {
@@ -69,17 +81,23 @@
 
         .stat-card {
             background: var(--surface-primary);
-            padding: var(--spacing-lg);
+            padding: var(--spacing-xl);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-primary);
+            transition: all var(--transition-fast);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .stat-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
         }
 
         .stat-icon {
@@ -91,58 +109,70 @@
             justify-content: center;
         }
 
+        .stat-icon.primary { background: var(--primary-100); color: var(--primary-600); }
+        .stat-icon.success { background: var(--success-100); color: var(--success-600); }
+        .stat-icon.warning { background: var(--warning-100); color: var(--warning-600); }
+        .stat-icon.error { background: var(--error-100); color: var(--error-600); }
+
         .stat-value {
-            font-size: var(--text-3xl);
+            font-size: var(--text-4xl);
             font-weight: var(--font-bold);
             color: var(--text-primary);
+            line-height: 1;
         }
 
         .stat-label {
             color: var(--text-secondary);
             font-size: var(--text-sm);
+            margin-top: var(--spacing-xs);
         }
 
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--spacing-md);
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
             margin-bottom: var(--spacing-xl);
         }
 
         .action-card {
             background: var(--surface-primary);
-            padding: var(--spacing-lg);
+            padding: var(--spacing-xl);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-primary);
             cursor: pointer;
             transition: all var(--transition-fast);
+            text-decoration: none;
+            color: inherit;
         }
 
         .action-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-300);
         }
 
         .action-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-md);
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
         }
 
         .action-title {
+            font-size: var(--text-lg);
             font-weight: var(--font-semibold);
             color: var(--text-primary);
-            margin-bottom: var(--spacing-xs);
+            margin-bottom: var(--spacing-sm);
         }
 
         .action-description {
             color: var(--text-secondary);
             font-size: var(--text-sm);
+            line-height: 1.5;
         }
 
         .content-section {
@@ -154,21 +184,21 @@
         }
 
         .section-header {
-            padding: var(--spacing-lg);
+            padding: var(--spacing-xl);
             border-bottom: 1px solid var(--border-primary);
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
         }
 
         .section-title {
-            font-size: var(--text-lg);
+            font-size: var(--text-xl);
             font-weight: var(--font-semibold);
             color: var(--text-primary);
         }
 
         .section-content {
-            padding: var(--spacing-lg);
+            padding: var(--spacing-xl);
         }
 
         .nav-menu {
@@ -185,17 +215,19 @@
             display: flex;
             align-items: center;
             gap: var(--spacing-sm);
-            padding: var(--spacing-sm) var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
             border-radius: var(--radius-md);
             color: var(--text-secondary);
             text-decoration: none;
             transition: all var(--transition-fast);
+            font-weight: var(--font-medium);
         }
 
         .nav-link:hover,
         .nav-link.active {
             background: var(--primary-50);
             color: var(--primary-600);
+            transform: translateX(4px);
         }
 
         .nav-icon {
@@ -205,6 +237,36 @@
 
         .hidden {
             display: none !important;
+        }
+
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .materials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .assignments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            max-width: 300px;
         }
 
         @media (max-width: 768px) {
@@ -220,6 +282,18 @@
             .main-content {
                 margin-left: 0;
             }
+
+            .header-actions {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -228,9 +302,8 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="logo">
-                    <h2>TeacherUchit</h2>
-                </div>
+                <div class="logo">TeacherUchit</div>
+                <p style="color: var(--text-secondary); font-size: var(--text-sm);">Панель учителя</p>
             </div>
             
             <nav class="sidebar-nav">
@@ -256,7 +329,7 @@
                             <svg class="nav-icon">
                                 <use href="/assets/modern-icons.svg#icon-materials"></use>
                             </svg>
-                            Учебные материалы
+                            Материалы
                         </a>
                     </li>
                     <li class="nav-item">
@@ -317,22 +390,22 @@
             <div id="dashboard-section" class="section-content">
                 <div class="dashboard-header">
                     <div class="welcome-section">
-                        <h1 class="welcome-title">Добро пожаловать!</h1>
-                        <p class="welcome-subtitle">Управляйте своими классами и материалами</p>
-                    </div>
-                    <div class="header-actions">
-                        <button class="btn btn-primary" onclick="teacherDashboard.createLesson()">
-                            <svg class="icon icon-sm">
-                                <use href="/assets/modern-icons.svg#icon-lesson"></use>
-                            </svg>
-                            Создать урок
-                        </button>
-                        <button class="btn btn-secondary" onclick="teacherDashboard.createAssignment()">
-                            <svg class="icon icon-sm">
-                                <use href="/assets/modern-icons.svg#icon-assignments"></use>
-                            </svg>
-                            Новое задание
-                        </button>
+                        <h1>Добро пожаловать!</h1>
+                        <p>Управляйте своими классами и материалами эффективно</p>
+                        <div class="header-actions">
+                            <button class="btn btn-primary btn-lg" onclick="teacherDashboard.createLesson()">
+                                <svg class="icon icon-sm">
+                                    <use href="/assets/modern-icons.svg#icon-plus"></use>
+                                </svg>
+                                Создать урок
+                            </button>
+                            <button class="btn btn-secondary btn-lg" onclick="teacherDashboard.createAssignment()">
+                                <svg class="icon icon-sm">
+                                    <use href="/assets/modern-icons.svg#icon-assignments"></use>
+                                </svg>
+                                Новое задание
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -341,7 +414,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon primary">
-                                <svg class="icon icon-md">
+                                <svg class="icon icon-lg">
                                     <use href="/assets/modern-icons.svg#icon-class"></use>
                                 </svg>
                             </div>
@@ -353,7 +426,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon success">
-                                <svg class="icon icon-md">
+                                <svg class="icon icon-lg">
                                     <use href="/assets/modern-icons.svg#icon-students"></use>
                                 </svg>
                             </div>
@@ -365,7 +438,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon warning">
-                                <svg class="icon icon-md">
+                                <svg class="icon icon-lg">
                                     <use href="/assets/modern-icons.svg#icon-materials"></use>
                                 </svg>
                             </div>
@@ -377,7 +450,7 @@
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon error">
-                                <svg class="icon icon-md">
+                                <svg class="icon icon-lg">
                                     <use href="/assets/modern-icons.svg#icon-assignments"></use>
                                 </svg>
                             </div>
@@ -396,66 +469,182 @@
                         <div class="quick-actions">
                             <div class="action-card" onclick="teacherDashboard.showSection('classes')">
                                 <div class="action-icon primary">
-                                    <svg class="icon icon-md">
+                                    <svg class="icon icon-xl">
                                         <use href="/assets/modern-icons.svg#icon-class"></use>
                                     </svg>
                                 </div>
                                 <div class="action-title">Управление классами</div>
-                                <div class="action-description">Создавайте классы и приглашайте учеников</div>
+                                <div class="action-description">Создавайте классы, приглашайте учеников и отслеживайте прогресс</div>
                             </div>
                             
                             <div class="action-card" onclick="teacherDashboard.showSection('materials')">
                                 <div class="action-icon success">
-                                    <svg class="icon icon-md">
+                                    <svg class="icon icon-xl">
                                         <use href="/assets/modern-icons.svg#icon-materials"></use>
                                     </svg>
                                 </div>
                                 <div class="action-title">Учебные материалы</div>
-                                <div class="action-description">Загружайте и организуйте материалы</div>
+                                <div class="action-description">Загружайте и организуйте материалы по предметам</div>
                             </div>
                             
                             <div class="action-card" onclick="teacherDashboard.showSection('assignments')">
                                 <div class="action-icon warning">
-                                    <svg class="icon icon-md">
+                                    <svg class="icon icon-xl">
                                         <use href="/assets/modern-icons.svg#icon-assignments"></use>
                                     </svg>
                                 </div>
                                 <div class="action-title">Создать задание</div>
-                                <div class="action-description">Новые задания для учеников</div>
+                                <div class="action-description">Новые задания и тесты для ваших учеников</div>
                             </div>
                             
                             <div class="action-card" onclick="teacherDashboard.showSection('grades')">
                                 <div class="action-icon error">
-                                    <svg class="icon icon-md">
+                                    <svg class="icon icon-xl">
                                         <use href="/assets/modern-icons.svg#icon-grades"></use>
                                     </svg>
                                 </div>
                                 <div class="action-title">Журнал оценок</div>
-                                <div class="action-description">Просматривайте успеваемость</div>
+                                <div class="action-description">Просматривайте успеваемость и статистику</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Other sections will be loaded dynamically -->
-            <div id="classes-section" class="section-content hidden"></div>
-            <div id="materials-section" class="section-content hidden"></div>
-            <div id="assignments-section" class="section-content hidden"></div>
-            <div id="grades-section" class="section-content hidden"></div>
-            <div id="schedule-section" class="section-content hidden"></div>
-            <div id="profile-section" class="section-content hidden"></div>
-            <div id="premium-section" class="section-content hidden"></div>
-            <div id="ai-assistant-section" class="section-content hidden"></div>
+            <!-- Classes Section -->
+            <div id="classes-section" class="section-content hidden">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Мои классы</h2>
+                        <button class="btn btn-primary" onclick="teacherDashboard.showCreateClassModal()">
+                            <svg class="icon icon-sm">
+                                <use href="/assets/modern-icons.svg#icon-plus"></use>
+                            </svg>
+                            Создать класс
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <div id="classes-list" class="classes-grid">
+                            <!-- Classes will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Materials Section -->
+            <div id="materials-section" class="section-content hidden">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Учебные материалы</h2>
+                        <button class="btn btn-primary" onclick="teacherDashboard.showUploadMaterialModal()">
+                            <svg class="icon icon-sm">
+                                <use href="/assets/modern-icons.svg#icon-upload"></use>
+                            </svg>
+                            Загрузить материал
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <div class="filter-bar">
+                            <select id="subjectFilter" class="form-select">
+                                <option value="">Все предметы</option>
+                                <option value="История">История</option>
+                                <option value="Обществознание">Обществознание</option>
+                            </select>
+                            <input type="text" id="materialSearch" class="form-input search-input" placeholder="Поиск материалов...">
+                        </div>
+                        <div id="materials-list" class="materials-grid">
+                            <!-- Materials will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assignments Section -->
+            <div id="assignments-section" class="section-content hidden">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Задания</h2>
+                        <button class="btn btn-primary" onclick="teacherDashboard.showCreateAssignmentModal()">
+                            <svg class="icon icon-sm">
+                                <use href="/assets/modern-icons.svg#icon-plus"></use>
+                            </svg>
+                            Создать задание
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <div id="assignments-list" class="assignments-grid">
+                            <!-- Assignments will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other sections placeholders -->
+            <div id="grades-section" class="section-content hidden">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Журнал оценок</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>Раздел в разработке...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="schedule-section" class="section-content hidden">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Расписание</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>Раздел в разработке...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="profile-section" class="section-content hidden">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Профиль</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>Раздел в разработке...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="premium-section" class="section-content hidden">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Премиум</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>Раздел в разработке...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ai-assistant-section" class="section-content hidden">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">ИИ-помощник</h2>
+                    </div>
+                    <div class="section-content">
+                        <p>Раздел в разработке...</p>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
-    <!-- Modals will be inserted here -->
+    <!-- Modal Container -->
     <div id="modal-container"></div>
 
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
     <script src="/js/subjects-manager.js"></script>
-    <script src="/js/profile-editor.js"></script>
-    <script src="/js/ai-assistant.js"></script>
+    <script src="/js/class-manager.js"></script>
     <script>
         class TeacherDashboard {
             constructor() {
@@ -463,7 +652,6 @@
                 this.classes = JSON.parse(localStorage.getItem('teacher_classes') || '[]');
                 this.materials = JSON.parse(localStorage.getItem('teacher_materials') || '[]');
                 this.assignments = JSON.parse(localStorage.getItem('teacher_assignments') || '[]');
-                this.grades = JSON.parse(localStorage.getItem('teacher_grades') || '[]');
                 this.init();
             }
 
@@ -471,6 +659,7 @@
                 this.setupNavigation();
                 this.updateStats();
                 this.loadCurrentUser();
+                this.loadSampleData();
             }
 
             setupNavigation() {
@@ -501,183 +690,140 @@
                 document.querySelectorAll('.nav-link').forEach(link => {
                     link.classList.remove('active');
                 });
-                document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+                const activeLink = document.querySelector(`[data-section="${sectionName}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
 
                 this.currentSection = sectionName;
             }
 
             loadSectionContent(sectionName) {
-                const section = document.getElementById(`${sectionName}-section`);
-                
                 switch(sectionName) {
                     case 'classes':
-                        section.innerHTML = this.getClassesContent();
+                        this.loadClasses();
                         break;
                     case 'materials':
-                        section.innerHTML = this.getMaterialsContent();
+                        this.loadMaterials();
                         break;
                     case 'assignments':
-                        section.innerHTML = this.getAssignmentsContent();
-                        break;
-                    case 'grades':
-                        section.innerHTML = this.getGradesContent();
-                        break;
-                    case 'schedule':
-                        section.innerHTML = this.getScheduleContent();
-                        break;
-                    case 'profile':
-                        section.innerHTML = this.getProfileContent();
-                        break;
-                    case 'premium':
-                        section.innerHTML = this.getPremiumContent();
-                        break;
-                    case 'ai-assistant':
-                        section.innerHTML = this.getAIAssistantContent();
+                        this.loadAssignments();
                         break;
                 }
             }
 
-            updateStats() {
-                document.getElementById('classesCount').textContent = this.classes.length;
-                document.getElementById('studentsCount').textContent = 
-                    this.classes.reduce((total, cls) => total + (cls.students?.length || 0), 0);
-                document.getElementById('materialsCount').textContent = this.materials.length;
-                document.getElementById('assignmentsCount').textContent = this.assignments.length;
-            }
+            loadClasses() {
+                const container = document.getElementById('classes-list');
+                if (!container) return;
 
-            loadCurrentUser() {
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
-                if (user.profile) {
-                    const welcomeTitle = document.querySelector('.welcome-title');
-                    welcomeTitle.textContent = `Добро пожаловать, ${user.profile.firstName}!`;
+                if (this.classes.length === 0) {
+                    container.innerHTML = '<div class="empty-state">У вас пока нет классов. Создайте первый класс!</div>';
+                    return;
                 }
+
+                container.innerHTML = this.classes.map(cls => this.renderClassCard(cls)).join('');
             }
 
-            // Content generators for each section
-            getClassesContent() {
-                return `
-                    <div class="content-section">
-                        <div class="section-header">
-                            <h2 class="section-title">Мои классы</h2>
-                            <button class="btn btn-primary" onclick="teacherDashboard.createClass()">
-                                <svg class="icon icon-sm">
-                                    <use href="/assets/modern-icons.svg#icon-plus"></use>
-                                </svg>
-                                Создать класс
-                            </button>
-                        </div>
-                        <div class="section-content">
-                            <div id="classes-list">
-                                ${this.classes.length === 0 ? 
-                                    '<p class="empty-state">У вас пока нет классов. Создайте первый класс!</p>' :
-                                    this.classes.map(cls => this.renderClassCard(cls)).join('')
-                                }
-                            </div>
-                        </div>
-                    </div>
-                `;
+            loadMaterials() {
+                const container = document.getElementById('materials-list');
+                if (!container) return;
+
+                if (this.materials.length === 0) {
+                    container.innerHTML = '<div class="empty-state">У вас пока нет материалов. Загрузите первый материал!</div>';
+                    return;
+                }
+
+                container.innerHTML = this.materials.map(material => this.renderMaterialCard(material)).join('');
             }
 
-            getMaterialsContent() {
-                return `
-                    <div class="content-section">
-                        <div class="section-header">
-                            <h2 class="section-title">Учебные материалы</h2>
-                            <button class="btn btn-primary" onclick="teacherDashboard.uploadMaterial()">
-                                <svg class="icon icon-sm">
-                                    <use href="/assets/modern-icons.svg#icon-upload"></use>
-                                </svg>
-                                Загрузить материал
-                            </button>
-                        </div>
-                        <div class="section-content">
-                            <div class="materials-filter">
-                                <select id="subjectFilter" class="form-select">
-                                    <option value="">Все предметы</option>
-                                    <option value="История">История</option>
-                                    <option value="Обществознание">Обществознание</option>
-                                </select>
-                            </div>
-                            <div id="materials-list">
-                                ${this.materials.length === 0 ? 
-                                    '<p class="empty-state">У вас пока нет материалов. Загрузите первый материал!</p>' :
-                                    this.materials.map(material => this.renderMaterialCard(material)).join('')
-                                }
-                            </div>
-                        </div>
-                    </div>
-                `;
+            loadAssignments() {
+                const container = document.getElementById('assignments-list');
+                if (!container) return;
+
+                if (this.assignments.length === 0) {
+                    container.innerHTML = '<div class="empty-state">У вас пока нет заданий. Создайте первое задание!</div>';
+                    return;
+                }
+
+                container.innerHTML = this.assignments.map(assignment => this.renderAssignmentCard(assignment)).join('');
             }
 
-            getAssignmentsContent() {
-                return `
-                    <div class="content-section">
-                        <div class="section-header">
-                            <h2 class="section-title">Задания</h2>
-                            <button class="btn btn-primary" onclick="teacherDashboard.createAssignment()">
-                                <svg class="icon icon-sm">
-                                    <use href="/assets/modern-icons.svg#icon-plus"></use>
-                                </svg>
-                                Создать задание
-                            </button>
-                        </div>
-                        <div class="section-content">
-                            <div id="assignments-list">
-                                ${this.assignments.length === 0 ? 
-                                    '<p class="empty-state">У вас пока нет заданий. Создайте первое задание!</p>' :
-                                    this.assignments.map(assignment => this.renderAssignmentCard(assignment)).join('')
-                                }
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Action methods
-            createClass() {
-                this.showModal('create-class');
-            }
-
-            createLesson() {
-                this.showModal('create-lesson');
-            }
-
-            createAssignment() {
-                this.showModal('create-assignment');
-            }
-
-            uploadMaterial() {
-                this.showModal('upload-material');
-            }
-
-            showModal(modalType) {
-                // Modal implementation will be added
-                console.log(`Opening ${modalType} modal`);
-            }
-
-            // Render methods
             renderClassCard(cls) {
                 return `
                     <div class="class-card">
-                        <div class="class-icon ${cls.color || 'primary'}">
-                            <svg class="icon icon-lg">
-                                <use href="/assets/modern-icons.svg#${cls.icon || 'icon-class'}"></use>
-                            </svg>
-                        </div>
-                        <div class="class-info">
-                            <h3 class="class-name">${cls.name}</h3>
-                            <p class="class-description">${cls.description || ''}</p>
-                            <div class="class-stats">
-                                <span>${cls.students?.length || 0} учеников</span>
-                                <span>${cls.subject}</span>
+                        <div class="class-header">
+                            <div class="class-icon ${cls.color || 'primary'}">
+                                <svg class="icon icon-lg">
+                                    <use href="/assets/modern-icons.svg#${cls.icon || 'icon-class'}"></use>
+                                </svg>
+                            </div>
+                            <div class="class-info">
+                                <h3 class="class-name">${cls.name}</h3>
+                                <p class="class-description">${cls.description || 'Без описания'}</p>
+                                <div class="class-meta">
+                                    <span class="subject-badge ${cls.color || 'primary'}">${cls.subject}</span>
+                                    <span class="class-date">Создан ${this.formatDate(cls.createdAt)}</span>
+                                </div>
+                            </div>
+                            <div class="class-actions">
+                                <button class="btn btn-sm btn-ghost" onclick="teacherDashboard.shareClass('${cls.id}')" title="Поделиться">
+                                    <svg class="icon icon-xs">
+                                        <use href="/assets/modern-icons.svg#icon-share"></use>
+                                    </svg>
+                                </button>
+                                <button class="btn btn-sm btn-ghost" onclick="teacherDashboard.editClass('${cls.id}')" title="Редактировать">
+                                    <svg class="icon icon-xs">
+                                        <use href="/assets/modern-icons.svg#icon-edit"></use>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
-                        <div class="class-actions">
-                            <button class="btn btn-sm btn-secondary" onclick="teacherDashboard.editClass('${cls.id}')">
-                                Редактировать
+                        
+                        <div class="class-stats">
+                            <div class="stat-item">
+                                <svg class="stat-icon icon icon-sm">
+                                    <use href="/assets/modern-icons.svg#icon-students"></use>
+                                </svg>
+                                <div class="stat-info">
+                                    <span class="stat-value">${cls.students?.length || 0}</span>
+                                    <span class="stat-label">Учеников</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item">
+                                <svg class="stat-icon icon icon-sm">
+                                    <use href="/assets/modern-icons.svg#icon-assignments"></use>
+                                </svg>
+                                <div class="stat-info">
+                                    <span class="stat-value">${cls.assignments?.length || 0}</span>
+                                    <span class="stat-label">Заданий</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-item">
+                                <svg class="stat-icon icon icon-sm">
+                                    <use href="/assets/modern-icons.svg#icon-materials"></use>
+                                </svg>
+                                <div class="stat-info">
+                                    <span class="stat-value">${cls.materials?.length || 0}</span>
+                                    <span class="stat-label">Материалов</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="class-footer">
+                            <button class="btn btn-primary btn-sm" onclick="teacherDashboard.openClass('${cls.id}')">
+                                <svg class="icon icon-sm">
+                                    <use href="/assets/modern-icons.svg#icon-open"></use>
+                                </svg>
+                                Открыть класс
                             </button>
-                            <button class="btn btn-sm btn-primary" onclick="teacherDashboard.viewClass('${cls.id}')">
-                                Открыть
+                            
+                            <button class="btn btn-secondary btn-sm" onclick="teacherDashboard.manageStudents('${cls.id}')">
+                                <svg class="icon icon-sm">
+                                    <use href="/assets/modern-icons.svg#icon-students"></use>
+                                </svg>
+                                Ученики
                             </button>
                         </div>
                     </div>
@@ -685,21 +831,22 @@
             }
 
             renderMaterialCard(material) {
-                const subject = subjectsManager.getSubjectByName(material.subject);
                 return `
                     <div class="material-card">
-                        <div class="material-icon ${subject?.color || 'primary'}">
-                            <svg class="icon icon-md">
-                                <use href="/assets/modern-icons.svg#${subject?.icon || 'icon-materials'}"></use>
-                            </svg>
+                        <div class="material-header">
+                            <div class="material-icon ${material.color || 'primary'}">
+                                <svg class="icon icon-md">
+                                    <use href="/assets/modern-icons.svg#${material.icon || 'icon-materials'}"></use>
+                                </svg>
+                            </div>
+                            <div class="material-meta">
+                                <span class="subject-badge ${material.color || 'primary'}">${material.subject}</span>
+                                <span class="material-date">${this.formatDate(material.createdAt)}</span>
+                            </div>
                         </div>
                         <div class="material-info">
                             <h3 class="material-title">${material.title}</h3>
-                            <p class="material-description">${material.description || ''}</p>
-                            <div class="material-meta">
-                                <span class="subject-badge ${subject?.color || 'primary'}">${material.subject}</span>
-                                <span class="material-date">${this.formatDate(material.createdAt)}</span>
-                            </div>
+                            <p class="material-description">${material.description || 'Без описания'}</p>
                         </div>
                         <div class="material-actions">
                             <button class="btn btn-sm btn-secondary" onclick="teacherDashboard.editMaterial('${material.id}')">
@@ -718,7 +865,7 @@
                     <div class="assignment-card">
                         <div class="assignment-info">
                             <h3 class="assignment-title">${assignment.title}</h3>
-                            <p class="assignment-description">${assignment.description || ''}</p>
+                            <p class="assignment-description">${assignment.description || 'Без описания'}</p>
                             <div class="assignment-meta">
                                 <span class="assignment-class">${assignment.className}</span>
                                 <span class="assignment-due">До: ${this.formatDate(assignment.dueDate)}</span>
@@ -746,18 +893,193 @@
                 `;
             }
 
+            updateStats() {
+                document.getElementById('classesCount').textContent = this.classes.length;
+                document.getElementById('studentsCount').textContent = 
+                    this.classes.reduce((total, cls) => total + (cls.students?.length || 0), 0);
+                document.getElementById('materialsCount').textContent = this.materials.length;
+                document.getElementById('assignmentsCount').textContent = this.assignments.length;
+            }
+
+            loadCurrentUser() {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user.profile) {
+                    const welcomeTitle = document.querySelector('.welcome-section h1');
+                    if (welcomeTitle) {
+                        welcomeTitle.textContent = `Добро пожаловать, ${user.profile.firstName}!`;
+                    }
+                }
+            }
+
+            loadSampleData() {
+                // Добавляем примерные данные если их нет
+                if (this.classes.length === 0) {
+                    this.classes = [
+                        {
+                            id: 'class_1',
+                            name: '10А История',
+                            description: 'Изучение истории России',
+                            subject: 'История',
+                            icon: 'icon-history',
+                            color: 'warning',
+                            students: [{}, {}, {}],
+                            assignments: [{}],
+                            materials: [{}, {}],
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 'class_2',
+                            name: '11Б Обществознание',
+                            description: 'Основы обществознания',
+                            subject: 'Обществознание',
+                            icon: 'icon-social-studies',
+                            color: 'primary',
+                            students: [{}, {}],
+                            assignments: [],
+                            materials: [{}],
+                            createdAt: new Date().toISOString()
+                        }
+                    ];
+                    localStorage.setItem('teacher_classes', JSON.stringify(this.classes));
+                }
+
+                if (this.materials.length === 0) {
+                    this.materials = [
+                        {
+                            id: 'material_1',
+                            title: 'Презентация по Древней Руси',
+                            description: 'Подробная презентация о формировании Древнерусского государства',
+                            subject: 'История',
+                            icon: 'icon-history',
+                            color: 'warning',
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 'material_2',
+                            title: 'Конституция РФ',
+                            description: 'Основной закон Российской Федерации',
+                            subject: 'Обществознание',
+                            icon: 'icon-social-studies',
+                            color: 'primary',
+                            createdAt: new Date().toISOString()
+                        }
+                    ];
+                    localStorage.setItem('teacher_materials', JSON.stringify(this.materials));
+                }
+
+                if (this.assignments.length === 0) {
+                    this.assignments = [
+                        {
+                            id: 'assignment_1',
+                            title: 'Эссе по истории Древней Руси',
+                            description: 'Написать эссе на тему формирования государства',
+                            className: '10А История',
+                            dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                            submissions: [{}],
+                            totalStudents: 3,
+                            createdAt: new Date().toISOString()
+                        }
+                    ];
+                    localStorage.setItem('teacher_assignments', JSON.stringify(this.assignments));
+                }
+
+                this.updateStats();
+            }
+
             formatDate(dateString) {
                 if (!dateString) return 'Дата неизвестна';
                 const date = new Date(dateString);
                 return date.toLocaleDateString('ru-RU');
             }
 
-            // Placeholder methods for other sections
-            getGradesContent() { return '<div class="content-section"><h2>Журнал оценок - В разработке</h2></div>'; }
-            getScheduleContent() { return '<div class="content-section"><h2>Расписание - В разработке</h2></div>'; }
-            getProfileContent() { return '<div class="content-section"><h2>Профиль - В разработке</h2></div>'; }
-            getPremiumContent() { return '<div class="content-section"><h2>Премиум - В разработке</h2></div>'; }
-            getAIAssistantContent() { return '<div class="content-section"><h2>ИИ-помощник - В разработке</h2></div>'; }
+            // Action methods
+            createLesson() {
+                this.showToast('Создание урока - функция в разработке', 'info');
+            }
+
+            createAssignment() {
+                this.showToast('Создание задания - функция в разработке', 'info');
+            }
+
+            showCreateClassModal() {
+                this.showToast('Создание класса - функция в разработке', 'info');
+            }
+
+            showUploadMaterialModal() {
+                this.showToast('Загрузка материала - функция в разработке', 'info');
+            }
+
+            showCreateAssignmentModal() {
+                this.showToast('Создание задания - функция в разработке', 'info');
+            }
+
+            shareClass(classId) {
+                this.showToast('Ссылка для приглашения скопирована!', 'success');
+            }
+
+            editClass(classId) {
+                this.showToast('Редактирование класса - функция в разработке', 'info');
+            }
+
+            openClass(classId) {
+                this.showToast('Открытие класса - функция в разработке', 'info');
+            }
+
+            manageStudents(classId) {
+                this.showToast('Управление учениками - функция в разработке', 'info');
+            }
+
+            editMaterial(materialId) {
+                this.showToast('Редактирование материала - функция в разработке', 'info');
+            }
+
+            viewMaterial(materialId) {
+                this.showToast('Просмотр материала - функция в разработке', 'info');
+            }
+
+            editAssignment(assignmentId) {
+                this.showToast('Редактирование задания - функция в разработке', 'info');
+            }
+
+            viewAssignment(assignmentId) {
+                this.showToast('Проверка задания - функция в разработке', 'info');
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type} show`;
+                
+                const iconMap = {
+                    success: 'icon-success',
+                    error: 'icon-error',
+                    warning: 'icon-warning',
+                    info: 'icon-info'
+                };
+
+                toast.innerHTML = `
+                    <svg class="toast-icon icon icon-sm">
+                        <use href="/assets/modern-icons.svg#${iconMap[type]}"></use>
+                    </svg>
+                    <div class="toast-content">
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close" onclick="this.parentElement.remove()">
+                        <svg class="icon icon-sm">
+                            <use href="/assets/modern-icons.svg#icon-close"></use>
+                        </svg>
+                    </button>
+                `;
+
+                let container = document.querySelector('.toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+
+                container.appendChild(toast);
+                setTimeout(() => toast.remove(), 5000);
+            }
         }
 
         // Initialize dashboard

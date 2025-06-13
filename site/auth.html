@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Авторизация - TeacherUchit</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <title>Вход и регистрация - TeacherUchit</title>
     <style>
         :root {
             --primary: #6366f1;
@@ -18,15 +14,11 @@
             --gray-200: #e5e7eb;
             --gray-300: #d1d5db;
             --gray-400: #9ca3af;
+            --gray-500: #6b7280;
             --gray-600: #4b5563;
             --gray-700: #374151;
             --gray-800: #1f2937;
             --gray-900: #111827;
-            --success: #10b981;
-            --error: #ef4444;
-            --warning: #f59e0b;
-            --btn-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-            --btn-shadow-hover: 0 15px 30px rgba(99, 102, 241, 0.4);
         }
 
         * {
@@ -36,27 +28,34 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1rem;
-            position: relative;
-            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        body::before {
-            content: '';
+        .back-link {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-            z-index: 1;
+            top: 1.5rem;
+            left: 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         .auth-container {
@@ -70,39 +69,30 @@
             overflow: hidden;
         }
 
-        .auth-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-        }
-
         .logo-section {
             text-align: center;
             margin-bottom: 2.5rem;
         }
 
         .logo-icon {
-            width: 4.5rem;
-            height: 4.5rem;
-            margin: 0 auto 1.5rem;
-            filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3));
+            width: 4rem;
+            height: 4rem;
+            margin-bottom: 1rem;
         }
 
         .auth-title {
             font-size: 2.25rem;
             font-weight: 800;
-            color: var(--gray-900);
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
         }
 
         .auth-subtitle {
             color: var(--gray-600);
-            font-size: 1.125rem;
+            font-size: 1rem;
             font-weight: 500;
         }
 
@@ -110,59 +100,38 @@
             display: flex;
             background: var(--gray-100);
             border-radius: 1rem;
-            padding: 0.375rem;
-            margin-bottom: 2.5rem;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 0.5rem;
+            margin-bottom: 2rem;
         }
 
         .tab-button {
             flex: 1;
-            padding: 1rem;
+            padding: 0.875rem;
+            background: none;
             border: none;
-            background: transparent;
-            color: var(--gray-600);
-            font-weight: 600;
-            font-size: 0.95rem;
             border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--gray-600);
         }
 
         .tab-button.active {
             background: white;
             color: var(--primary);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transform: translateY(-1px);
         }
 
         .auth-form {
+            display: none;
             opacity: 0;
-            transform: translateX(0);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            display: block;
-            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
         .auth-form.active {
+            display: block;
             opacity: 1;
-            pointer-events: all;
-            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        .auth-form:not(.active) {
-            display: none;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .form-group {
@@ -171,9 +140,9 @@
 
         .form-label {
             display: block;
-            font-weight: 600;
-            color: var(--gray-700);
             margin-bottom: 0.75rem;
+            color: var(--gray-700);
+            font-weight: 600;
             font-size: 0.95rem;
         }
 
@@ -181,31 +150,17 @@
             width: 100%;
             padding: 1rem 1.25rem;
             border: 2px solid var(--gray-300);
-            border-radius: 1rem;
+            border-radius: 12px;
             font-size: 1rem;
             transition: all 0.3s ease;
-            background: white;
-            font-family: inherit;
+            background: var(--gray-50);
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
+            background: white;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .form-input.error {
-            border-color: var(--error);
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-        }
-
-        .error-message {
-            color: var(--error);
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            display: none;
-            font-weight: 500;
         }
 
         .password-field {
@@ -214,22 +169,14 @@
 
         .password-toggle {
             position: absolute;
-            right: 1.25rem;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: var(--gray-400);
             cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            transition: all 0.3s ease;
-            font-size: 1.125rem;
-        }
-
-        .password-toggle:hover {
-            color: var(--gray-600);
-            background: var(--gray-100);
+            font-size: 1.25rem;
+            padding: 0.25rem;
         }
 
         .auth-button {
@@ -238,89 +185,23 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            border-radius: 1rem;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
-            font-family: inherit;
-        }
-
-        .auth-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .auth-button:hover::before {
-            left: 100%;
         }
 
         .auth-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.45);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
         }
 
         .auth-button:active {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        .auth-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
-        }
-
-        .loading {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-        }
-
-        .loading.active {
-            display: flex;
-        }
-
-        .spinner {
-            width: 1.25rem;
-            height: 1.25rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .forgot-password {
-            text-align: center;
-            margin-top: 1.5rem;
-        }
-
-        .forgot-password a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .forgot-password a:hover {
-            color: var(--secondary);
-            text-decoration: underline;
+            transform: translateY(0);
         }
 
         .divider {
@@ -396,11 +277,6 @@
             box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
         }
 
-        .social-button:active {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.1);
-        }
-
         .social-icon {
             width: 2.25rem;
             height: 2.25rem;
@@ -409,40 +285,33 @@
             z-index: 1;
         }
 
-        .back-link {
-            position: fixed;
-            top: 2rem;
-            left: 2rem;
-            color: white;
+        .forgot-password {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary);
             text-decoration: none;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 1.5rem;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 1rem;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 3;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
         }
 
-        .back-link:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateX(-4px) translateY(-1px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
         }
 
-        .back-link:active {
-            transform: translateX(-2px) translateY(0px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .form-input.error {
+            border-color: #ef4444;
+            background: #fef2f2;
         }
 
         .success-message {
-            background: var(--success);
-            color: white;
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
             padding: 1rem;
             border-radius: 1rem;
             margin-bottom: 1.5rem;
@@ -466,44 +335,15 @@
                 width: 3.5rem;
                 height: 3.5rem;
             }
-
-            .social-buttons {
-                flex-direction: column;
-            }
-
-            .back-link {
-                top: 1rem;
-                left: 1rem;
-                padding: 0.5rem 1rem;
-            }
-        }
-
-        /* Анимация появления */
-        .auth-container {
-            animation: slideUp 0.6s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-link">
-        ← Назад на главную
-    </a>
+    <a href="index.html" class="back-link">← Назад на главную</a>
 
     <div class="auth-container">
         <div class="logo-section">
             <svg class="logo-icon" viewBox="0 0 24 24">
-                <!-- Brand Logo Icon -->
                 <defs>
                     <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
@@ -512,47 +352,18 @@
                     </linearGradient>
                 </defs>
                 
-                <!-- Main circle with gradient -->
                 <circle cx="12" cy="12" r="11" fill="url(#logoGradient)" opacity="0.9"/>
                 <circle cx="12" cy="12" r="11" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
                 
-                <!-- Book/Knowledge symbol with T -->
                 <path d="M7 6 L17 6 Q18 6 18 7 L18 17 Q18 18 17 18 L7 18 Q6 18 6 17 L6 7 Q6 6 7 6 Z" 
                       fill="white" opacity="0.9"/>
                 
-                <!-- Beautiful Letter T -->
                 <path d="M9 8.5 L15 8.5" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
                 <path d="M12 8.5 L12 15.5" stroke="url(#logoGradient)" stroke-width="2.5" stroke-linecap="round"/>
                 
-                <!-- Decorative elements for T -->
                 <circle cx="9" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
                 <circle cx="15" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
                 <circle cx="12" cy="15.5" r="1.2" fill="url(#logoGradient)" opacity="0.8"/>
-                
-                <!-- Book lines around T -->
-                <path d="M8 11 L10.5 11" stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-                <path d="M13.5 11 L16 11" stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-                <path d="M8 13 L10.5 13" stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-                <path d="M13.5 13 L16 13" stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-                
-                <!-- AI brain/neural network element -->
-                <circle cx="19" cy="5" r="3.5" fill="white" opacity="0.95"/>
-                <circle cx="19" cy="5" r="3.5" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
-                
-                <!-- Neural connections -->
-                <circle cx="17.5" cy="4" r="0.8" fill="url(#logoGradient)"/>
-                <circle cx="20.5" cy="4" r="0.8" fill="url(#logoGradient)"/>
-                <circle cx="19" cy="6.5" r="0.8" fill="url(#logoGradient)"/>
-                <circle cx="19" cy="3.5" r="0.8" fill="url(#logoGradient)"/>
-                
-                <!-- Connecting lines -->
-                <path d="M17.8 4.2 L18.7 3.7 M20.2 4.2 L19.3 3.7 M19.2 6.3 L19.2 5.2" 
-                      stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
-                
-                <!-- Sparkle effect -->
-                <path d="M4 8 L5 9 L4 10 L3 9 Z" fill="white" opacity="0.8"/>
-                <path d="M20 15 L21 16 L20 17 L19 16 Z" fill="white" opacity="0.8"/>
-                <circle cx="6" cy="18" r="1" fill="white" opacity="0.6"/>
             </svg>
             <h1 class="auth-title">TeacherUchit</h1>
             <p class="auth-subtitle">Добро пожаловать в будущее образования</p>
@@ -569,26 +380,20 @@
         <form class="auth-form active" id="loginForm">
             <div class="form-group">
                 <label class="form-label" for="login-email">Электронная почта</label>
-                <input type="email" id="login-email" class="form-input" placeholder="your@email.com" required autocomplete="email">
+                <input type="email" id="login-email" class="form-input" placeholder="your@email.com" required>
                 <div class="error-message" id="login-email-error"></div>
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="login-password">Пароль</label>
                 <div class="password-field">
-                    <input type="password" id="login-password" class="form-input" placeholder="Введите пароль" required autocomplete="current-password">
+                    <input type="password" id="login-password" class="form-input" placeholder="Введите пароль" required>
                     <button type="button" class="password-toggle" onclick="togglePassword('login-password')">👁</button>
                 </div>
                 <div class="error-message" id="login-password-error"></div>
             </div>
 
-            <button type="submit" class="auth-button" id="login-btn">
-                <span class="button-text">Войти в аккаунт</span>
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <span>Входим...</span>
-                </div>
-            </button>
+            <button type="submit" class="auth-button">Войти в аккаунт</button>
 
             <div class="forgot-password">
                 <a href="#" onclick="showForgotPassword()">Забыли пароль?</a>
@@ -599,20 +404,20 @@
         <form class="auth-form" id="registerForm">
             <div class="form-group">
                 <label class="form-label" for="register-name">Полное имя</label>
-                <input type="text" id="register-name" class="form-input" placeholder="Ваше имя и фамилия" required autocomplete="name">
+                <input type="text" id="register-name" class="form-input" placeholder="Ваше имя и фамилия" required>
                 <div class="error-message" id="register-name-error"></div>
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="register-email">Электронная почта</label>
-                <input type="email" id="register-email" class="form-input" placeholder="your@email.com" required autocomplete="email">
+                <input type="email" id="register-email" class="form-input" placeholder="your@email.com" required>
                 <div class="error-message" id="register-email-error"></div>
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="register-password">Пароль</label>
                 <div class="password-field">
-                    <input type="password" id="register-password" class="form-input" placeholder="Создайте надежный пароль" required autocomplete="new-password">
+                    <input type="password" id="register-password" class="form-input" placeholder="Создайте надежный пароль" required>
                     <button type="button" class="password-toggle" onclick="togglePassword('register-password')">👁</button>
                 </div>
                 <div class="error-message" id="register-password-error"></div>
@@ -621,19 +426,13 @@
             <div class="form-group">
                 <label class="form-label" for="register-password-confirm">Подтверждение пароля</label>
                 <div class="password-field">
-                    <input type="password" id="register-password-confirm" class="form-input" placeholder="Повторите пароль" required autocomplete="new-password">
+                    <input type="password" id="register-password-confirm" class="form-input" placeholder="Повторите пароль" required>
                     <button type="button" class="password-toggle" onclick="togglePassword('register-password-confirm')">👁</button>
                 </div>
                 <div class="error-message" id="register-password-confirm-error"></div>
             </div>
 
-            <button type="submit" class="auth-button" id="register-btn">
-                <span class="button-text">Создать аккаунт</span>
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <span>Создаем аккаунт...</span>
-                </div>
-            </button>
+            <button type="submit" class="auth-button">Создать аккаунт</button>
         </form>
 
         <div class="divider">
@@ -658,101 +457,72 @@
         </div>
     </div>
 
-    <!-- Скрытые SVG иконки -->
-    <div style="position: absolute; width: 0; height: 0; overflow: hidden;">
-        <svg>
-            <defs>
-                <!-- Google Icon -->
-                <g id="google-icon">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </g>
-                
-                <!-- VK Icon -->
-                <g id="vk-icon">
-                    <rect width="24" height="24" rx="5" ry="5" fill="currentColor" opacity="0.1"/>
-                    <rect width="24" height="24" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                    <path fill="currentColor" d="M12.76 16.8c0 0 .38-.04.58-.24.18-.18.17-.52.17-.52s-.03-1.58.71-1.81c.73-.23 1.66 1.53 2.65 2.21.75.51 1.32.4 1.32.4l2.65-.04s1.38-.09.73-1.17c-.05-.09-.38-.79-1.95-2.24-1.64-1.52-1.42-1.27.56-3.89 1.2-1.59 1.68-2.56 1.53-2.98-.14-.4-1.03-.29-1.03-.29l-2.98.02s-.22-.03-.38.07c-.16.09-.26.31-.26.31s-.47 1.24-1.09 2.3c-1.32 2.23-1.85 2.02-2.06 1.9-.5-.28-.38-1.11-.38-1.71 0-1.86.28-2.63-.55-2.83-.28-.07-.48-.11-1.19-.12-.9-.01-1.67 0-2.1.21-.29.14-.51.45-.38.47.17.02.55.1.75.38.26.36.25 1.16.25 1.16s.15 2.19-.35 2.46c-.34.19-.81-.2-1.82-2.2-.51-1.01-.9-2.12-.9-2.12s-.08-.18-.21-.28c-.16-.12-.39-.15-.39-.15l-2.82.02s-.42.01-.58.19c-.14.16-.01.5-.01.5s2.2 5.14 4.69 7.73c2.29 2.38 4.89 2.22 4.89 2.22l-.01.01z"/>
-                </g>
-            </defs>
-        </svg>
-    </div>
-
     <script>
+        console.log('TeacherUchit Auth - Script loaded successfully!');
+
         function showForm(formType) {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
+            console.log('showForm called:', formType);
             
-            // Очищаем все активные классы
-            loginForm.classList.remove('active');
-            registerForm.classList.remove('active');
+            // Убираем активные классы с форм
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            // Убираем активные классы с кнопок
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
             
             // Активируем нужную форму
-            if (formType === 'login') {
-                loginForm.classList.add('active');
-            } else {
-                registerForm.classList.add('active');
+            const targetForm = document.getElementById(formType + 'Form');
+            if (targetForm) {
+                targetForm.classList.add('active');
             }
             
-            // Обновляем активные вкладки
-            document.querySelectorAll('.tab-button').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelector(`[onclick="showForm('${formType}')"]`).classList.add('active');
+            // Активируем нужную кнопку
+            const targetButton = document.querySelector(`[onclick="showForm('${formType}')"]`);
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
             
-            // Автофокус на первое поле активной формы
-            setTimeout(() => {
-                const activeForm = document.querySelector('.auth-form.active');
-                const firstInput = activeForm.querySelector('input');
-                if (firstInput) firstInput.focus();
-            }, 100);
+            console.log('Form switched to:', formType);
         }
 
         function togglePassword(inputId) {
+            console.log('togglePassword called:', inputId);
             const input = document.getElementById(inputId);
-            const toggle = input.nextElementSibling;
             
             if (input.type === 'password') {
                 input.type = 'text';
-                toggle.textContent = '👁';
             } else {
                 input.type = 'password';
-                toggle.textContent = '👁';
             }
         }
 
-        function showLoading(formType) {
-            const btn = document.getElementById(formType + '-btn');
-            const buttonText = btn.querySelector('.button-text');
-            const loading = btn.querySelector('.loading');
-            
-            buttonText.style.display = 'none';
-            loading.classList.add('active');
-            btn.disabled = true;
+        function socialLogin(provider) {
+            console.log('socialLogin called:', provider);
+            const messages = {
+                google: 'Вход через Google будет доступен в полной версии приложения',
+                vk: 'Вход через VKontakte будет доступен в полной версии приложения'
+            };
+            alert(messages[provider] || 'Социальный вход будет доступен позже');
         }
 
-        function hideLoading(formType) {
-            const btn = document.getElementById(formType + '-btn');
-            const buttonText = btn.querySelector('.button-text');
-            const loading = btn.querySelector('.loading');
-            
-            buttonText.style.display = 'inline';
-            loading.classList.remove('active');
-            btn.disabled = false;
+        function showForgotPassword() {
+            console.log('showForgotPassword called');
+            alert('Функция восстановления пароля будет доступна в полной версии.\n\nДля демо используйте:\nEmail: demo@teacheruchit.ru\nПароль: demo123');
         }
 
         function showError(fieldId, message) {
             const field = document.getElementById(fieldId);
             const error = document.getElementById(fieldId + '-error');
             
-            field.classList.add('error');
-            error.textContent = message;
-            error.style.display = 'block';
-            
-            // Фокус на поле с ошибкой
-            field.focus();
+            if (field && error) {
+                field.classList.add('error');
+                error.textContent = message;
+                error.style.display = 'block';
+                field.focus();
+            }
         }
 
         function clearErrors() {
@@ -769,29 +539,22 @@
             const successEl = document.getElementById('success-message');
             successEl.textContent = message;
             successEl.style.display = 'block';
-            successEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        // Валидация email
         function isValidEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
         }
 
-        // Валидация пароля
-        function isValidPassword(password) {
-            return password.length >= 6;
-        }
-
-        // Обработка входа
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        // Обработчики форм
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            console.log('Login form submitted');
             clearErrors();
             
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             
-            // Валидация
             let hasErrors = false;
             
             if (!email) {
@@ -809,32 +572,20 @@
             
             if (hasErrors) return;
             
-            showLoading('login');
-            
-            // Имитация запроса к серверу
-            setTimeout(() => {
-                hideLoading('login');
-                
-                // Простая проверка (в реальном приложении это будет API)
-                if (email === 'demo@teacheruchit.ru' && password === 'demo123') {
-                    localStorage.setItem('user', JSON.stringify({
-                        name: 'Демо пользователь',
-                        email: email,
-                        premium: false
-                    }));
-                    showSuccess('Успешный вход! Перенаправляем...');
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1500);
-                } else {
-                    showError('login-password', 'Неверный email или пароль. Для демо используйте: demo@teacheruchit.ru / demo123');
-                }
-            }, 2000);
+            // Имитация входа
+            if (email === 'demo@teacheruchit.ru' && password === 'demo123') {
+                showSuccess('Успешный вход! Перенаправляем...');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } else {
+                showError('login-password', 'Неверный email или пароль. Для демо: demo@teacheruchit.ru / demo123');
+            }
         });
 
-        // Обработка регистрации
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            console.log('Register form submitted');
             clearErrors();
             
             const name = document.getElementById('register-name').value.trim();
@@ -842,7 +593,6 @@
             const password = document.getElementById('register-password').value;
             const passwordConfirm = document.getElementById('register-password-confirm').value;
             
-            // Валидация
             let hasErrors = false;
             
             if (!name) {
@@ -864,7 +614,7 @@
             if (!password) {
                 showError('register-password', 'Создайте пароль');
                 hasErrors = true;
-            } else if (!isValidPassword(password)) {
+            } else if (password.length < 6) {
                 showError('register-password', 'Пароль должен содержать минимум 6 символов');
                 hasErrors = true;
             }
@@ -879,43 +629,19 @@
             
             if (hasErrors) return;
             
-            showLoading('register');
-            
-            // Имитация регистрации
+            showSuccess('Аккаунт успешно создан! Добро пожаловать в TeacherUchit!');
             setTimeout(() => {
-                hideLoading('register');
-                
-                localStorage.setItem('user', JSON.stringify({
-                    name: name,
-                    email: email,
-                    premium: false
-                }));
-                
-                showSuccess('Аккаунт успешно создан! Добро пожаловать в TeacherUchit!');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 2000);
-            }, 2500);
+                window.location.href = 'index.html';
+            }, 2000);
         });
 
-        function socialLogin(provider) {
-            const messages = {
-                google: 'Вход через Google будет доступен в полной версии приложения',
-                vk: 'Вход через VKontakte будет доступен в полной версии приложения'
-            };
-            alert(messages[provider]);
-        }
-
-        function showForgotPassword() {
-            alert('Функция восстановления пароля будет доступна в полной версии.\n\nДля демо используйте:\nEmail: demo@teacheruchit.ru\nПароль: demo123');
-        }
-
-        // Проверка URL параметров при загрузке страницы
+        // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            
             const urlParams = new URLSearchParams(window.location.search);
             const mode = urlParams.get('mode');
             
-            // По умолчанию показываем форму входа
             if (mode === 'register') {
                 showForm('register');
             } else {
@@ -923,22 +649,7 @@
             }
         });
 
-        // Обработка Enter для переключения между полями
-        document.querySelectorAll('.form-input').forEach((input, index, inputs) => {
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && index < inputs.length - 1) {
-                    e.preventDefault();
-                    const nextInput = inputs[index + 1];
-                    const nextInputForm = nextInput.closest('.auth-form');
-                    const currentForm = input.closest('.auth-form');
-                    
-                    // Переходим к следующему полю только если оно в той же форме
-                    if (nextInputForm === currentForm) {
-                        nextInput.focus();
-                    }
-                }
-            });
-        });
+        console.log('All functions and event listeners initialized');
     </script>
 </body>
 </html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор роли - TeacherUchit</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+            contain: layout style paint;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-icon {
+            width: 4rem;
+            height: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--gray-600);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 0.5rem;
+        }
+
+        .step {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: var(--gray-200);
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .step.completed {
+            background: var(--accent);
+            color: white;
+        }
+
+        .step-line {
+            width: 2rem;
+            height: 2px;
+            background: var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .step-line.completed {
+            background: var(--accent);
+        }
+
+        .role-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .role-card {
+            border: 2px solid var(--gray-200);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .role-card:hover::before {
+            opacity: 1;
+        }
+
+        .role-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+        }
+
+        .role-card.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .role-icon {
+            width: 3rem;
+            height: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .role-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .role-description {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-container {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .form-container.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gray-700);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-select, .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: var(--gray-50);
+            -webkit-appearance: none;
+            appearance: none;
+            box-sizing: border-box;
+        }
+
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .class-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+
+        .button {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+            margin-top: 1rem;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Мобильная адаптация */
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .container {
+                padding: 2rem 1.5rem;
+                max-width: 100%;
+            }
+
+            .title {
+                font-size: 1.75rem;
+            }
+
+            .role-cards {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .role-card {
+                padding: 1.5rem;
+            }
+
+            .class-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+
+            .logo-icon {
+                width: 3rem;
+                height: 3rem;
+            }
+
+            .title {
+                font-size: 1.5rem;
+            }
+
+            .step-indicator {
+                gap: 0.25rem;
+            }
+
+            .step {
+                width: 1.5rem;
+                height: 1.5rem;
+                font-size: 0.75rem;
+            }
+
+            .step-line {
+                width: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-section">
+            <svg class="logo-icon" viewBox="0 0 24 24">
+                <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <circle cx="12" cy="12" r="11" fill="url(#logoGradient)" opacity="0.9"/>
+                <circle cx="12" cy="12" r="11" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
+                
+                <path d="M7 6 L17 6 Q18 6 18 7 L18 17 Q18 18 17 18 L7 18 Q6 18 6 17 L6 7 Q6 6 7 6 Z" 
+                      fill="white" opacity="0.9"/>
+                
+                <path d="M9 8.5 L15 8.5" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 8.5 L12 15.5" stroke="url(#logoGradient)" stroke-width="2.5" stroke-linecap="round"/>
+                
+                <circle cx="9" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
+                <circle cx="15" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
+                <circle cx="12" cy="15.5" r="1.2" fill="url(#logoGradient)" opacity="0.8"/>
+            </svg>
+            <h1 class="title">Добро пожаловать в TeacherUchit!</h1>
+            <p class="subtitle">Давайте настроим ваш профиль</p>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step active">1</div>
+            <div class="step-line"></div>
+            <div class="step">2</div>
+        </div>
+
+        <div class="success-message" id="success-message"></div>
+
+        <!-- Шаг 1: Выбор роли -->
+        <div id="step1" class="step-content">
+            <h2 style="text-align: center; color: var(--gray-800); margin-bottom: 1.5rem; font-size: 1.5rem;">Выберите вашу роль</h2>
+            
+            <div class="role-cards">
+                <div class="role-card" data-role="student">
+                    <svg class="role-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2M12 22L13.09 15.74L22 15L13.09 14.26L12 8L10.91 14.26L2 15L10.91 15.74L12 22Z" fill="var(--primary)"/>
+                    </svg>
+                    <h3 class="role-title">Ученик</h3>
+                    <p class="role-description">Изучайте материалы, выполняйте задания и отслеживайте прогресс</p>
+                </div>
+                
+                <div class="role-card" data-role="teacher">
+                    <svg class="role-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M5 17L8.5 12.5L11 15.5L14.5 11L19 17H5Z" fill="var(--secondary)"/>
+                    </svg>
+                    <h3 class="role-title">Учитель</h3>
+                    <p class="role-description">Создавайте материалы, проверяйте работы и управляйте классами</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Шаг 2: Дополнительная информация -->
+        <div id="step2" class="step-content" style="display: none;">
+            <!-- Форма для ученика -->
+            <div id="student-form" class="form-container">
+                <h2 style="text-align: center; color: var(--gray-800); margin-bottom: 1.5rem; font-size: 1.5rem;">Информация об ученике</h2>
+                
+                <div class="form-group">
+                    <label class="form-label" for="student-city">Город</label>
+                    <select id="student-city" class="form-select" required>
+                        <option value="">Выберите город</option>
+                        <option value="moscow">Москва</option>
+                        <option value="spb">Санкт-Петербург</option>
+                        <option value="novosibirsk">Новосибирск</option>
+                        <option value="ekaterinburg">Екатеринбург</option>
+                        <option value="kazan">Казань</option>
+                        <option value="nizhny">Нижний Новгород</option>
+                        <option value="other">Другой город</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="student-school">Школа</label>
+                    <select id="student-school" class="form-select" required disabled>
+                        <option value="">Сначала выберите город</option>
+                    </select>
+                </div>
+
+                <div class="class-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="student-class">Класс</label>
+                        <select id="student-class" class="form-select" required>
+                            <option value="">Выберите класс</option>
+                            <option value="5">5 класс</option>
+                            <option value="6">6 класс</option>
+                            <option value="7">7 класс</option>
+                            <option value="8">8 класс</option>
+                            <option value="9">9 класс</option>
+                            <option value="10">10 класс</option>
+                            <option value="11">11 класс</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="student-letter">Буква</label>
+                        <select id="student-letter" class="form-select" required>
+                            <option value="">Буква</option>
+                            <option value="А">А</option>
+                            <option value="Б">Б</option>
+                            <option value="В">В</option>
+                            <option value="Г">Г</option>
+                            <option value="Д">Д</option>
+                            <option value="Е">Е</option>
+                            <option value="Ж">Ж</option>
+                            <option value="З">З</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма для учителя -->
+            <div id="teacher-form" class="form-container">
+                <h2 style="text-align: center; color: var(--gray-800); margin-bottom: 1.5rem; font-size: 1.5rem;">Информация об учителе</h2>
+                
+                <div class="form-group">
+                    <label class="form-label" for="teacher-subject">Предмет</label>
+                    <select id="teacher-subject" class="form-select" required>
+                        <option value="">Выберите предмет</option>
+                        <option value="history">История</option>
+                        <option value="social">Обществознание</option>
+                        <option value="geography">География</option>
+                        <option value="literature">Литература</option>
+                        <option value="russian">Русский язык</option>
+                        <option value="other">Другой предмет</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="teacher-experience">Опыт работы</label>
+                    <select id="teacher-experience" class="form-select" required>
+                        <option value="">Выберите опыт</option>
+                        <option value="0-1">Менее 1 года</option>
+                        <option value="1-3">1-3 года</option>
+                        <option value="3-5">3-5 лет</option>
+                        <option value="5-10">5-10 лет</option>
+                        <option value="10+">Более 10 лет</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="teacher-school">Образовательное учреждение</label>
+                    <input type="text" id="teacher-school" class="form-input" placeholder="Название школы или учреждения" required>
+                </div>
+            </div>
+
+            <button class="button" id="continue-btn" onclick="completeSetup()" disabled>
+                Завершить настройку
+            </button>
+        </div>
+    </div>
+
+    <script>
+        console.log('Role Selection - Script loaded successfully!');
+
+        let selectedRole = null;
+
+        // Данные школ по городам
+        const schoolsByCity = {
+            moscow: [
+                'Лицей №1535',
+                'Школа №57',
+                'Лицей НИУ ВШЭ',
+                'СУНЦ МГУ',
+                'Школа №179',
+                'Другая школа'
+            ],
+            spb: [
+                'Лицей №239',
+                'Физико-математический лицей №30',
+                'Лицей №366',
+                'Академическая гимназия СПбГУ',
+                'Другая школа'
+            ],
+            novosibirsk: [
+                'Лицей №130',
+                'НГУ ФМШ',
+                'Лицей №22',
+                'Гимназия №1',
+                'Другая школа'
+            ],
+            ekaterinburg: [
+                'Лицей №135',
+                'Гимназия №9',
+                'Лицей №110',
+                'Другая школа'
+            ],
+            kazan: [
+                'ИТ-лицей КФУ',
+                'Лицей №131',
+                'Гимназия №7',
+                'Другая школа'
+            ],
+            nizhny: [
+                'Лицей №40',
+                'Гимназия №1',
+                'Лицей №8',
+                'Другая школа'
+            ],
+            other: [
+                'Введите название вручную'
+            ]
+        };
+
+        // Обработка выбора роли
+        document.querySelectorAll('.role-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Убираем выделение с других карточек
+                document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+                
+                // Выделяем выбранную карточку
+                this.classList.add('selected');
+                selectedRole = this.dataset.role;
+                
+                console.log('Selected role:', selectedRole);
+                
+                // Переходим ко второму шагу
+                setTimeout(() => {
+                    showStep2();
+                }, 300);
+            });
+        });
+
+        function showStep2() {
+            // Обновляем индикатор шагов
+            document.querySelector('.step:first-child').classList.add('completed');
+            document.querySelector('.step:first-child').classList.remove('active');
+            document.querySelector('.step-line').classList.add('completed');
+            document.querySelector('.step:last-child').classList.add('active');
+            
+            // Скрываем первый шаг
+            document.getElementById('step1').style.display = 'none';
+            
+            // Показываем второй шаг
+            document.getElementById('step2').style.display = 'block';
+            
+            // Показываем соответствующую форму
+            if (selectedRole === 'student') {
+                document.getElementById('student-form').classList.add('active');
+                setupStudentForm();
+            } else {
+                document.getElementById('teacher-form').classList.add('active');
+                setupTeacherForm();
+            }
+        }
+
+        function setupStudentForm() {
+            const citySelect = document.getElementById('student-city');
+            const schoolSelect = document.getElementById('student-school');
+            
+            // Обработка выбора города
+            citySelect.addEventListener('change', function() {
+                const selectedCity = this.value;
+                schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
+                schoolSelect.disabled = !selectedCity;
+                
+                if (selectedCity && schoolsByCity[selectedCity]) {
+                    schoolsByCity[selectedCity].forEach(school => {
+                        const option = document.createElement('option');
+                        option.value = school;
+                        option.textContent = school;
+                        schoolSelect.appendChild(option);
+                    });
+                    schoolSelect.disabled = false;
+                }
+                
+                checkStudentFormCompletion();
+            });
+            
+            // Проверка заполнения всех полей
+            document.querySelectorAll('#student-form select').forEach(select => {
+                select.addEventListener('change', checkStudentFormCompletion);
+            });
+        }
+
+        function setupTeacherForm() {
+            // Проверка заполнения всех полей
+            document.querySelectorAll('#teacher-form select, #teacher-form input').forEach(field => {
+                field.addEventListener('change', checkTeacherFormCompletion);
+                field.addEventListener('input', checkTeacherFormCompletion);
+            });
+        }
+
+        function checkStudentFormCompletion() {
+            const city = document.getElementById('student-city').value;
+            const school = document.getElementById('student-school').value;
+            const studentClass = document.getElementById('student-class').value;
+            const letter = document.getElementById('student-letter').value;
+            
+            const isComplete = city && school && studentClass && letter;
+            document.getElementById('continue-btn').disabled = !isComplete;
+        }
+
+        function checkTeacherFormCompletion() {
+            const subject = document.getElementById('teacher-subject').value;
+            const experience = document.getElementById('teacher-experience').value;
+            const school = document.getElementById('teacher-school').value.trim();
+            
+            const isComplete = subject && experience && school;
+            document.getElementById('continue-btn').disabled = !isComplete;
+        }
+
+        function completeSetup() {
+            let profileData = { role: selectedRole };
+            
+            if (selectedRole === 'student') {
+                profileData = {
+                    ...profileData,
+                    city: document.getElementById('student-city').value,
+                    school: document.getElementById('student-school').value,
+                    class: document.getElementById('student-class').value,
+                    letter: document.getElementById('student-letter').value
+                };
+            } else {
+                profileData = {
+                    ...profileData,
+                    subject: document.getElementById('teacher-subject').value,
+                    experience: document.getElementById('teacher-experience').value,
+                    school: document.getElementById('teacher-school').value
+                };
+            }
+            
+            // Сохраняем данные профиля
+            localStorage.setItem('userProfile', JSON.stringify(profileData));
+            
+            // Показываем сообщение об успехе
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = 'Профиль успешно настроен! Перенаправляем на главную страницу...';
+            successMessage.style.display = 'block';
+            
+            // Прокрутка к сообщению
+            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Перенаправление на главную страницу
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+
+        console.log('Role selection initialized');
+    </script>
+</body>
+</html>

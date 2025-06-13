@@ -1103,6 +1103,42 @@
             return user && user.password === password ? user : null;
         }
 
+        // Проверка завершенного профиля пользователя
+        function getUserProfile(email) {
+            const profile = localStorage.getItem(`teacheruchit_profile_${email}`);
+            return profile ? JSON.parse(profile) : null;
+        }
+
+        function isProfileComplete(email) {
+            const profile = getUserProfile(email);
+            return profile && profile.role && profile.profileCompleted;
+        }
+
+        function redirectToDashboard(userEmail, role) {
+            if (role === 'student') {
+                window.location.href = 'index.html?role=student';
+            } else if (role === 'teacher') {
+                window.location.href = 'index.html?role=teacher';
+            } else {
+                window.location.href = 'role-selection.html';
+            }
+        }
+
+        function checkExistingUserAndRedirect() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                const profile = getUserProfile(user.email);
+                
+                if (profile && profile.profileCompleted) {
+                    console.log('User already has completed profile, redirecting to dashboard...');
+                    redirectToDashboard(user.email, profile.role);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         // Обработчики форм
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -1135,6 +1171,15 @@
                     email: email,
                     isDemo: true
                 }));
+                
+                // Проверяем, есть ли завершенный профиль
+                if (isProfileComplete(email)) {
+                    const profile = getUserProfile(email);
+                    console.log('Demo user has completed profile, redirecting...');
+                    redirectToDashboard(email, profile.role);
+                    return;
+                }
+                
                 showSuccess('Успешный вход! Нажмите "Продолжить" для перехода к выбору роли.', true);
                 return;
             }
@@ -1143,6 +1188,15 @@
             const user = validateUser(email, password);
             if (user) {
                 localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // Проверяем, есть ли завершенный профиль
+                if (isProfileComplete(email)) {
+                    const profile = getUserProfile(email);
+                    console.log('User has completed profile, redirecting...');
+                    redirectToDashboard(email, profile.role);
+                    return;
+                }
+                
                 showSuccess(`Добро пожаловать, ${user.name}! Нажмите "Продолжить" для перехода к выбору роли.`, true);
             } else {
                 showError('login-password', 'Неверный email или пароль. Если у вас нет аккаунта - зарегистрируйтесь.');
@@ -1218,6 +1272,11 @@
         // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, initializing...');
+            
+            // Проверяем, не нужно ли перенаправить уже авторизованного пользователя
+            if (checkExistingUserAndRedirect()) {
+                return; // Останавливаем дальнейшую инициализацию
+            }
             
             // Обработчики кнопок табов
             document.querySelectorAll('.tab-button').forEach(button => {

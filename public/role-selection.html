@@ -698,7 +698,17 @@
         }
 
         function completeSetup() {
-            let profileData = { role: selectedRole };
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('Ошибка: пользователь не найден');
+                return;
+            }
+
+            let profileData = { 
+                role: selectedRole,
+                profileCompleted: true,
+                completedAt: new Date().toISOString()
+            };
             
             if (selectedRole === 'student') {
                 profileData = {
@@ -717,20 +727,31 @@
                 };
             }
             
-            // Сохраняем данные профиля
+            // Сохраняем данные профиля с привязкой к email пользователя
+            const profileKey = `teacheruchit_profile_${currentUser.email}`;
+            localStorage.setItem(profileKey, JSON.stringify(profileData));
+            
+            // Также сохраняем для обратной совместимости
             localStorage.setItem('userProfile', JSON.stringify(profileData));
+            
+            console.log('Profile saved:', profileData);
             
             // Показываем сообщение об успехе
             const successMessage = document.getElementById('success-message');
-            successMessage.textContent = 'Профиль успешно настроен! Перенаправляем на главную страницу...';
+            const roleName = selectedRole === 'student' ? 'ученика' : 'учителя';
+            successMessage.textContent = `Профиль ${roleName} успешно настроен! Перенаправляем на главную страницу...`;
             successMessage.style.display = 'block';
             
             // Прокрутка к сообщению
             successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
             
-            // Перенаправление на главную страницу
+            // Перенаправление на главную страницу в зависимости от роли
             setTimeout(() => {
-                window.location.href = 'index.html';
+                if (selectedRole === 'student') {
+                    window.location.href = 'index.html?role=student';
+                } else {
+                    window.location.href = 'index.html?role=teacher';
+                }
             }, 2000);
         }
 

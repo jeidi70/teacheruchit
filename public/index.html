@@ -83,10 +83,10 @@
         }
 
         .logo-icon {
-            width: 2.5rem;
-            height: 2.5rem;
-            color: var(--primary);
+            width: 3.5rem;
+            height: 3.5rem;
             margin-right: 0.75rem;
+            filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.3));
         }
 
         .nav-links {
@@ -773,11 +773,45 @@
             <defs>
                 <!-- Brand Logo Icon -->
                 <g id="icon-brand-logo">
-                    <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1"/>
-                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
-                    <path d="M8 8 L16 8 L16 10 L10 10 L10 14 L14 14 L14 16 L8 16 Z" fill="currentColor"/>
-                    <circle cx="18" cy="6" r="2" fill="currentColor" opacity="0.8"/>
-                    <path d="M17 5 L17 7 M16 6 L18 6" stroke="white" stroke-width="1" stroke-linecap="round"/>
+                    <!-- Outer gradient circle -->
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Main circle with gradient -->
+                    <circle cx="12" cy="12" r="11" fill="url(#logoGradient)" opacity="0.9"/>
+                    <circle cx="12" cy="12" r="11" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
+                    
+                    <!-- Book/Knowledge symbol -->
+                    <path d="M7 6 L17 6 Q18 6 18 7 L18 17 Q18 18 17 18 L7 18 Q6 18 6 17 L6 7 Q6 6 7 6 Z" 
+                          fill="white" opacity="0.9"/>
+                    <path d="M12 6 L12 18" stroke="url(#logoGradient)" stroke-width="2"/>
+                    <path d="M8 9 L11 9 M13 9 L16 9" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M8 12 L11 12 M13 12 L16 12" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M8 15 L11 15 M13 15 L16 15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                    
+                    <!-- AI brain/neural network element -->
+                    <circle cx="19" cy="5" r="3.5" fill="white" opacity="0.95"/>
+                    <circle cx="19" cy="5" r="3.5" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                    
+                    <!-- Neural connections -->
+                    <circle cx="17.5" cy="4" r="0.8" fill="url(#logoGradient)"/>
+                    <circle cx="20.5" cy="4" r="0.8" fill="url(#logoGradient)"/>
+                    <circle cx="19" cy="6.5" r="0.8" fill="url(#logoGradient)"/>
+                    <circle cx="19" cy="3.5" r="0.8" fill="url(#logoGradient)"/>
+                    
+                    <!-- Connecting lines -->
+                    <path d="M17.8 4.2 L18.7 3.7 M20.2 4.2 L19.3 3.7 M19.2 6.3 L19.2 5.2" 
+                          stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+                    
+                    <!-- Sparkle effect -->
+                    <path d="M4 8 L5 9 L4 10 L3 9 Z" fill="white" opacity="0.8"/>
+                    <path d="M20 15 L21 16 L20 17 L19 16 Z" fill="white" opacity="0.8"/>
+                    <circle cx="6" cy="18" r="1" fill="white" opacity="0.6"/>
                 </g>
                 
                 <!-- AI Robot Icon -->

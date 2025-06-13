@@ -80,6 +80,7 @@
             position: relative;
             overflow: hidden;
             will-change: transform;
+            contain: layout style paint;
         }
 
         .logo-section {
@@ -169,6 +170,8 @@
             min-height: 420px;
             overflow: hidden;
             width: 100%;
+            max-width: 100%;
+            contain: layout style paint;
         }
 
         .auth-form {
@@ -176,14 +179,16 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: auto;
+            min-height: 100%;
             opacity: 0;
-            transform: translateX(100px);
+            transform: translateX(0);
             transition: transform 0.4s ease, opacity 0.4s ease;
             pointer-events: none;
             will-change: transform, opacity;
             box-sizing: border-box;
             padding: 0;
+            overflow: hidden;
         }
 
         .auth-form.active {
@@ -193,12 +198,22 @@
         }
 
         .auth-form.slide-out-left {
-            transform: translateX(-100px);
+            transform: translateX(-100%);
             opacity: 0;
         }
 
         .auth-form.slide-out-right {
-            transform: translateX(100px);
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        .auth-form.slide-in-left {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        .auth-form.slide-in-right {
+            transform: translateX(100%);
             opacity: 0;
         }
 
@@ -206,7 +221,9 @@
         .auth-form .form-group {
             transition: all 0.2s ease;
             width: 100%;
+            max-width: 100%;
             box-sizing: border-box;
+            position: relative;
         }
 
         .auth-form:not(.active) .form-group {
@@ -222,7 +239,9 @@
         .form-group {
             margin-bottom: 1.5rem;
             width: 100%;
+            max-width: 100%;
             box-sizing: border-box;
+            overflow: hidden;
         }
 
         .form-label {
@@ -232,11 +251,14 @@
             font-weight: 600;
             font-size: 0.9rem;
             width: 100%;
+            max-width: 100%;
+            word-wrap: break-word;
         }
 
         .form-input {
             width: 100%;
             max-width: 100%;
+            min-width: 0;
             padding: 1rem;
             border: 2px solid var(--gray-300);
             border-radius: 12px;
@@ -246,6 +268,7 @@
             -webkit-appearance: none;
             appearance: none;
             box-sizing: border-box;
+            overflow: hidden;
         }
 
         .form-input:focus {
@@ -432,6 +455,7 @@
         @media (max-width: 768px) {
             body {
                 padding: 0.5rem;
+                overflow-x: hidden;
             }
 
             .back-link {
@@ -447,12 +471,15 @@
                 margin: 0.5rem;
                 max-width: 100%;
                 width: calc(100% - 1rem);
+                overflow: hidden;
+                contain: layout style paint;
             }
 
             .forms-container {
                 min-height: 380px;
                 width: 100%;
                 max-width: 100%;
+                overflow: hidden;
             }
 
             .auth-form {
@@ -460,6 +487,8 @@
                 max-width: 100%;
                 left: 0;
                 right: 0;
+                overflow: hidden;
+                contain: layout style paint;
             }
 
             .logo-icon {
@@ -484,6 +513,7 @@
                 margin-bottom: 1.25rem;
                 width: 100%;
                 max-width: 100%;
+                overflow: hidden;
             }
 
             .form-input {
@@ -491,11 +521,14 @@
                 font-size: 16px; /* Предотвращает зум на iOS */
                 width: 100%;
                 max-width: 100%;
+                min-width: 0;
+                overflow: hidden;
             }
 
             .password-field {
                 width: 100%;
                 max-width: 100%;
+                overflow: hidden;
             }
 
             .auth-button {
@@ -503,6 +536,7 @@
                 font-size: 1rem;
                 width: 100%;
                 max-width: 100%;
+                overflow: hidden;
             }
 
             .social-button {
@@ -518,12 +552,14 @@
             .divider {
                 margin: 1.5rem 0 1rem 0;
                 width: 100%;
+                max-width: 100%;
             }
         }
 
         @media (max-width: 480px) {
             body {
                 padding: 0.25rem;
+                overflow-x: hidden;
             }
 
             .auth-container {
@@ -531,16 +567,19 @@
                 margin: 0.25rem;
                 width: calc(100% - 0.5rem);
                 max-width: 100%;
+                overflow: hidden;
             }
 
             .forms-container {
                 min-height: 360px;
                 width: 100%;
+                overflow: hidden;
             }
 
             .auth-form {
                 width: 100%;
                 max-width: 100%;
+                overflow: hidden;
             }
 
             .logo-section {
@@ -550,33 +589,43 @@
             .auth-tabs {
                 margin-bottom: 1.5rem;
                 width: 100%;
+                max-width: 100%;
             }
 
             .form-group {
                 margin-bottom: 1rem;
                 width: 100%;
+                max-width: 100%;
+                overflow: hidden;
             }
 
             .form-input {
                 padding: 0.75rem;
                 width: 100%;
                 max-width: 100%;
+                min-width: 0;
+                overflow: hidden;
             }
 
             .password-field {
                 width: 100%;
+                max-width: 100%;
+                overflow: hidden;
             }
 
             .auth-button {
                 padding: 0.875rem;
                 width: 100%;
                 max-width: 100%;
+                overflow: hidden;
             }
 
             .social-buttons {
                 gap: 1rem;
                 width: 100%;
                 justify-content: center;
+                max-width: 100%;
+                overflow: hidden;
             }
 
             .social-button {
@@ -592,6 +641,7 @@
 
             .divider {
                 width: 100%;
+                max-width: 100%;
                 margin: 1.25rem 0 1rem 0;
             }
         }
@@ -810,29 +860,47 @@
             const isLoginToRegister = formType === 'register';
             
             if (currentForm) {
-                // Анимация выхода текущей формы
+                // Подготавливаем новую форму для входа
+                targetForm.classList.remove('slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
+                targetForm.style.transform = isLoginToRegister ? 'translateX(100%)' : 'translateX(-100%)';
+                targetForm.style.opacity = '0';
+                targetForm.style.pointerEvents = 'none';
+                
+                // Запускаем анимацию выхода текущей формы
                 currentForm.classList.remove('active');
                 currentForm.classList.add(isLoginToRegister ? 'slide-out-left' : 'slide-out-right');
                 
-                // Оптимизированный таймаут
+                // Через небольшую задержку запускаем анимацию входа новой формы
                 setTimeout(() => {
-                    // Убираем классы анимации
-                    currentForm.classList.remove('slide-out-left', 'slide-out-right');
-                    
                     // Показываем новую форму
                     targetForm.classList.add('active');
+                    targetForm.style.transform = 'translateX(0)';
+                    targetForm.style.opacity = '1';
+                    targetForm.style.pointerEvents = 'auto';
                     
-                    // Разблокируем анимацию
-                    isAnimating = false;
-                    
-                    // Фокус на первое поле (только для десктопа)
-                    if (window.innerWidth > 768) {
-                        const firstInput = targetForm.querySelector('input');
-                        if (firstInput) firstInput.focus();
-                    }
-                }, 200); // Уменьшенная задержка
+                    // Убираем классы анимации с текущей формы
+                    setTimeout(() => {
+                        currentForm.classList.remove('slide-out-left', 'slide-out-right');
+                        currentForm.style.transform = '';
+                        currentForm.style.opacity = '';
+                        currentForm.style.pointerEvents = '';
+                        
+                        // Разблокируем анимацию
+                        isAnimating = false;
+                        
+                        // Фокус на первое поле (только для десктопа)
+                        if (window.innerWidth > 768) {
+                            const firstInput = targetForm.querySelector('input');
+                            if (firstInput) firstInput.focus();
+                        }
+                    }, 400);
+                }, 50);
             } else {
+                // Если нет текущей формы, просто показываем целевую
                 targetForm.classList.add('active');
+                targetForm.style.transform = 'translateX(0)';
+                targetForm.style.opacity = '1';
+                targetForm.style.pointerEvents = 'auto';
                 isAnimating = false;
             }
             

@@ -543,12 +543,26 @@
             font-weight: 700;
             margin-bottom: 1rem;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .pricing-card .plan-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: var(--primary);
+        }
+
+        .pricing-card.featured .plan-icon {
+            color: var(--accent);
         }
 
         .pricing-card.featured h3::after {
-            content: '🔥 Популярный';
+            content: 'Популярный';
             position: absolute;
-            top: -2rem;
+            top: -2.5rem;
             left: 50%;
             transform: translateX(-50%);
             background: var(--accent);
@@ -557,6 +571,20 @@
             border-radius: 1rem;
             font-size: 0.75rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .pricing-card.featured h3::before {
+            content: '';
+            position: absolute;
+            top: -2.5rem;
+            left: calc(50% - 3.5rem);
+            width: 1rem;
+            height: 1rem;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2 L14.4 8.8 L22 8.8 L16.8 13.2 L19.2 20 L12 15.6 L4.8 20 L7.2 13.2 L2 8.8 L9.6 8.8 Z' fill='white'/%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
         }
 
         .price {
@@ -823,6 +851,38 @@
                     <path d="M22 2 L15 22 L11 13 L2 9 L22 2 Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </g>
 
+                <!-- Popular Badge Icon -->
+                <g id="icon-popular">
+                    <path d="M12 2 L14.4 8.8 L22 8.8 L16.8 13.2 L19.2 20 L12 15.6 L4.8 20 L7.2 13.2 L2 8.8 L9.6 8.8 Z" 
+                          fill="currentColor"/>
+                    <circle cx="12" cy="12" r="1.5" fill="white"/>
+                </g>
+
+                <!-- Crown Icon for Premium -->
+                <g id="icon-crown">
+                    <path d="M5 16 L19 16 L17 8 L14.5 11 L12 7 L9.5 11 L7 8 L5 16 Z" 
+                          fill="currentColor" opacity="0.1"/>
+                    <path d="M5 16 L19 16 L17 8 L14.5 11 L12 7 L9.5 11 L7 8 L5 16 Z" 
+                          stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <circle cx="7" cy="8" r="1.5" fill="currentColor"/>
+                    <circle cx="12" cy="7" r="1.5" fill="currentColor"/>
+                    <circle cx="17" cy="8" r="1.5" fill="currentColor"/>
+                    <path d="M6 16 L18 16 L18 18 Q18 19 17 19 L7 19 Q6 19 6 18 L6 16 Z" 
+                          fill="currentColor" opacity="0.2"/>
+                </g>
+
+                <!-- Gift Icon for Free -->
+                <g id="icon-gift">
+                    <rect x="6" y="10" width="12" height="8" rx="1" fill="currentColor" opacity="0.1"/>
+                    <rect x="6" y="10" width="12" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 10 L12 18" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M6 13 L18 13" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 10 Q12 8 10 8 Q8 8 8 10 Q8 10 10 10 L12 10" 
+                          fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 10 Q12 8 14 8 Q16 8 16 10 Q16 10 14 10 L12 10" 
+                          fill="none" stroke="currentColor" stroke-width="1.5"/>
+                </g>
+
                 <!-- Play Button Icon -->
                 <g id="icon-play">
                     <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1"/>
@@ -1036,7 +1096,12 @@
             
             <div class="pricing-grid">
                 <div class="pricing-card">
-                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Бесплатный</h3>
+                    <h3>
+                        <svg class="plan-icon" viewBox="0 0 24 24">
+                            <use href="#icon-gift"></use>
+                        </svg>
+                        Бесплатный
+                    </h3>
                     <div class="price">0₽</div>
                     <div class="price-period">/месяц</div>
                     <ul class="features-list">
@@ -1049,7 +1114,12 @@
                 </div>
                 
                 <div class="pricing-card featured">
-                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Premium</h3>
+                    <h3>
+                        <svg class="plan-icon" viewBox="0 0 24 24">
+                            <use href="#icon-crown"></use>
+                        </svg>
+                        Premium
+                    </h3>
                     <div class="price">399₽</div>
                     <div class="price-period">/месяц</div>
                     <ul class="features-list">

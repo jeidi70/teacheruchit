@@ -336,7 +336,7 @@ app.post('/api/verify-token', async (req, res) => {
 
 // Serve main pages
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get('/login', (req, res) => {
@@ -345,6 +345,11 @@ app.get('/login', (req, res) => {
 
 app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
+
+// Новая улучшенная версия лендинга
+app.get('/improved', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'improved-landing.html'));
 });
 
 // API info endpoint

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeacherUchit - Революция в образовании</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#06b6d4',
+                        dark: '#0f172a',
+                        light: '#f8fafc'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'slide-in': 'slideIn 0.6s ease-out',
+                        'fade-in': 'fadeIn 0.8s ease-out'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+            100% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .typing::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+        
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        
+        .chat-message {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-900 antialiased scroll-smooth">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200/50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center shadow-lg animate-glow">
+                        <span class="text-white font-bold text-lg font-mono">T</span>
+                    </div>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                        TeacherUchit
+                    </h1>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-gray-700 hover:text-primary transition-colors font-medium">Возможности</a>
+                    <a href="#ai" class="text-gray-700 hover:text-primary transition-colors font-medium">ИИ-помощник</a>
+                    <a href="#pricing" class="text-gray-700 hover:text-primary transition-colors font-medium">Тарифы</a>
+                    <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg font-medium transition-all hover-scale">
+                        Войти
+                    </button>
+                </div>
+                
+                <button class="md:hidden p-2" id="mobile-menu-btn">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-16 gradient-bg relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/10"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-white animate-slide-in">
+                    <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                        Революция в изучении 
+                        <span class="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                            истории
+                        </span>
+                    </h1>
+                    <p class="text-xl text-white/90 mb-8 leading-relaxed">
+                        Геймифицированная платформа с ИИ-помощником для углубленного изучения истории и обществознания
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold px-8 py-4 rounded-xl transition-all hover-scale shadow-lg">
+                            <i class="fas fa-rocket mr-2"></i>
+                            Начать бесплатно
+                        </button>
+                        <button class="glass-effect text-white font-semibold px-8 py-4 rounded-xl transition-all hover-scale">
+                            <i class="fas fa-play mr-2"></i>
+                            Смотреть демо
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Interactive Dashboard Preview -->
+                <div class="animate-fade-in">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                        <div class="gradient-bg text-white p-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-bold flex items-center">
+                                    <i class="fas fa-user-graduate mr-2"></i>
+                                    Личный кабинет
+                                </h3>
+                                <div class="flex space-x-2">
+                                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="flex items-center mb-6">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face" 
+                                     alt="Аватар" class="w-16 h-16 rounded-full border-4 border-primary/20">
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-xl">Александр Петров</h4>
+                                    <p class="text-gray-600 flex items-center">
+                                        <i class="fas fa-school mr-1"></i>
+                                        9 класс "Б"
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-4 mb-6">
+                                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl text-center">
+                                    <div class="text-2xl font-bold text-blue-600">85%</div>
+                                    <div class="text-sm text-gray-600">Прогресс</div>
+                                </div>
+                                <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl text-center">
+                                    <div class="text-2xl font-bold text-green-600">23</div>
+                                    <div class="text-sm text-gray-600">Достижения</div>
+                                </div>
+                                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl text-center">
+                                    <div class="text-2xl font-bold text-purple-600">#3</div>
+                                    <div class="text-sm text-gray-600">В рейтинге</div>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full gradient-bg text-white py-3 rounded-xl font-semibold hover-scale transition-all shadow-lg">
+                                <i class="fas fa-robot mr-2"></i>
+                                Спросить ИИ-помощника
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute top-20 right-10 w-20 h-20 bg-white/10 rounded-full animate-float hidden lg:block"></div>
+        <div class="absolute bottom-20 left-10 w-32 h-32 bg-white/5 rounded-full animate-float hidden lg:block" style="animation-delay: 2s;"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Инновационные возможности</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Современные технологии для эффективного изучения истории и обществознания
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1: Геймификация -->
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-8 rounded-2xl hover-scale transition-all duration-300 shadow-lg">
+                    <div class="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                        <i class="fas fa-gamepad text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Геймификация</h3>
+                    <p class="text-gray-700 mb-6">
+                        Система достижений, уровней и рейтингов делает обучение увлекательным и мотивирующим
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Ежедневные квесты и задания</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Система очков и достижений</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Соревнования между классами</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Feature 2: ИИ-помощник -->
+                <div class="bg-gradient-to-br from-purple-50 to-pink-100 p-8 rounded-2xl hover-scale transition-all duration-300 shadow-lg">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                        <i class="fas fa-robot text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">ИИ-помощник</h3>
+                    <p class="text-gray-700 mb-6">
+                        Персональный ассистент на базе DeepSeek для ответов на любые вопросы по истории
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Адаптация под возраст ученика</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Контекстные объяснения</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>24/7 доступность</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Feature 3: Для учителей -->
+                <div class="bg-gradient-to-br from-emerald-50 to-teal-100 p-8 rounded-2xl hover-scale transition-all duration-300 shadow-lg">
+                    <div class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                        <i class="fas fa-chalkboard-teacher text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Для учителей</h3>
+                    <p class="text-gray-700 mb-6">
+                        Мощные инструменты для создания материалов и отслеживания прогресса учеников
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Управление классами</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Детальная аналитика</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span>Создание тестов</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Assistant Demo -->
+    <section id="ai" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold mb-6">ИИ-помощник DeepSeek</h2>
+                    <p class="text-xl text-gray-700 mb-8">
+                        Революционный ИИ-ассистент, который понимает контекст и адаптируется под уровень ученика
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-brain text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Умные объяснения</h4>
+                                <p class="text-gray-600">Сложные исторические события объясняются простым языком</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-history text-secondary text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Контекстная память</h4>
+                                <p class="text-gray-600">Помнит предыдущие вопросы и строит логические связи</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-graduation-cap text-accent text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Адаптивность</h4>
+                                <p class="text-gray-600">Подстраивается под класс и уровень знаний ученика</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chat Demo -->
+                <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                    <div class="gradient-bg text-white p-4">
+                        <h3 class="font-bold flex items-center">
+                            <i class="fas fa-robot mr-2"></i>
+                            ИИ-помощник DeepSeek
+                        </h3>
+                    </div>
+                    
+                    <div class="h-96 overflow-y-auto p-4 space-y-4" id="chat-demo">
+                        <!-- Chat messages will be populated by JavaScript -->
+                    </div>
+                    
+                    <div class="p-4 border-t bg-gray-50">
+                        <div class="flex space-x-2">
+                            <input type="text" 
+                                   id="demo-input" 
+                                   placeholder="Спросите что-нибудь об истории..." 
+                                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            <button id="demo-send" 
+                                    class="gradient-bg text-white px-6 py-2 rounded-lg hover-scale transition-all">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Демо-режим: ограниченные ответы
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Доступные тарифы</h2>
+                <p class="text-xl text-gray-600">Выберите оптимальный план для эффективного обучения</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Free Plan -->
+                <div class="bg-gray-50 rounded-2xl p-8 border-2 border-gray-200 hover-scale transition-all">
+                    <div class="text-center">
+                        <h3 class="text-2xl font-bold mb-2">Бесплатный</h3>
+                        <div class="mb-6">
+                            <span class="text-5xl font-bold">0₽</span>
+                            <span class="text-gray-600">/месяц</span>
+                        </div>
+                        
+                        <ul class="text-left space-y-4 mb-8">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-3"></i>
+                                <span>Базовые материалы</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-3"></i>
+                                <span>20 вопросов ИИ в день</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-3"></i>
+                                <span>Система достижений</span>
+                            </li>
+                            <li class="flex items-center text-gray-400">
+                                <i class="fas fa-times mr-3"></i>
+                                <span>Премиум материалы</span>
+                            </li>
+                        </ul>
+                        
+                        <button class="w-full bg-gray-900 text-white py-3 rounded-xl font-semibold hover-scale transition-all">
+                            Начать бесплатно
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Premium Plan -->
+                <div class="gradient-bg rounded-2xl p-8 text-white relative overflow-hidden hover-scale transition-all shadow-2xl">
+                    <div class="absolute top-4 right-4 bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-sm font-bold">
+                        Популярный
+                    </div>
+                    
+                    <div class="text-center">
+                        <h3 class="text-2xl font-bold mb-2">Premium</h3>
+                        <div class="mb-6">
+                            <span class="text-5xl font-bold">399₽</span>
+                            <span class="text-white/80">/месяц</span>
+                        </div>
+                        
+                        <ul class="text-left space-y-4 mb-8">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-yellow-300 mr-3"></i>
+                                <span>Все бесплатные функции</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-yellow-300 mr-3"></i>
+                                <span>Безлимитный ИИ-помощник</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-yellow-300 mr-3"></i>
+                                <span>Эксклюзивные материалы</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-yellow-300 mr-3"></i>
+                                <span>Приоритетная поддержка</span>
+                            </li>
+                        </ul>
+                        
+                        <button class="w-full bg-yellow-400 text-gray-900 py-3 rounded-xl font-bold hover-scale transition-all">
+                            Получить Premium
+                        </button>
+                        
+                        <p class="text-white/70 mt-4 text-sm">
+                            💰 Скидка 40% для учителей
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 gradient-bg">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-white mb-6">
+                Готовы начать обучение будущего?
+            </h2>
+            <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+                Присоединяйтесь к тысячам учеников и учителей, которые уже используют TeacherUchit
+            </p>
+            <button class="bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold px-12 py-4 rounded-xl transition-all hover-scale shadow-lg text-lg">
+                <i class="fas fa-rocket mr-2"></i>
+                Начать бесплатно
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold font-mono">T</span>
+                        </div>
+                        <h3 class="text-xl font-bold">TeacherUchit</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        Революционная платформа для изучения истории и обществознания
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-vk text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-telegram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Платформа</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Для учеников</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Для учителей</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Для школ</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Поддержка</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Помощь</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Контакты</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Правовая информация</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Конфиденциальность</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Условия использования</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 TeacherUchit. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Chat Demo Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatDemo = document.getElementById('chat-demo');
+            const demoInput = document.getElementById('demo-input');
+            const demoSend = document.getElementById('demo-send');
+            
+            // Demo responses
+            const demoResponses = {
+                'привет': 'Привет! Я ваш ИИ-помощник по истории. Спросите меня о любой исторической эпохе!',
+                'рим': 'Римская империя (27 г. до н.э. — 476/1453 г. н.э.) — одна из величайших цивилизаций в истории. Что именно вас интересует?',
+                'война': 'Какая именно война вас интересует? Великая Отечественная, Наполеоновские войны, или другой период?',
+                'default': 'Это очень интересный вопрос! В полной версии я дам подробный ответ с учетом вашего класса и программы.'
+            };
+            
+            // Add initial message
+            addMessage('ai', 'Привет! Я ваш ИИ-помощник по истории. Попробуйте задать вопрос!');
+            
+            function addMessage(type, text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message flex ${type === 'user' ? 'justify-end' : 'justify-start'}`;
+                
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-2 max-w-xs">
+                        ${type === 'ai' ? '<div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center"><i class="fas fa-robot text-white text-sm"></i></div>' : ''}
+                        <div class="px-4 py-2 rounded-xl ${type === 'user' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-900'}">
+                            ${text}
+                        </div>
+                        ${type === 'user' ? '<div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center"><i class="fas fa-user text-gray-600 text-sm"></i></div>' : ''}
+                    </div>
+                `;
+                
+                chatDemo.appendChild(messageDiv);
+                chatDemo.scrollTop = chatDemo.scrollHeight;
+            }
+            
+            function sendMessage() {
+                const message = demoInput.value.trim().toLowerCase();
+                if (!message) return;
+                
+                addMessage('user', demoInput.value);
+                demoInput.value = '';
+                
+                // Simulate typing
+                setTimeout(() => {
+                    const response = demoResponses[message] || demoResponses['default'];
+                    addMessage('ai', response);
+                }, 1000);
+            }
+            
+            demoSend.addEventListener('click', sendMessage);
+            demoInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            mobileMenuBtn.addEventListener('click', function() {
+                alert('Мобильное меню будет добавлено в следующей версии');
+            });
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe elements for animation
+            document.querySelectorAll('.animate-fade-in').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+        
+        console.log('🚀 TeacherUchit - Улучшенная версия загружена!');
+    </script>
+</body>
+</html>

@@ -527,6 +527,45 @@
             border-color: var(--primary);
             transform: scale(1.05);
             box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card.featured::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: -35px;
+            width: 120px;
+            height: 30px;
+            background: var(--accent);
+            transform: rotate(45deg);
+            z-index: 1;
+        }
+
+        .pricing-card.featured::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: -20px;
+            width: 20px;
+            height: 20px;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2 L14.4 8.8 L22 8.8 L16.8 13.2 L19.2 20 L12 15.6 L4.8 20 L7.2 13.2 L2 8.8 L9.6 8.8 Z' fill='white'/%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
+            transform: rotate(45deg);
+            z-index: 2;
+        }
+
+        .pricing-card.featured .popular-badge {
+            position: absolute;
+            top: 22px;
+            right: -15px;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transform: rotate(45deg);
+            z-index: 3;
+            white-space: nowrap;
         }
 
         .pricing-card:hover {
@@ -550,41 +589,13 @@
         }
 
         .pricing-card .plan-icon {
-            width: 1.5rem;
-            height: 1.5rem;
+            width: 2rem;
+            height: 2rem;
             color: var(--primary);
         }
 
         .pricing-card.featured .plan-icon {
             color: var(--accent);
-        }
-
-        .pricing-card.featured h3::after {
-            content: 'Популярный';
-            position: absolute;
-            top: -2.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .pricing-card.featured h3::before {
-            content: '';
-            position: absolute;
-            top: -2.5rem;
-            left: calc(50% - 3.5rem);
-            width: 1rem;
-            height: 1rem;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2 L14.4 8.8 L22 8.8 L16.8 13.2 L19.2 20 L12 15.6 L4.8 20 L7.2 13.2 L2 8.8 L9.6 8.8 Z' fill='white'/%3E%3C/svg%3E") no-repeat center;
-            background-size: contain;
         }
 
         .price {
@@ -864,11 +875,11 @@
                           fill="currentColor" opacity="0.1"/>
                     <path d="M5 16 L19 16 L17 8 L14.5 11 L12 7 L9.5 11 L7 8 L5 16 Z" 
                           stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                    <circle cx="7" cy="8" r="1.5" fill="currentColor"/>
-                    <circle cx="12" cy="7" r="1.5" fill="currentColor"/>
-                    <circle cx="17" cy="8" r="1.5" fill="currentColor"/>
+                    <circle cx="7" cy="8" r="1.5" fill="currentColor" opacity="0.2"/>
+                    <circle cx="12" cy="7" r="1.5" fill="currentColor" opacity="0.2"/>
+                    <circle cx="17" cy="8" r="1.5" fill="currentColor" opacity="0.2"/>
                     <path d="M6 16 L18 16 L18 18 Q18 19 17 19 L7 19 Q6 19 6 18 L6 16 Z" 
-                          fill="currentColor" opacity="0.2"/>
+                          fill="currentColor" opacity="0.1"/>
                 </g>
 
                 <!-- Gift Icon for Free -->
@@ -1114,6 +1125,7 @@
                 </div>
                 
                 <div class="pricing-card featured">
+                    <div class="popular-badge">Популярный</div>
                     <h3>
                         <svg class="plan-icon" viewBox="0 0 24 24">
                             <use href="#icon-crown"></use>

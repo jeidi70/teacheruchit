@@ -31,11 +31,14 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            min-height: 100dvh; /* Для мобильных браузеров */
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1rem;
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .back-link {
@@ -51,6 +54,7 @@
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 10;
         }
 
         .back-link:hover {
@@ -67,12 +71,7 @@
             max-width: 450px;
             position: relative;
             overflow: hidden;
-        }
-
-        .forms-container {
-            position: relative;
-            min-height: 450px;
-            overflow: hidden;
+            will-change: transform;
         }
 
         .logo-section {
@@ -108,6 +107,7 @@
             border-radius: 1rem;
             padding: 0.5rem;
             margin-bottom: 2rem;
+            touch-action: manipulation;
         }
 
         .tab-button {
@@ -119,10 +119,13 @@
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             color: var(--gray-600);
             position: relative;
             overflow: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         .tab-button::before {
@@ -134,7 +137,7 @@
             height: 100%;
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s ease;
             border-radius: 0.75rem;
         }
 
@@ -153,6 +156,12 @@
             opacity: 0;
         }
 
+        .forms-container {
+            position: relative;
+            min-height: 420px;
+            overflow: hidden;
+        }
+
         .auth-form {
             position: absolute;
             top: 0;
@@ -160,38 +169,35 @@
             width: 100%;
             opacity: 0;
             transform: translateX(100px);
-            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.4s ease, opacity 0.4s ease;
             pointer-events: none;
-            filter: blur(0px);
+            will-change: transform, opacity;
         }
 
         .auth-form.active {
             opacity: 1;
             transform: translateX(0);
             pointer-events: auto;
-            filter: blur(0px);
         }
 
         .auth-form.slide-out-left {
-            transform: translateX(-120px);
+            transform: translateX(-100px);
             opacity: 0;
-            filter: blur(2px);
         }
 
         .auth-form.slide-out-right {
-            transform: translateX(120px);
+            transform: translateX(100px);
             opacity: 0;
-            filter: blur(2px);
         }
 
-        /* Анимация для полей формы */
+        /* Упрощенная анимация полей для мобильных */
         .auth-form .form-group {
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .auth-form:not(.active) .form-group {
-            transform: translateY(20px);
-            opacity: 0.7;
+            transform: translateY(10px);
+            opacity: 0.8;
         }
 
         .auth-form.active .form-group {
@@ -199,43 +205,28 @@
             opacity: 1;
         }
 
-        /* Задержка анимации для каждого поля */
-        .auth-form.active .form-group:nth-child(1) { transition-delay: 0.1s; }
-        .auth-form.active .form-group:nth-child(2) { transition-delay: 0.15s; }
-        .auth-form.active .form-group:nth-child(3) { transition-delay: 0.2s; }
-        .auth-form.active .form-group:nth-child(4) { transition-delay: 0.25s; }
-
-        .auth-form.active .auth-button { 
-            transition-delay: 0.3s; 
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .auth-form:not(.active) .auth-button {
-            transform: translateY(20px);
-            opacity: 0.7;
-        }
-
         .form-group {
-            margin-bottom: 1.75rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             color: var(--gray-700);
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .form-input {
             width: 100%;
-            padding: 1rem 1.25rem;
+            padding: 1rem;
             border: 2px solid var(--gray-300);
             border-radius: 12px;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             background: var(--gray-50);
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .form-input:focus {
@@ -259,6 +250,9 @@
             cursor: pointer;
             font-size: 1.25rem;
             padding: 0.25rem;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         .auth-button {
@@ -271,15 +265,18 @@
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
             position: relative;
             overflow: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         .auth-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
 
         .auth-button:active {
@@ -288,7 +285,7 @@
 
         .divider {
             position: relative;
-            margin: 2.5rem 0 1.5rem 0;
+            margin: 2rem 0 1.5rem 0;
             text-align: center;
             color: var(--gray-400);
             font-weight: 500;
@@ -330,10 +327,13 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             position: relative;
             overflow: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         .social-button::before {
@@ -345,7 +345,7 @@
             bottom: 0;
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s ease;
         }
 
         .social-button:hover::before {
@@ -355,13 +355,13 @@
         .social-button:hover {
             border-color: var(--primary);
             color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
         }
 
         .social-icon {
-            width: 2.25rem;
-            height: 2.25rem;
+            width: 2rem;
+            height: 2rem;
             flex-shrink: 0;
             position: relative;
             z-index: 1;
@@ -376,6 +376,8 @@
             color: var(--primary);
             text-decoration: none;
             font-weight: 600;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .error-message {
@@ -402,20 +404,164 @@
             text-align: center;
         }
 
-        @media (max-width: 480px) {
-            .auth-container {
-                padding: 2rem 1.5rem;
-                margin: 1rem;
-                border-radius: 1.25rem;
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
             }
 
-            .auth-title {
-                font-size: 1.875rem;
+            .back-link {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .auth-container {
+                padding: 2rem 1.5rem;
+                border-radius: 1.5rem;
+                margin: 0.5rem;
             }
 
             .logo-icon {
-                width: 3.5rem;
-                height: 3.5rem;
+                width: 3rem;
+                height: 3rem;
+            }
+
+            .auth-title {
+                font-size: 1.75rem;
+            }
+
+            .auth-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .tab-button {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .forms-container {
+                min-height: 380px;
+            }
+
+            .form-group {
+                margin-bottom: 1.25rem;
+            }
+
+            .form-input {
+                padding: 0.875rem;
+                font-size: 16px; /* Предотвращает зум на iOS */
+            }
+
+            .auth-button {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            .social-button {
+                width: 50px;
+                height: 50px;
+            }
+
+            .social-icon {
+                width: 1.75rem;
+                height: 1.75rem;
+            }
+
+            .divider {
+                margin: 1.5rem 0 1rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 1.5rem 1rem;
+                margin: 0.25rem;
+            }
+
+            .logo-section {
+                margin-bottom: 2rem;
+            }
+
+            .auth-tabs {
+                margin-bottom: 1.5rem;
+            }
+
+            .forms-container {
+                min-height: 360px;
+            }
+
+            .social-buttons {
+                gap: 1rem;
+            }
+
+            .social-button {
+                width: 45px;
+                height: 45px;
+            }
+
+            .social-icon {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+        }
+
+        /* Поддержка темной темы */
+        @media (prefers-color-scheme: dark) {
+            .auth-container {
+                background: #1f2937;
+                color: white;
+            }
+
+            .form-input {
+                background: #374151;
+                border-color: #4b5563;
+                color: white;
+            }
+
+            .form-input:focus {
+                background: #374151;
+                border-color: var(--primary);
+            }
+
+            .form-label {
+                color: #e5e7eb;
+            }
+
+            .divider span {
+                background: #1f2937;
+                color: #9ca3af;
+            }
+
+            .social-button {
+                background: #374151;
+                border-color: #4b5563;
+                color: #e5e7eb;
+            }
+
+            .auth-tabs {
+                background: #374151;
+            }
+
+            .tab-button.active {
+                background: #4b5563;
+                color: var(--primary);
+            }
+        }
+
+        /* Уменьшение анимаций для пользователей с ограниченными возможностями */
+        @media (prefers-reduced-motion: reduce) {
+            .auth-form {
+                transition: opacity 0.2s ease;
+            }
+
+            .tab-button, .auth-button, .social-button {
+                transition: all 0.1s ease;
+            }
+
+            .form-input {
+                transition: border-color 0.1s ease;
             }
         }
     </style>
@@ -544,7 +690,19 @@
     <script>
         console.log('TeacherUchit Auth - Script loaded successfully!');
 
+        // Кэшируем элементы для оптимизации
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const successMessage = document.getElementById('success-message');
+
+        // Переменная для отслеживания текущей анимации
+        let isAnimating = false;
+
         function showForm(formType) {
+            // Предотвращаем множественные клики во время анимации
+            if (isAnimating) return;
+            
             console.log('showForm called:', formType);
             
             const currentForm = document.querySelector('.auth-form.active');
@@ -552,16 +710,12 @@
             
             if (!targetForm || targetForm === currentForm) return;
             
-            // Убираем активные классы с кнопок
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
+            isAnimating = true;
             
-            // Активируем нужную кнопку
+            // Обновляем кнопки табов
+            tabButtons.forEach(button => button.classList.remove('active'));
             const targetButton = document.querySelector(`[onclick="showForm('${formType}')"]`);
-            if (targetButton) {
-                targetButton.classList.add('active');
-            }
+            if (targetButton) targetButton.classList.add('active');
             
             // Определяем направление анимации
             const isLoginToRegister = formType === 'register';
@@ -571,40 +725,36 @@
                 currentForm.classList.remove('active');
                 currentForm.classList.add(isLoginToRegister ? 'slide-out-left' : 'slide-out-right');
                 
-                // Через задержку показываем новую форму
+                // Оптимизированный таймаут
                 setTimeout(() => {
-                    // Убираем классы анимации с текущей формы
+                    // Убираем классы анимации
                     currentForm.classList.remove('slide-out-left', 'slide-out-right');
                     
-                    // Подготавливаем новую форму
-                    targetForm.classList.remove('slide-out-left', 'slide-out-right');
-                    targetForm.style.transform = isLoginToRegister ? 'translateX(100px)' : 'translateX(-100px)';
-                    targetForm.style.opacity = '0';
+                    // Показываем новую форму
+                    targetForm.classList.add('active');
                     
-                    // Показываем новую форму с анимацией
-                    requestAnimationFrame(() => {
-                        targetForm.classList.add('active');
-                        targetForm.style.transform = '';
-                        targetForm.style.opacity = '';
-                    });
-                }, 250);
+                    // Разблокируем анимацию
+                    isAnimating = false;
+                    
+                    // Фокус на первое поле (только для десктопа)
+                    if (window.innerWidth > 768) {
+                        const firstInput = targetForm.querySelector('input');
+                        if (firstInput) firstInput.focus();
+                    }
+                }, 200); // Уменьшенная задержка
             } else {
-                // Если нет текущей формы, просто показываем целевую
                 targetForm.classList.add('active');
+                isAnimating = false;
             }
             
             console.log('Form switched to:', formType);
         }
 
         function togglePassword(inputId) {
-            console.log('togglePassword called:', inputId);
             const input = document.getElementById(inputId);
+            if (!input) return;
             
-            if (input.type === 'password') {
-                input.type = 'text';
-            } else {
-                input.type = 'password';
-            }
+            input.type = input.type === 'password' ? 'text' : 'password';
         }
 
         function socialLogin(provider) {
@@ -617,7 +767,6 @@
         }
 
         function showForgotPassword() {
-            console.log('showForgotPassword called');
             alert('Функция восстановления пароля будет доступна в полной версии.\n\nДля демо используйте:\nEmail: demo@teacheruchit.ru\nПароль: demo123');
         }
 
@@ -629,35 +778,74 @@
                 field.classList.add('error');
                 error.textContent = message;
                 error.style.display = 'block';
+                
+                // Плавная прокрутка к ошибке на мобильных
+                if (window.innerWidth <= 768) {
+                    field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 field.focus();
             }
         }
 
         function clearErrors() {
-            document.querySelectorAll('.form-input').forEach(input => {
+            // Оптимизированная очистка ошибок
+            document.querySelectorAll('.form-input.error').forEach(input => {
                 input.classList.remove('error');
             });
             document.querySelectorAll('.error-message').forEach(error => {
                 error.style.display = 'none';
             });
-            document.getElementById('success-message').style.display = 'none';
+            successMessage.style.display = 'none';
         }
 
         function showSuccess(message) {
-            const successEl = document.getElementById('success-message');
-            successEl.textContent = message;
-            successEl.style.display = 'block';
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            
+            // Прокрутка к сообщению на мобильных
+            if (window.innerWidth <= 768) {
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         }
 
         function isValidEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
+        // Дебаунс для валидации в реальном времени
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Оптимизированная валидация в реальном времени
+        const validateField = debounce((field) => {
+            const value = field.value.trim();
+            const fieldId = field.id;
+            
+            if (fieldId.includes('email') && value && !isValidEmail(value)) {
+                showError(fieldId, 'Введите корректный email адрес');
+            } else if (fieldId.includes('password') && value && value.length < 6) {
+                showError(fieldId, 'Пароль должен содержать минимум 6 символов');
+            } else {
+                const error = document.getElementById(fieldId + '-error');
+                if (error) {
+                    error.style.display = 'none';
+                    field.classList.remove('error');
+                }
+            }
+        }, 500);
+
         // Обработчики форм
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log('Login form submitted');
             clearErrors();
             
             const email = document.getElementById('login-email').value.trim();
@@ -691,9 +879,8 @@
             }
         });
 
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+        registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log('Register form submitted');
             clearErrors();
             
             const name = document.getElementById('register-name').value.trim();
@@ -755,6 +942,35 @@
             } else {
                 showForm('login');
             }
+
+            // Добавляем валидацию в реальном времени для всех полей
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.addEventListener('input', () => validateField(input));
+                input.addEventListener('blur', () => validateField(input));
+            });
+
+            // Оптимизация для мобильных устройств
+            if ('ontouchstart' in window) {
+                // Добавляем класс для мобильных устройств
+                document.body.classList.add('touch-device');
+                
+                // Предотвращаем двойной тап для зума
+                let lastTouchEnd = 0;
+                document.addEventListener('touchend', function (event) {
+                    const now = (new Date()).getTime();
+                    if (now - lastTouchEnd <= 300) {
+                        event.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, false);
+            }
+
+            // Обработка изменения ориентации
+            window.addEventListener('orientationchange', function() {
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                }, 100);
+            });
         });
 
         console.log('All functions and event listeners initialized');

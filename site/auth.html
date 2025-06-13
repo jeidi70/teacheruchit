@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация - TeacherUchit</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+            filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.3));
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: var(--gray-100);
+            border-radius: 0.75rem;
+            padding: 0.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: transparent;
+            color: var(--gray-600);
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-400);
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .password-toggle:hover {
+            color: var(--gray-600);
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .auth-button:hover::before {
+            left: 100%;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .auth-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .social-login {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .divider {
+            position: relative;
+            margin: 1.5rem 0;
+            text-align: center;
+            color: var(--gray-400);
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gray-300);
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 1rem;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-button {
+            flex: 1;
+            padding: 0.875rem;
+            border: 2px solid var(--gray-300);
+            background: white;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .social-button:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            .auth-title {
+                font-size: 1.75rem;
+            }
+
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">
+        ← Назад на главную
+    </a>
+
+    <div class="auth-container">
+        <div class="logo-section">
+            <svg class="logo-icon" viewBox="0 0 24 24">
+                <!-- Brand Logo Icon (копируем из index.html) -->
+                <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <!-- Main circle with gradient -->
+                <circle cx="12" cy="12" r="11" fill="url(#logoGradient)" opacity="0.9"/>
+                <circle cx="12" cy="12" r="11" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
+                
+                <!-- Book/Knowledge symbol -->
+                <path d="M7 6 L17 6 Q18 6 18 7 L18 17 Q18 18 17 18 L7 18 Q6 18 6 17 L6 7 Q6 6 7 6 Z" 
+                      fill="white" opacity="0.9"/>
+                <path d="M12 6 L12 18" stroke="url(#logoGradient)" stroke-width="2"/>
+                <path d="M8 9 L11 9 M13 9 L16 9" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M8 12 L11 12 M13 12 L16 12" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M8 15 L11 15 M13 15 L16 15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                
+                <!-- AI brain/neural network element -->
+                <circle cx="19" cy="5" r="3.5" fill="white" opacity="0.95"/>
+                <circle cx="19" cy="5" r="3.5" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                
+                <!-- Neural connections -->
+                <circle cx="17.5" cy="4" r="0.8" fill="url(#logoGradient)"/>
+                <circle cx="20.5" cy="4" r="0.8" fill="url(#logoGradient)"/>
+                <circle cx="19" cy="6.5" r="0.8" fill="url(#logoGradient)"/>
+                <circle cx="19" cy="3.5" r="0.8" fill="url(#logoGradient)"/>
+                
+                <!-- Connecting lines -->
+                <path d="M17.8 4.2 L18.7 3.7 M20.2 4.2 L19.3 3.7 M19.2 6.3 L19.2 5.2" 
+                      stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+                
+                <!-- Sparkle effect -->
+                <path d="M4 8 L5 9 L4 10 L3 9 Z" fill="white" opacity="0.8"/>
+                <path d="M20 15 L21 16 L20 17 L19 16 Z" fill="white" opacity="0.8"/>
+                <circle cx="6" cy="18" r="1" fill="white" opacity="0.6"/>
+            </svg>
+            <h1 class="auth-title">TeacherUchit</h1>
+            <p class="auth-subtitle">Добро пожаловать в будущее образования</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="tab-button active" onclick="switchTab('login')">Вход</button>
+            <button class="tab-button" onclick="switchTab('register')">Регистрация</button>
+        </div>
+
+        <!-- Форма входа -->
+        <form class="auth-form active" id="login-form">
+            <div class="form-group">
+                <label class="form-label" for="login-email">Email</label>
+                <input type="email" id="login-email" class="form-input" placeholder="your@email.com" required>
+                <div class="error-message" id="login-email-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="login-password">Пароль</label>
+                <div class="password-field">
+                    <input type="password" id="login-password" class="form-input" placeholder="Введите пароль" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('login-password')">👁</button>
+                </div>
+                <div class="error-message" id="login-password-error"></div>
+            </div>
+
+            <button type="submit" class="auth-button" id="login-btn">
+                <span class="button-text">Войти</span>
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Входим...</span>
+                </div>
+            </button>
+
+            <div class="forgot-password">
+                <a href="#" onclick="showForgotPassword()">Забыли пароль?</a>
+            </div>
+        </form>
+
+        <!-- Форма регистрации -->
+        <form class="auth-form" id="register-form">
+            <div class="form-group">
+                <label class="form-label" for="register-name">Имя</label>
+                <input type="text" id="register-name" class="form-input" placeholder="Ваше имя" required>
+                <div class="error-message" id="register-name-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="register-email">Email</label>
+                <input type="email" id="register-email" class="form-input" placeholder="your@email.com" required>
+                <div class="error-message" id="register-email-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="register-password">Пароль</label>
+                <div class="password-field">
+                    <input type="password" id="register-password" class="form-input" placeholder="Создайте пароль" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('register-password')">👁</button>
+                </div>
+                <div class="error-message" id="register-password-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="register-password-confirm">Подтвердите пароль</label>
+                <div class="password-field">
+                    <input type="password" id="register-password-confirm" class="form-input" placeholder="Повторите пароль" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('register-password-confirm')">👁</button>
+                </div>
+                <div class="error-message" id="register-password-confirm-error"></div>
+            </div>
+
+            <button type="submit" class="auth-button" id="register-btn">
+                <span class="button-text">Создать аккаунт</span>
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Создаем аккаунт...</span>
+                </div>
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>или</span>
+        </div>
+
+        <div class="social-buttons">
+            <button class="social-button" onclick="socialLogin('google')">
+                <span>Google</span>
+            </button>
+            <button class="social-button" onclick="socialLogin('vk')">
+                <span>VK</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Переключение активной вкладки
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + '-form').classList.add('active');
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                toggle.textContent = '👁';
+            }
+        }
+
+        function showLoading(formType) {
+            const btn = document.getElementById(formType + '-btn');
+            const buttonText = btn.querySelector('.button-text');
+            const loading = btn.querySelector('.loading');
+            
+            buttonText.style.display = 'none';
+            loading.classList.add('active');
+            btn.disabled = true;
+        }
+
+        function hideLoading(formType) {
+            const btn = document.getElementById(formType + '-btn');
+            const buttonText = btn.querySelector('.button-text');
+            const loading = btn.querySelector('.loading');
+            
+            buttonText.style.display = 'inline';
+            loading.classList.remove('active');
+            btn.disabled = false;
+        }
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(fieldId + '-error');
+            
+            field.classList.add('error');
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.classList.remove('error');
+            });
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.style.display = 'none';
+            });
+        }
+
+        // Обработка входа
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearErrors();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Валидация
+            if (!email) {
+                showError('login-email', 'Введите email');
+                return;
+            }
+            if (!password) {
+                showError('login-password', 'Введите пароль');
+                return;
+            }
+            
+            showLoading('login');
+            
+            // Имитация запроса к серверу
+            setTimeout(() => {
+                hideLoading('login');
+                
+                // Простая проверка (в реальном приложении это будет API)
+                if (email === 'demo@teacheruchit.ru' && password === 'demo123') {
+                    localStorage.setItem('user', JSON.stringify({
+                        name: 'Демо пользователь',
+                        email: email,
+                        premium: false
+                    }));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert('Неверный email или пароль.\nДля демо используйте:\nEmail: demo@teacheruchit.ru\nПароль: demo123');
+                }
+            }, 2000);
+        });
+
+        // Обработка регистрации
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearErrors();
+            
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const passwordConfirm = document.getElementById('register-password-confirm').value;
+            
+            // Валидация
+            let hasErrors = false;
+            
+            if (!name) {
+                showError('register-name', 'Введите имя');
+                hasErrors = true;
+            }
+            if (!email) {
+                showError('register-email', 'Введите email');
+                hasErrors = true;
+            }
+            if (!password) {
+                showError('register-password', 'Введите пароль');
+                hasErrors = true;
+            } else if (password.length < 6) {
+                showError('register-password', 'Пароль должен содержать минимум 6 символов');
+                hasErrors = true;
+            }
+            if (password !== passwordConfirm) {
+                showError('register-password-confirm', 'Пароли не совпадают');
+                hasErrors = true;
+            }
+            
+            if (hasErrors) return;
+            
+            showLoading('register');
+            
+            // Имитация регистрации
+            setTimeout(() => {
+                hideLoading('register');
+                
+                localStorage.setItem('user', JSON.stringify({
+                    name: name,
+                    email: email,
+                    premium: false
+                }));
+                
+                alert('Аккаунт успешно создан! Добро пожаловать в TeacherUchit!');
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        });
+
+        function socialLogin(provider) {
+            alert(`Вход через ${provider} будет доступен в полной версии приложения`);
+        }
+
+        function showForgotPassword() {
+            alert('Функция восстановления пароля будет доступна в полной версии');
+        }
+
+        // Проверка URL параметров для автоматического переключения на регистрацию
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('action') === 'register') {
+            switchTab('register');
+            // Обновляем активную кнопку без события
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-button')[1].classList.add('active');
+        }
+    </script>
+</body>
+</html>

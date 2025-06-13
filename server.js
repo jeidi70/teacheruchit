@@ -334,37 +334,18 @@ app.post('/api/verify-token', async (req, res) => {
   }
 });
 
-// Serve main pages
+// Main landing page - now using the fixed improved design
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'design-selector.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Auth routes (will redirect to main page for now)
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'register.html'));
-});
-
-// Design selector page
-app.get('/designs', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'design-selector.html'));
-});
-
-// Новая улучшенная версия лендинга
-app.get('/improved', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'improved-fixed.html'));
-});
-
-// Новая минималистичная версия в стиле Apple
-app.get('/minimal', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'new-design.html'));
-});
-
-// Ультра-футуристичная версия с неоном и анимациями
-app.get('/future', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'ultra-modern.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // API info endpoint
@@ -386,11 +367,6 @@ app.get('/api/info', (req, res) => {
       'GET /api/info'
     ]
   });
-});
-
-// Catch all handler for SPA routing
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'new-design.html'));
 });
 
 // Error handling middleware

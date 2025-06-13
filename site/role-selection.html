@@ -228,20 +228,24 @@
 
         .form-label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             color: var(--gray-700);
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.025em;
         }
 
         .form-select, .form-input {
             width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--gray-300);
-            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
             font-size: 1rem;
-            transition: all 0.2s ease;
-            background: var(--gray-50);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
             -webkit-appearance: none;
             appearance: none;
             box-sizing: border-box;
@@ -250,14 +254,23 @@
         .form-select:focus, .form-input:focus {
             outline: none;
             border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: linear-gradient(145deg, #ffffff, #fafbff);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), 0 4px 16px rgba(99, 102, 241, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 1rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25rem;
+            padding-right: 3rem;
         }
 
         .class-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 1rem;
+            gap: 1.25rem;
         }
 
         .button {
@@ -427,13 +440,7 @@
                     <label class="form-label" for="student-city">Город</label>
                     <select id="student-city" class="form-select" required>
                         <option value="">Выберите город</option>
-                        <option value="moscow">Москва</option>
                         <option value="spb">Санкт-Петербург</option>
-                        <option value="novosibirsk">Новосибирск</option>
-                        <option value="ekaterinburg">Екатеринбург</option>
-                        <option value="kazan">Казань</option>
-                        <option value="nizhny">Нижний Новгород</option>
-                        <option value="other">Другой город</option>
                     </select>
                 </div>
 
@@ -486,10 +493,6 @@
                         <option value="">Выберите предмет</option>
                         <option value="history">История</option>
                         <option value="social">Обществознание</option>
-                        <option value="geography">География</option>
-                        <option value="literature">Литература</option>
-                        <option value="russian">Русский язык</option>
-                        <option value="other">Другой предмет</option>
                     </select>
                 </div>
 
@@ -524,48 +527,56 @@
 
         // Данные школ по городам
         const schoolsByCity = {
-            moscow: [
-                'Лицей №1535',
-                'Школа №57',
-                'Лицей НИУ ВШЭ',
-                'СУНЦ МГУ',
-                'Школа №179',
-                'Другая школа'
-            ],
             spb: [
-                'Лицей №239',
-                'Физико-математический лицей №30',
-                'Лицей №366',
+                'Президентский ФМЛ №239',
+                'ФМЛ №30',
+                'Гимназия №56',
+                'Аничков лицей',
+                '2-я гимназия СПб',
+                'Гимназия №116',
+                'Гимназия №155',
+                'Гимназия №171',
+                'Гимназия №271 им. Федулова',
+                'Гимназия №402',
+                'Гимназия №42',
+                'Гимназия №52',
+                'Гимназия №526',
+                'Гимназия №528',
+                'Гимназия №540',
+                'Гимназия №610',
+                'Гимназия №24 имени И.А. Крылова',
+                'Гимназия №642 Земля и Вселенная',
+                'Гимназия №652',
+                'Лицей №150',
+                'Лицей №419',
+                'Лицей №64',
+                'СОШ №222 немецкого языка Петришуле',
+                'СОШ №303 немецкого языка им. Шиллера',
+                'СОШ №318 итальянского языка',
+                'СОШ №332',
+                'СОШ №4 Кусто',
                 'Академическая гимназия СПбГУ',
+                'ФТШ им. Ж.И. Алфёрова',
+                'Лицей №281',
+                'Английская СОШ №238',
+                'СОШ №225',
+                'СОШ №256',
+                'СОШ №229',
+                'СОШ №234',
+                'СОШ №235 им. Д.Д. Шостаковича',
+                'СОШ №243',
+                'Гимназия №272',
+                'СОШ №245 им. Ю.В. Пасторова',
+                'СОШ №259 им. М.Т. Лорис-Меликова',
+                'СОШ №260',
+                'Английская СОШ №263',
+                'СОШ №280 им. М.Ю. Лермонтова',
+                'СОШ №287',
+                'СОШ №288 им. Олега Ольховского',
+                'Английская СОШ №306',
+                'СОШ №307',
+                'СОШ №317',
                 'Другая школа'
-            ],
-            novosibirsk: [
-                'Лицей №130',
-                'НГУ ФМШ',
-                'Лицей №22',
-                'Гимназия №1',
-                'Другая школа'
-            ],
-            ekaterinburg: [
-                'Лицей №135',
-                'Гимназия №9',
-                'Лицей №110',
-                'Другая школа'
-            ],
-            kazan: [
-                'ИТ-лицей КФУ',
-                'Лицей №131',
-                'Гимназия №7',
-                'Другая школа'
-            ],
-            nizhny: [
-                'Лицей №40',
-                'Гимназия №1',
-                'Лицей №8',
-                'Другая школа'
-            ],
-            other: [
-                'Введите название вручную'
             ]
         };
 

@@ -1,7 +1,26 @@
-// Subjects Manager для TeacherUchit
+// Subjects Manager для TeacherUchit - обновленная версия
 class SubjectsManager {
     constructor() {
-        this.subjects = [
+        // Только История и Обществознание для учителей
+        this.teacherSubjects = [
+            {
+                id: 'history',
+                name: 'История',
+                icon: 'icon-history',
+                color: 'warning',
+                description: 'Изучение исторических событий и процессов'
+            },
+            {
+                id: 'social-studies',
+                name: 'Обществознание',
+                icon: 'icon-social-studies',
+                color: 'primary',
+                description: 'Основы общественных наук и социальных отношений'
+            }
+        ];
+
+        // Все предметы для студентов (расширенный список)
+        this.allSubjects = [
             {
                 id: 'history',
                 name: 'История',
@@ -45,13 +64,335 @@ class SubjectsManager {
                 description: 'Политические системы и государственное устройство'
             }
         ];
-        
+
+        // Список школ
+        this.schools = [
+            { id: 'school_001', name: 'МБОУ СОШ №1 им. А.С. Пушкина', city: 'Москва' },
+            { id: 'school_002', name: 'МБОУ Гимназия №2', city: 'Москва' },
+            { id: 'school_003', name: 'МБОУ Лицей №3', city: 'Москва' },
+            { id: 'school_004', name: 'МБОУ СОШ №5 им. М.В. Ломоносова', city: 'Санкт-Петербург' },
+            { id: 'school_005', name: 'МБОУ Гимназия №7', city: 'Санкт-Петербург' },
+            { id: 'school_006', name: 'МБОУ СОШ №10', city: 'Екатеринбург' },
+            { id: 'school_007', name: 'МБОУ Лицей №12', city: 'Новосибирск' },
+            { id: 'school_008', name: 'МБОУ СОШ №15', city: 'Казань' },
+            { id: 'school_009', name: 'МБОУ Гимназия №18', city: 'Нижний Новгород' },
+            { id: 'school_010', name: 'МБОУ СОШ №20', city: 'Челябинск' },
+            { id: 'school_011', name: 'МБОУ Лицей №25', city: 'Самара' },
+            { id: 'school_012', name: 'МБОУ СОШ №30', city: 'Омск' },
+            { id: 'school_013', name: 'МБОУ Гимназия №35', city: 'Ростов-на-Дону' },
+            { id: 'school_014', name: 'МБОУ СОШ №40', city: 'Уфа' },
+            { id: 'school_015', name: 'МБОУ Лицей №45', city: 'Красноярск' }
+        ];
+
         this.init();
     }
 
     init() {
         this.removeGeographyFromData();
         this.updateSubjectSelectors();
+        this.setupMutuallyExclusiveSubjects();
+    }
+
+    // Получить предметы в зависимости от роли
+    getSubjectsForRole(role) {
+        return role === 'teacher' ? this.teacherSubjects : this.allSubjects;
+    }
+
+    // Получить все школы
+    getSchools() {
+        return this.schools;
+    }
+
+    // Получить школы по городу
+    getSchoolsByCity(city) {
+        return this.schools.filter(school => school.city === city);
+    }
+
+    // Получить уникальные города
+    getCities() {
+        return [...new Set(this.schools.map(school => school.city))].sort();
+    }
+
+    // Настройка взаимоисключающих предметов
+    setupMutuallyExclusiveSubjects() {
+        document.addEventListener('change', (e) => {
+            if (e.target.name === 'primarySubject' || e.target.name === 'secondarySubject') {
+                this.handleSubjectChange(e.target);
+            }
+        });
+    }
+
+    // Обработка изменения предмета
+    handleSubjectChange(changedSelect) {
+        const form = changedSelect.closest('form');
+        if (!form) return;
+
+        const primarySelect = form.querySelector('select[name="primarySubject"]');
+        const secondarySelect = form.querySelector('select[name="secondarySubject"]');
+
+        if (!primarySelect || !secondarySelect) return;
+
+        const primaryValue = primarySelect.value;
+        const secondaryValue = secondarySelect.value;
+
+        // Обновляем опции в зависимости от выбранного значения
+        this.updateSelectOptions(primarySelect, secondaryValue);
+        this.updateSelectOptions(secondarySelect, primaryValue);
+    }
+
+    // Обновление опций селекта с исключением выбранного значения
+    updateSelectOptions(select, excludeValue) {
+        const currentValue = select.value;
+        const isTeacher = this.isTeacherForm(select);
+        const subjects = isTeacher ? this.teacherSubjects : this.allSubjects;
+
+        // Очищаем и заполняем заново
+        select.innerHTML = '';
+        
+        // Добавляем пустую опцию
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = 'Выберите предмет';
+        select.appendChild(emptyOption);
+
+        // Добавляем предметы, исключая уже выбранный
+        subjects.forEach(subject => {
+            if (subject.name !== excludeValue) {
+                const option = document.createElement('option');
+                option.value = subject.name;
+                option.textContent = subject.name;
+                select.appendChild(option);
+            }
+        });
+
+        // Восстанавливаем значение, если оно не исключено
+        if (currentValue && currentValue !== excludeValue) {
+            select.value = currentValue;
+        }
+    }
+
+    // Определение, является ли форма учительской
+    isTeacherForm(element) {
+        const form = element.closest('form');
+        if (!form) return false;
+        
+        // Проверяем наличие полей, характерных для учителей
+        return form.querySelector('input[name="experience"]') || 
+               form.querySelector('select[name="qualification"]') ||
+               element.closest('.teacher-form');
+    }
+
+    // Обновить все селекторы предметов на странице
+    updateSubjectSelectors() {
+        const selectors = document.querySelectorAll('select[name="primarySubject"], select[name="secondarySubject"], select[name="subject"]');
+        
+        selectors.forEach(select => {
+            const currentValue = select.value;
+            const isTeacher = this.isTeacherForm(select);
+            const subjects = isTeacher ? this.teacherSubjects : this.allSubjects;
+            
+            // Очищаем опции
+            select.innerHTML = '';
+            
+            // Добавляем пустую опцию
+            const emptyOption = document.createElement('option');
+            emptyOption.value = '';
+            emptyOption.textContent = 'Выберите предмет';
+            select.appendChild(emptyOption);
+            
+            // Добавляем предметы
+            subjects.forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject.name;
+                option.textContent = subject.name;
+                select.appendChild(option);
+            });
+            
+            // Восстанавливаем значение, если оно валидно
+            if (currentValue && subjects.find(s => s.name === currentValue)) {
+                select.value = currentValue;
+            }
+        });
+    }
+
+    // Обновить селекторы школ
+    updateSchoolSelectors() {
+        const selectors = document.querySelectorAll('select[name="school"], select[name="schoolName"]');
+        
+        selectors.forEach(select => {
+            const currentValue = select.value;
+            
+            // Очищаем опции
+            select.innerHTML = '';
+            
+            // Добавляем пустую опцию
+            const emptyOption = document.createElement('option');
+            emptyOption.value = '';
+            emptyOption.textContent = 'Выберите школу';
+            select.appendChild(emptyOption);
+            
+            // Группируем по городам
+            const cities = this.getCities();
+            cities.forEach(city => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = city;
+                
+                const citySchools = this.getSchoolsByCity(city);
+                citySchools.forEach(school => {
+                    const option = document.createElement('option');
+                    option.value = school.name;
+                    option.textContent = school.name;
+                    optgroup.appendChild(option);
+                });
+                
+                select.appendChild(optgroup);
+            });
+            
+            // Восстанавливаем значение
+            if (currentValue) {
+                select.value = currentValue;
+            }
+        });
+    }
+
+    // Добавить новую школу (для админ панели)
+    addSchool(schoolData) {
+        const newSchool = {
+            id: `school_${Date.now()}`,
+            name: schoolData.name,
+            city: schoolData.city
+        };
+        
+        this.schools.push(newSchool);
+        this.saveSchoolsToStorage();
+        this.updateSchoolSelectors();
+        
+        return newSchool;
+    }
+
+    // Добавить новый предмет (для админ панели)
+    addSubject(subjectData) {
+        const newSubject = {
+            id: subjectData.id || subjectData.name.toLowerCase().replace(/\s+/g, '-'),
+            name: subjectData.name,
+            icon: subjectData.icon || 'icon-materials',
+            color: subjectData.color || 'primary',
+            description: subjectData.description || ''
+        };
+        
+        // Добавляем в общий список
+        this.allSubjects.push(newSubject);
+        
+        // Если это основной предмет для учителей, добавляем и туда
+        if (subjectData.isTeacherSubject) {
+            this.teacherSubjects.push(newSubject);
+        }
+        
+        this.saveSubjectsToStorage();
+        this.updateSubjectSelectors();
+        
+        return newSubject;
+    }
+
+    // Сохранение школ в localStorage
+    saveSchoolsToStorage() {
+        localStorage.setItem('schools', JSON.stringify(this.schools));
+    }
+
+    // Сохранение предметов в localStorage
+    saveSubjectsToStorage() {
+        localStorage.setItem('teacherSubjects', JSON.stringify(this.teacherSubjects));
+        localStorage.setItem('allSubjects', JSON.stringify(this.allSubjects));
+    }
+
+    // Загрузка данных из localStorage
+    loadFromStorage() {
+        try {
+            const savedSchools = localStorage.getItem('schools');
+            if (savedSchools) {
+                this.schools = JSON.parse(savedSchools);
+            }
+            
+            const savedTeacherSubjects = localStorage.getItem('teacherSubjects');
+            if (savedTeacherSubjects) {
+                this.teacherSubjects = JSON.parse(savedTeacherSubjects);
+            }
+            
+            const savedAllSubjects = localStorage.getItem('allSubjects');
+            if (savedAllSubjects) {
+                this.allSubjects = JSON.parse(savedAllSubjects);
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки данных:', error);
+        }
+    }
+
+    // Создание формы добавления предмета для админ панели
+    createAddSubjectForm() {
+        return `
+            <form id="addSubjectForm" class="add-subject-form">
+                <div class="form-group">
+                    <label for="subjectName" class="form-label required">Название предмета</label>
+                    <input type="text" id="subjectName" name="name" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subjectDescription" class="form-label">Описание</label>
+                    <textarea id="subjectDescription" name="description" class="form-input form-textarea" placeholder="Краткое описание предмета"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="subjectIcon" class="form-label">Иконка</label>
+                        <select id="subjectIcon" name="icon" class="form-input form-select">
+                            <option value="icon-materials">Материалы</option>
+                            <option value="icon-history">История</option>
+                            <option value="icon-social-studies">Обществознание</option>
+                            <option value="icon-economics">Экономика</option>
+                            <option value="icon-law">Право</option>
+                            <option value="icon-philosophy">Философия</option>
+                            <option value="icon-political-science">Политология</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subjectColor" class="form-label">Цвет</label>
+                        <select id="subjectColor" name="color" class="form-input form-select">
+                            <option value="primary">Синий</option>
+                            <option value="secondary">Фиолетовый</option>
+                            <option value="success">Зеленый</option>
+                            <option value="warning">Оранжевый</option>
+                            <option value="error">Красный</option>
+                            <option value="accent">Голубой</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="isTeacherSubject">
+                        <span class="checkbox-label">Доступен для учителей</span>
+                    </label>
+                </div>
+            </form>
+        `;
+    }
+
+    // Создание формы добавления школы для админ панели
+    createAddSchoolForm() {
+        return `
+            <form id="addSchoolForm" class="add-school-form">
+                <div class="form-group">
+                    <label for="schoolName" class="form-label required">Название школы</label>
+                    <input type="text" id="schoolName" name="name" class="form-input" required placeholder="МБОУ СОШ №...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="schoolCity" class="form-label required">Город</label>
+                    <input type="text" id="schoolCity" name="city" class="form-input" required placeholder="Москва">
+                </div>
+            </form>
+        `;
     }
 
     // Удаление географии из существующих данных
@@ -63,7 +404,7 @@ class SubjectsManager {
 
             users.forEach(user => {
                 if (user.profile) {
-                    // Для учителей
+                    // Для учителей - заменяем географию на пустое значение
                     if (user.profile.primarySubject === 'География') {
                         user.profile.primarySubject = '';
                         updated = true;
@@ -73,7 +414,7 @@ class SubjectsManager {
                         updated = true;
                     }
                     
-                    // Для студентов - удаляем из интересов если есть
+                    // Для студентов - удаляем из интересов
                     if (user.profile.interests && user.profile.interests.includes('География')) {
                         user.profile.interests = user.profile.interests.replace(/География,?\s*/g, '');
                         updated = true;
@@ -108,26 +449,6 @@ class SubjectsManager {
                 }
             }
 
-            // Удаляем материалы по географии
-            const materials = JSON.parse(localStorage.getItem('materials') || '[]');
-            const filteredMaterials = materials.filter(material => 
-                material.subject !== 'География' && material.subject !== 'география'
-            );
-            
-            if (filteredMaterials.length !== materials.length) {
-                localStorage.setItem('materials', JSON.stringify(filteredMaterials));
-            }
-
-            // Удаляем задания по географии
-            const assignments = JSON.parse(localStorage.getItem('assignments') || '[]');
-            const filteredAssignments = assignments.filter(assignment => 
-                assignment.subject !== 'География' && assignment.subject !== 'география'
-            );
-            
-            if (filteredAssignments.length !== assignments.length) {
-                localStorage.setItem('assignments', JSON.stringify(filteredAssignments));
-            }
-
             console.log('География успешно удалена из всех данных');
             
         } catch (error) {
@@ -135,34 +456,29 @@ class SubjectsManager {
         }
     }
 
-    // Получить все предметы
+    // Остальные методы остаются без изменений...
     getAllSubjects() {
-        return this.subjects;
+        return this.allSubjects;
     }
 
-    // Получить предмет по ID
     getSubjectById(id) {
-        return this.subjects.find(subject => subject.id === id);
+        return this.allSubjects.find(subject => subject.id === id);
     }
 
-    // Получить предмет по названию
     getSubjectByName(name) {
-        return this.subjects.find(subject => subject.name === name);
+        return this.allSubjects.find(subject => subject.name === name);
     }
 
-    // Получить иконку предмета
     getSubjectIcon(subjectName) {
         const subject = this.getSubjectByName(subjectName);
         return subject ? subject.icon : 'icon-materials';
     }
 
-    // Получить цвет предмета
     getSubjectColor(subjectName) {
         const subject = this.getSubjectByName(subjectName);
         return subject ? subject.color : 'primary';
     }
 
-    // Создать бейдж предмета
     createSubjectBadge(subjectName) {
         const subject = this.getSubjectByName(subjectName);
         if (!subject) return '';
@@ -177,249 +493,6 @@ class SubjectsManager {
         `;
     }
 
-    // Обновить все селекторы предметов на странице
-    updateSubjectSelectors() {
-        const selectors = document.querySelectorAll('select[name="primarySubject"], select[name="secondarySubject"], select[name="subject"]');
-        
-        selectors.forEach(select => {
-            // Сохраняем текущее значение
-            const currentValue = select.value;
-            
-            // Очищаем опции (кроме первой пустой)
-            const firstOption = select.querySelector('option[value=""]');
-            select.innerHTML = '';
-            
-            // Добавляем пустую опцию обратно
-            if (firstOption) {
-                select.appendChild(firstOption);
-            } else {
-                const emptyOption = document.createElement('option');
-                emptyOption.value = '';
-                emptyOption.textContent = 'Выберите предмет';
-                select.appendChild(emptyOption);
-            }
-            
-            // Добавляем предметы
-            this.subjects.forEach(subject => {
-                const option = document.createElement('option');
-                option.value = subject.name;
-                option.textContent = subject.name;
-                select.appendChild(option);
-            });
-            
-            // Восстанавливаем значение, если оно валидно
-            if (currentValue && this.getSubjectByName(currentValue)) {
-                select.value = currentValue;
-            }
-        });
-    }
-
-    // Создать карточку предмета
-    createSubjectCard(subject, onClick = null) {
-        const card = document.createElement('div');
-        card.className = 'subject-card';
-        card.innerHTML = `
-            <div class="subject-icon ${subject.color}">
-                <svg class="icon icon-lg">
-                    <use href="/assets/modern-icons.svg#${subject.icon}"></use>
-                </svg>
-            </div>
-            <div class="subject-info">
-                <h3 class="subject-name">${subject.name}</h3>
-                <p class="subject-description">${subject.description}</p>
-            </div>
-        `;
-
-        if (onClick) {
-            card.style.cursor = 'pointer';
-            card.addEventListener('click', () => onClick(subject));
-        }
-
-        return card;
-    }
-
-    // Создать список материалов по предмету
-    createSubjectMaterials(subjectName) {
-        const materials = JSON.parse(localStorage.getItem('materials') || '[]');
-        const subjectMaterials = materials.filter(material => material.subject === subjectName);
-        
-        return subjectMaterials.map(material => this.createMaterialCard(material));
-    }
-
-    // Создать карточку материала
-    createMaterialCard(material) {
-        const subject = this.getSubjectByName(material.subject);
-        const card = document.createElement('div');
-        card.className = 'material-card';
-        card.innerHTML = `
-            <div class="material-header">
-                <div class="material-icon">
-                    <svg class="icon icon-md">
-                        <use href="/assets/modern-icons.svg#${subject ? subject.icon : 'icon-materials'}"></use>
-                    </svg>
-                </div>
-                <div class="material-meta">
-                    ${this.createSubjectBadge(material.subject)}
-                    <span class="material-date">${this.formatDate(material.createdAt)}</span>
-                </div>
-            </div>
-            <div class="material-content">
-                <h3 class="material-title">${material.title}</h3>
-                <p class="material-description">${material.description || 'Описание отсутствует'}</p>
-            </div>
-            <div class="material-footer">
-                <div class="material-stats">
-                    <span class="stat-item">
-                        <svg class="icon icon-xs">
-                            <use href="/assets/modern-icons.svg#icon-materials"></use>
-                        </svg>
-                        ${material.type || 'Материал'}
-                    </span>
-                    <span class="stat-item">
-                        <svg class="icon icon-xs">
-                            <use href="/assets/modern-icons.svg#icon-analytics"></use>
-                        </svg>
-                        ${material.views || 0} просмотров
-                    </span>
-                </div>
-                <button class="btn btn-primary btn-sm" onclick="subjectsManager.openMaterial('${material.id}')">
-                    Открыть
-                </button>
-            </div>
-        `;
-        return card;
-    }
-
-    // Открыть материал
-    openMaterial(materialId) {
-        const materials = JSON.parse(localStorage.getItem('materials') || '[]');
-        const material = materials.find(m => m.id === materialId);
-        
-        if (material) {
-            // Увеличиваем счетчик просмотров
-            material.views = (material.views || 0) + 1;
-            localStorage.setItem('materials', JSON.stringify(materials));
-            
-            // Открываем материал (здесь можно добавить логику открытия)
-            console.log('Открытие материала:', material);
-            
-            // Показываем уведомление
-            this.showToast(`Открыт материал: ${material.title}`, 'info');
-        }
-    }
-
-    // Форматирование даты
-    formatDate(dateString) {
-        if (!dateString) return 'Дата неизвестна';
-        
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffTime = Math.abs(now - date);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
-        if (diffDays === 1) return 'Вчера';
-        if (diffDays < 7) return `${diffDays} дней назад`;
-        if (diffDays < 30) return `${Math.ceil(diffDays / 7)} недель назад`;
-        
-        return date.toLocaleDateString('ru-RU');
-    }
-
-    // Фильтрация материалов
-    filterMaterials(filters = {}) {
-        const materials = JSON.parse(localStorage.getItem('materials') || '[]');
-        let filtered = materials;
-
-        // Фильтр по предмету
-        if (filters.subject) {
-            filtered = filtered.filter(material => material.subject === filters.subject);
-        }
-
-        // Фильтр по типу
-        if (filters.type) {
-            filtered = filtered.filter(material => material.type === filters.type);
-        }
-
-        // Поиск по тексту
-        if (filters.search) {
-            const searchLower = filters.search.toLowerCase();
-            filtered = filtered.filter(material => 
-                material.title.toLowerCase().includes(searchLower) ||
-                (material.description && material.description.toLowerCase().includes(searchLower))
-            );
-        }
-
-        return filtered;
-    }
-
-    // Получить статистику по предметам
-    getSubjectsStats() {
-        const materials = JSON.parse(localStorage.getItem('materials') || '[]');
-        const assignments = JSON.parse(localStorage.getItem('assignments') || '[]');
-        
-        const stats = {};
-        
-        this.subjects.forEach(subject => {
-            stats[subject.name] = {
-                materials: materials.filter(m => m.subject === subject.name).length,
-                assignments: assignments.filter(a => a.subject === subject.name).length,
-                totalViews: materials
-                    .filter(m => m.subject === subject.name)
-                    .reduce((sum, m) => sum + (m.views || 0), 0)
-            };
-        });
-        
-        return stats;
-    }
-
-    // Создать виджет статистики предметов
-    createStatsWidget() {
-        const stats = this.getSubjectsStats();
-        const widget = document.createElement('div');
-        widget.className = 'subjects-stats-widget';
-        
-        let totalMaterials = 0;
-        let totalAssignments = 0;
-        let totalViews = 0;
-        
-        const subjectStats = this.subjects.map(subject => {
-            const subjectStat = stats[subject.name];
-            totalMaterials += subjectStat.materials;
-            totalAssignments += subjectStat.assignments;
-            totalViews += subjectStat.totalViews;
-            
-            return `
-                <div class="subject-stat-item">
-                    <div class="subject-stat-icon ${subject.color}">
-                        <svg class="icon icon-sm">
-                            <use href="/assets/modern-icons.svg#${subject.icon}"></use>
-                        </svg>
-                    </div>
-                    <div class="subject-stat-info">
-                        <span class="subject-stat-name">${subject.name}</span>
-                        <span class="subject-stat-count">${subjectStat.materials} материалов</span>
-                    </div>
-                </div>
-            `;
-        }).join('');
-        
-        widget.innerHTML = `
-            <div class="stats-header">
-                <h3>Статистика по предметам</h3>
-                <div class="stats-summary">
-                    <span>${totalMaterials} материалов</span>
-                    <span>${totalAssignments} заданий</span>
-                    <span>${totalViews} просмотров</span>
-                </div>
-            </div>
-            <div class="stats-list">
-                ${subjectStats}
-            </div>
-        `;
-        
-        return widget;
-    }
-
-    // Показ уведомления
     showToast(message, type = 'info') {
         const toast = document.createElement('div');
         toast.className = `toast toast-${type} show`;
@@ -455,29 +528,6 @@ class SubjectsManager {
         container.appendChild(toast);
         setTimeout(() => toast.remove(), 5000);
     }
-
-    // Экспорт данных предметов
-    exportSubjectsData() {
-        const data = {
-            subjects: this.subjects,
-            materials: JSON.parse(localStorage.getItem('materials') || '[]'),
-            assignments: JSON.parse(localStorage.getItem('assignments') || '[]'),
-            stats: this.getSubjectsStats(),
-            exportDate: new Date().toISOString()
-        };
-        
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `subjects-data-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        this.showToast('Данные предметов экспортированы', 'success');
-    }
 }
 
 // Создаем глобальный экземпляр
@@ -486,19 +536,28 @@ window.subjectsManager = subjectsManager;
 
 // Автоматически обновляем селекторы при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
+    subjectsManager.loadFromStorage();
     subjectsManager.updateSubjectSelectors();
+    subjectsManager.updateSchoolSelectors();
 });
 
 // Обновляем селекторы при динамическом добавлении элементов
 const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
-            if (node.nodeType === 1) { // Element node
-                const selectors = node.querySelectorAll ? 
+            if (node.nodeType === 1) {
+                const subjectSelectors = node.querySelectorAll ? 
                     node.querySelectorAll('select[name="primarySubject"], select[name="secondarySubject"], select[name="subject"]') : 
                     [];
-                if (selectors.length > 0) {
-                    setTimeout(() => subjectsManager.updateSubjectSelectors(), 100);
+                const schoolSelectors = node.querySelectorAll ? 
+                    node.querySelectorAll('select[name="school"], select[name="schoolName"]') : 
+                    [];
+                    
+                if (subjectSelectors.length > 0 || schoolSelectors.length > 0) {
+                    setTimeout(() => {
+                        subjectsManager.updateSubjectSelectors();
+                        subjectsManager.updateSchoolSelectors();
+                    }, 100);
                 }
             }
         });

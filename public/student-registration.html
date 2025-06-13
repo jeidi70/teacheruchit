@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация ученика - TeacherUchit</title>
+    <link rel="stylesheet" href="/assets/modern-design-system.css">
+    <link rel="stylesheet" href="/assets/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--primary-50) 0%, var(--secondary-50) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+
+        .registration-container {
+            background: var(--surface-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            padding: var(--spacing-xl);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid var(--border-primary);
+        }
+
+        .registration-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: var(--secondary-500);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            color: white;
+        }
+
+        .registration-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .registration-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--text-base);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: var(--spacing-lg);
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            margin-top: var(--spacing-lg);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border-primary);
+        }
+
+        .login-link a {
+            color: var(--primary-500);
+            text-decoration: none;
+            font-weight: var(--font-medium);
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: var(--error-500);
+            font-size: var(--text-sm);
+            margin-top: var(--spacing-xs);
+            display: none;
+        }
+
+        .form-group.error .form-input,
+        .form-group.error .form-select {
+            border-color: var(--error-500);
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .registration-container {
+                margin: var(--spacing-md);
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <div class="registration-header">
+            <div class="logo">
+                <svg class="icon icon-lg">
+                    <use href="/assets/modern-icons.svg#icon-students"></use>
+                </svg>
+            </div>
+            <h1 class="registration-title">Регистрация ученика</h1>
+            <p class="registration-subtitle">Присоединяйтесь к образовательной платформе TeacherUchit</p>
+        </div>
+
+        <form id="studentRegistrationForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName" class="form-label required">Имя</label>
+                    <input type="text" id="firstName" name="firstName" class="form-input" required>
+                    <div class="error-message">Пожалуйста, введите ваше имя</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName" class="form-label required">Фамилия</label>
+                    <input type="text" id="lastName" name="lastName" class="form-input" required>
+                    <div class="error-message">Пожалуйста, введите вашу фамилию</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label required">Email</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+                <div class="error-message">Пожалуйста, введите корректный email</div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password" class="form-label required">Пароль</label>
+                    <input type="password" id="password" name="password" class="form-input" required minlength="6">
+                    <div class="error-message">Пароль должен содержать минимум 6 символов</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label required">Подтвердите пароль</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
+                    <div class="error-message">Пароли не совпадают</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="grade" class="form-label required">Класс</label>
+                    <select id="grade" name="grade" class="form-select" required>
+                        <option value="">Выберите класс</option>
+                        <option value="5">5 класс</option>
+                        <option value="6">6 класс</option>
+                        <option value="7">7 класс</option>
+                        <option value="8">8 класс</option>
+                        <option value="9">9 класс</option>
+                        <option value="10">10 класс</option>
+                        <option value="11">11 класс</option>
+                    </select>
+                    <div class="error-message">Пожалуйста, выберите класс</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="school" class="form-label required">Школа</label>
+                    <input type="text" id="school" name="school" class="form-input" required placeholder="Название школы">
+                    <div class="error-message">Пожалуйста, введите название школы</div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-secondary btn-register">
+                <svg class="icon icon-sm">
+                    <use href="/assets/modern-icons.svg#icon-students"></use>
+                </svg>
+                Зарегистрироваться как ученик
+            </button>
+        </form>
+
+        <div class="login-link">
+            <p>Уже есть аккаунт? <a href="/login.html">Войти в систему</a></p>
+            <p>Вы учитель? <a href="/teacher-registration.html">Регистрация учителя</a></p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <script>
+        class StudentRegistration {
+            constructor() {
+                this.form = document.getElementById('studentRegistrationForm');
+                this.init();
+            }
+
+            init() {
+                this.setupFormValidation();
+                this.setupPasswordConfirmation();
+                this.form.addEventListener('submit', this.handleSubmit.bind(this));
+            }
+
+            setupFormValidation() {
+                const inputs = this.form.querySelectorAll('input[required], select[required]');
+                inputs.forEach(input => {
+                    input.addEventListener('blur', () => this.validateField(input));
+                    input.addEventListener('input', () => this.clearFieldError(input));
+                });
+            }
+
+            setupPasswordConfirmation() {
+                const password = document.getElementById('password');
+                const confirmPassword = document.getElementById('confirmPassword');
+                
+                confirmPassword.addEventListener('input', () => {
+                    if (confirmPassword.value && password.value !== confirmPassword.value) {
+                        this.showFieldError(confirmPassword, 'Пароли не совпадают');
+                    } else {
+                        this.clearFieldError(confirmPassword);
+                    }
+                });
+            }
+
+            validateField(field) {
+                const value = field.value.trim();
+                let isValid = true;
+                let errorMessage = '';
+
+                if (field.hasAttribute('required') && !value) {
+                    isValid = false;
+                    errorMessage = 'Это поле обязательно для заполнения';
+                }
+
+                switch (field.type) {
+                    case 'email':
+                        if (value && !this.isValidEmail(value)) {
+                            isValid = false;
+                            errorMessage = 'Введите корректный email адрес';
+                        }
+                        break;
+                    case 'password':
+                        if (value && value.length < 6) {
+                            isValid = false;
+                            errorMessage = 'Пароль должен содержать минимум 6 символов';
+                        }
+                        break;
+                }
+
+                if (!isValid) {
+                    this.showFieldError(field, errorMessage);
+                } else {
+                    this.clearFieldError(field);
+                }
+
+                return isValid;
+            }
+
+            showFieldError(field, message) {
+                const formGroup = field.closest('.form-group');
+                const errorElement = formGroup.querySelector('.error-message');
+                
+                formGroup.classList.add('error');
+                if (errorElement) {
+                    errorElement.textContent = message;
+                }
+            }
+
+            clearFieldError(field) {
+                const formGroup = field.closest('.form-group');
+                formGroup.classList.remove('error');
+            }
+
+            isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                const inputs = this.form.querySelectorAll('input[required], select[required]');
+                let isFormValid = true;
+                
+                inputs.forEach(input => {
+                    if (!this.validateField(input)) {
+                        isFormValid = false;
+                    }
+                });
+
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                if (password !== confirmPassword) {
+                    this.showFieldError(document.getElementById('confirmPassword'), 'Пароли не совпадают');
+                    isFormValid = false;
+                }
+
+                if (!isFormValid) {
+                    this.showToast('Пожалуйста, исправьте ошибки в форме', 'error');
+                    return;
+                }
+
+                const formData = new FormData(this.form);
+                const studentData = {
+                    id: 'student_' + Date.now(),
+                    role: 'student',
+                    email: formData.get('email'),
+                    password: formData.get('password'),
+                    profile: {
+                        firstName: formData.get('firstName'),
+                        lastName: formData.get('lastName'),
+                        grade: formData.get('grade'),
+                        school: formData.get('school'),
+                        avatar: null,
+                        createdAt: new Date().toISOString(),
+                        isActive: true
+                    }
+                };
+
+                try {
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    
+                    if (users.find(user => user.email === studentData.email)) {
+                        this.showToast('Пользователь с таким email уже существует', 'error');
+                        this.showFieldError(document.getElementById('email'), 'Этот email уже используется');
+                        return;
+                    }
+
+                    users.push(studentData);
+                    localStorage.setItem('users', JSON.stringify(users));
+
+                    this.showToast('Регистрация успешно завершена!', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = '/login.html?registered=student';
+                    }, 2000);
+
+                } catch (error) {
+                    console.error('Ошибка регистрации:', error);
+                    this.showToast('Произошла ошибка при регистрации. Попробуйте еще раз.', 'error');
+                }
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type} show`;
+                
+                const iconMap = {
+                    success: 'icon-success',
+                    error: 'icon-error',
+                    warning: 'icon-warning',
+                    info: 'icon-info'
+                };
+
+                toast.innerHTML = `
+                    <svg class="toast-icon icon icon-sm">
+                        <use href="/assets/modern-icons.svg#${iconMap[type]}"></use>
+                    </svg>
+                    <div class="toast-content">
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close" onclick="this.parentElement.remove()">
+                        <svg class="icon icon-sm">
+                            <use href="/assets/modern-icons.svg#icon-close"></use>
+                        </svg>
+                    </button>
+                `;
+
+                let container = document.querySelector('.toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+
+                container.appendChild(toast);
+                setTimeout(() => toast.remove(), 5000);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new StudentRegistration();
+        });
+    </script>
+</body>
+</html>

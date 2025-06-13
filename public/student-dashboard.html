@@ -4,339 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Дашборд ученика - TeacherUchit</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self';">
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="/assets/modern-design-system.css">
+    <link rel="stylesheet" href="/assets/components.css">
     <style>
-        :root {
-            --primary: #6366f1;
-            --secondary: #8b5cf6;
-            --accent: #06b6d4;
-            --dark: #0f172a;
-            --light: #f8fafc;
-            --white: #ffffff;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--gray-50);
-            color: var(--gray-900);
-            line-height: 1.6;
-        }
-
         .dashboard-container {
             display: flex;
             min-height: 100vh;
+            background: var(--surface-secondary);
         }
 
-        /* Sidebar */
         .sidebar {
             width: 280px;
-            background: white;
-            border-right: 1px solid var(--gray-200);
-            padding: 2rem 0;
+            background: var(--surface-primary);
+            border-right: 1px solid var(--border-primary);
+            padding: var(--spacing-lg);
             position: fixed;
             height: 100vh;
             overflow-y: auto;
+            z-index: 100;
         }
 
-        .logo-section {
-            padding: 0 2rem 2rem;
-            border-bottom: 1px solid var(--gray-200);
-            text-align: center;
-        }
-
-        .logo-icon {
-            width: 3rem;
-            height: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .logo-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--gray-900);
-        }
-
-        .nav-menu {
-            padding: 2rem 0;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem 2rem;
-            color: var(--gray-700);
-            text-decoration: none;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: var(--gray-50);
-            color: var(--primary);
-            border-left-color: var(--primary);
-        }
-
-        .nav-item i {
-            width: 1.5rem;
-            margin-right: 1rem;
-            font-size: 1.125rem;
-        }
-
-        /* Main content */
         .main-content {
             flex: 1;
             margin-left: 280px;
-            padding: 2rem;
+            padding: var(--spacing-lg);
+            min-height: 100vh;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            background: white;
-            padding: 1.5rem 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        .dashboard-header {
+            background: var(--surface-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+            border: 1px solid var(--border-primary);
         }
 
-        .header-left h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
+        .welcome-section h1 {
+            font-size: var(--text-3xl);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
         }
 
-        .header-left p {
-            color: var(--gray-600);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-avatar {
-            width: 3rem;
-            height: 3rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .logout-btn {
-            background: var(--error);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .logout-btn:hover {
-            background: #dc2626;
-            transform: translateY(-1px);
-        }
-
-        /* Dashboard grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .dashboard-card {
-            background: white;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--gray-200);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: between;
-            margin-bottom: 1rem;
-        }
-
-        .card-icon {
-            width: 3rem;
-            height: 3rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
-            margin-right: 1rem;
-        }
-
-        .card-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--gray-900);
-        }
-
-        .card-subtitle {
-            color: var(--gray-600);
-            font-size: 0.875rem;
+        .welcome-section p {
+            color: var(--text-secondary);
+            font-size: var(--text-lg);
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
         }
 
         .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            background: var(--surface-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-primary);
+            transition: all var(--transition-fast);
         }
 
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--gray-600);
-            font-size: 0.875rem;
-        }
-
-        /* Recent activities */
-        .activity-list {
-            background: white;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-icon {
-            width: 2.5rem;
-            height: 2.5rem;
-            background: var(--gray-100);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-        }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-title {
-            font-weight: 500;
-            color: var(--gray-900);
-            margin-bottom: 0.25rem;
-        }
-
-        .activity-time {
-            font-size: 0.875rem;
-            color: var(--gray-500);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .content-section {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
+            background: var(--surface-primary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-primary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .section-header {
+            padding: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: 1.5rem;
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
         }
 
-        /* Responsive */
+        .section-content {
+            padding: var(--spacing-xl);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            font-weight: var(--font-medium);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--secondary-50);
+            color: var(--secondary-600);
+            transform: translateX(4px);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
-                z-index: 1000;
+                transition: transform var(--transition-normal);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
             }
             
             .main-content {
                 margin-left: 0;
             }
-            
+
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -346,418 +167,372 @@
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo-section">
-                <svg class="logo-icon" viewBox="0 0 24 24">
-                    <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-                            <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <circle cx="12" cy="12" r="11" fill="url(#logoGradient)" opacity="0.9"/>
-                    <path d="M7 6 L17 6 Q18 6 18 7 L18 17 Q18 18 17 18 L7 18 Q6 18 6 17 L6 7 Q6 6 7 6 Z" fill="white" opacity="0.9"/>
-                    <path d="M9 8.5 L15 8.5" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M12 8.5 L12 15.5" stroke="url(#logoGradient)" stroke-width="2.5" stroke-linecap="round"/>
-                    <circle cx="9" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
-                    <circle cx="15" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
-                    <circle cx="12" cy="15.5" r="1.2" fill="url(#logoGradient)" opacity="0.8"/>
-                </svg>
-                <div class="logo-title">TeacherUchit</div>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">TeacherUchit</div>
+                <p style="color: var(--text-secondary); font-size: var(--text-sm);">Панель ученика</p>
             </div>
-
-            <nav class="nav-menu">
-                <a href="#" class="nav-item active" data-section="dashboard">
-                    <i class="fas fa-home"></i>
-                    Главная
-                </a>
-                <a href="#" class="nav-item" data-section="materials">
-                    <i class="fas fa-book"></i>
-                    Материалы
-                </a>
-                <a href="#" class="nav-item" data-section="assignments">
-                    <i class="fas fa-tasks"></i>
-                    Задания
-                </a>
-                <a href="#" class="nav-item" data-section="grades">
-                    <i class="fas fa-chart-line"></i>
-                    Оценки
-                </a>
-                <a href="#" class="nav-item" data-section="schedule">
-                    <i class="fas fa-calendar"></i>
-                    Расписание
-                </a>
-                <a href="#" class="nav-item" data-section="profile">
-                    <i class="fas fa-user"></i>
-                    Профиль
-                </a>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-dashboard"></use>
+                            </svg>
+                            Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#assignments" class="nav-link" data-section="assignments">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-assignments"></use>
+                            </svg>
+                            Задания
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#materials" class="nav-link" data-section="materials">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-materials"></use>
+                            </svg>
+                            Материалы
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#grades" class="nav-link" data-section="grades">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-grades"></use>
+                            </svg>
+                            Оценки
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#schedule" class="nav-link" data-section="schedule">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-schedule"></use>
+                            </svg>
+                            Расписание
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profile" class="nav-link" data-section="profile">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-profile"></use>
+                            </svg>
+                            Профиль
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#ai-assistant" class="nav-link" data-section="ai-assistant">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-ai"></use>
+                            </svg>
+                            ИИ-помощник
+                        </a>
+                    </li>
+                </ul>
             </nav>
-        </div>
+        </aside>
 
         <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div class="header-left">
-                    <h1 id="welcome-title">Добро пожаловать!</h1>
-                    <p id="welcome-subtitle">Сегодня отличный день для обучения</p>
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="section-content">
+                <div class="dashboard-header">
+                    <div class="welcome-section">
+                        <h1>Добро пожаловать!</h1>
+                        <p>Изучайте историю и обществознание с современными инструментами</p>
+                    </div>
                 </div>
-                <div class="user-info">
-                    <div class="user-avatar" id="user-avatar">У</div>
-                    <button class="logout-btn" id="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Выйти
-                    </button>
-                </div>
-            </div>
 
-            <!-- Dashboard Content -->
-            <div id="dashboard-content">
-                <!-- Stats -->
+                <!-- Stats Grid -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-number">12</div>
-                        <div class="stat-label">Пройдено уроков</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">5</div>
+                        <div class="stat-header">
+                            <div class="stat-icon secondary">
+                                <svg class="icon icon-lg">
+                                    <use href="/assets/modern-icons.svg#icon-assignments"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="assignmentsCount">0</div>
                         <div class="stat-label">Активных заданий</div>
                     </div>
+                    
                     <div class="stat-card">
-                        <div class="stat-number">4.5</div>
-                        <div class="stat-label">Средний балл</div>
+                        <div class="stat-header">
+                            <div class="stat-icon success">
+                                <svg class="icon icon-lg">
+                                    <use href="/assets/modern-icons.svg#icon-grades"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="averageGrade">0</div>
+                        <div class="stat-label">Средняя оценка</div>
                     </div>
+                    
                     <div class="stat-card">
-                        <div class="stat-number">95%</div>
-                        <div class="stat-label">Прогресс</div>
+                        <div class="stat-header">
+                            <div class="stat-icon warning">
+                                <svg class="icon icon-lg">
+                                    <use href="/assets/modern-icons.svg#icon-materials"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="materialsCount">0</div>
+                        <div class="stat-label">Материалов изучено</div>
                     </div>
-                </div>
-
-                <!-- Dashboard Grid -->
-                <div class="dashboard-grid">
-                    <!-- Quick Actions -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <div class="card-icon">
-                                <i class="fas fa-bolt"></i>
-                            </div>
-                            <div>
-                                <div class="card-title">Быстрые действия</div>
-                                <div class="card-subtitle">Начните изучение</div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon primary">
+                                <svg class="icon icon-lg">
+                                    <use href="/assets/modern-icons.svg#icon-ai"></use>
+                                </svg>
                             </div>
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 1rem;">
-                            <a href="#" class="btn btn-primary">
-                                <i class="fas fa-play"></i>
-                                Продолжить урок
-                            </a>
-                            <a href="#" class="btn btn-primary">
-                                <i class="fas fa-plus"></i>
-                                Новое задание
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Recent Materials -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <div class="card-icon">
-                                <i class="fas fa-book-open"></i>
-                            </div>
-                            <div>
-                                <div class="card-title">Недавние материалы</div>
-                                <div class="card-subtitle">Ваши последние уроки</div>
-                            </div>
-                        </div>
-                        <div class="activity-list" style="padding: 0;">
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class="fas fa-history"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="activity-title">Великая Отечественная война</div>
-                                    <div class="activity-time">2 часа назад</div>
-                                </div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class="fas fa-globe"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="activity-title">Древний мир</div>
-                                    <div class="activity-time">1 день назад</div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="stat-value" id="aiQuestions">0</div>
+                        <div class="stat-label">Вопросов ИИ</div>
                     </div>
                 </div>
 
                 <!-- Recent Activity -->
                 <div class="content-section">
-                    <h2 class="section-title">Последняя активность</h2>
-                    <div class="activity-list">
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-check-circle" style="color: var(--success);"></i>
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">Выполнено задание "Феодальная система"</div>
-                                <div class="activity-time">30 минут назад</div>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-star" style="color: var(--warning);"></i>
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">Получена оценка 5 за урок истории</div>
-                                <div class="activity-time">2 часа назад</div>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-book" style="color: var(--primary);"></i>
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">Изучен материал "Средневековье"</div>
-                                <div class="activity-time">1 день назад</div>
-                            </div>
+                    <div class="section-header">
+                        <h2 class="section-title">Последняя активность</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="empty-state">
+                            Здесь будет отображаться ваша последняя активность
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Materials Section -->
-            <div id="materials-content" style="display: none;">
+            <!-- Other sections -->
+            <div id="assignments-section" class="section-content hidden">
                 <div class="content-section">
-                    <h2 class="section-title">Учебные материалы</h2>
-                    <div class="dashboard-grid">
-                        <div class="dashboard-card">
-                            <div class="card-header">
-                                <div class="card-icon">
-                                    <i class="fas fa-history"></i>
-                                </div>
-                                <div>
-                                    <div class="card-title">История</div>
-                                    <div class="card-subtitle">15 уроков доступно</div>
-                                </div>
-                            </div>
-                            <a href="#" class="btn btn-primary">Изучать</a>
-                        </div>
-                        <div class="dashboard-card">
-                            <div class="card-header">
-                                <div class="card-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div>
-                                    <div class="card-title">Обществознание</div>
-                                    <div class="card-subtitle">12 уроков доступно</div>
-                                </div>
-                            </div>
-                            <a href="#" class="btn btn-primary">Изучать</a>
+                    <div class="section-header">
+                        <h2 class="section-title">Мои задания</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="empty-state">
+                            У вас пока нет заданий
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Assignments Section -->
-            <div id="assignments-content" style="display: none;">
+            <div id="materials-section" class="section-content hidden">
                 <div class="content-section">
-                    <h2 class="section-title">Текущие задания</h2>
-                    <div class="activity-list">
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-clock" style="color: var(--warning);"></i>
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">Эссе по истории Древнего Рима</div>
-                                <div class="activity-time">Срок: через 3 дня</div>
-                            </div>
-                            <a href="#" class="btn btn-primary">Выполнить</a>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-exclamation-triangle" style="color: var(--error);"></i>
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">Тест по обществознанию</div>
-                                <div class="activity-time">Срок: завтра</div>
-                            </div>
-                            <a href="#" class="btn btn-primary">Выполнить</a>
+                    <div class="section-header">
+                        <h2 class="section-title">Учебные материалы</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="empty-state">
+                            Материалы будут доступны после присоединения к классу
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Grades Section -->
-            <div id="grades-content" style="display: none;">
+            <div id="grades-section" class="section-content hidden">
                 <div class="content-section">
-                    <h2 class="section-title">Мои оценки</h2>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-number">5</div>
-                            <div class="stat-label">История</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">4</div>
-                            <div class="stat-label">Обществознание</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">5</div>
-                            <div class="stat-label">География</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">4.5</div>
-                            <div class="stat-label">Средний балл</div>
+                    <div class="section-header">
+                        <h2 class="section-title">Мои оценки</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="empty-state">
+                            У вас пока нет оценок
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Schedule Section -->
-            <div id="schedule-content" style="display: none;">
+            <div id="schedule-section" class="section-content hidden">
                 <div class="content-section">
-                    <h2 class="section-title">Расписание занятий</h2>
-                    <div class="activity-list">
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">История - Урок 15</div>
-                                <div class="activity-time">Сегодня, 14:00</div>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="activity-content">
-                                <div class="activity-title">Обществознание - Тест</div>
-                                <div class="activity-time">Завтра, 15:30</div>
-                            </div>
+                    <div class="section-header">
+                        <h2 class="section-title">Расписание</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="empty-state">
+                            Расписание будет доступно после присоединения к классу
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Profile Section -->
-            <div id="profile-content" style="display: none;">
+            <div id="profile-section" class="section-content hidden">
                 <div class="content-section">
-                    <h2 class="section-title">Мой профиль</h2>
-                    <div class="dashboard-grid">
-                        <div class="dashboard-card" id="profile-info">
-                            <!-- Данные профиля будут загружены JavaScript -->
+                    <div class="section-header">
+                        <h2 class="section-title">Мой профиль</h2>
+                    </div>
+                    <div class="section-content">
+                        <div id="profile-info">
+                            <!-- Profile info will be loaded here -->
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div id="ai-assistant-section" class="section-content hidden">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">ИИ-помощник</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="empty-state">
+                            ИИ-помощник поможет вам с изучением истории и обществознания
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
     <script>
-        // Проверка авторизации
-        function checkAuth() {
+        class StudentDashboard {
+            constructor() {
+                this.currentSection = 'dashboard';
+                this.user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                this.init();
+            }
+
+            init() {
+                this.setupNavigation();
+                this.loadUserProfile();
+                this.updateStats();
+            }
+
+            setupNavigation() {
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const section = link.dataset.section;
+                        this.showSection(section);
+                    });
+                });
+            }
+
+            showSection(sectionName) {
+                // Hide all sections
+                document.querySelectorAll('.section-content').forEach(section => {
+                    section.classList.add('hidden');
+                });
+
+                // Show selected section
+                const targetSection = document.getElementById(`${sectionName}-section`);
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                }
+
+                // Update navigation
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                const activeLink = document.querySelector(`[data-section="${sectionName}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+
+                this.currentSection = sectionName;
+            }
+
+            loadUserProfile() {
+                if (this.user.profile) {
+                    const welcomeTitle = document.querySelector('.welcome-section h1');
+                    if (welcomeTitle) {
+                        welcomeTitle.textContent = `Добро пожаловать, ${this.user.profile.firstName}!`;
+                    }
+
+                    // Load profile info
+                    const profileInfo = document.getElementById('profile-info');
+                    if (profileInfo) {
+                        profileInfo.innerHTML = `
+                            <div class="profile-card">
+                                <h3>Личная информация</h3>
+                                <p><strong>Имя:</strong> ${this.user.profile.firstName} ${this.user.profile.lastName}</p>
+                                <p><strong>Email:</strong> ${this.user.email}</p>
+                                <p><strong>Класс:</strong> ${this.user.profile.grade}</p>
+                                <p><strong>Школа:</strong> ${this.user.profile.school}</p>
+                                <p><strong>Дата регистрации:</strong> ${this.formatDate(this.user.profile.createdAt)}</p>
+                            </div>
+                        `;
+                    }
+                }
+            }
+
+            updateStats() {
+                // Mock data for demo
+                document.getElementById('assignmentsCount').textContent = '3';
+                document.getElementById('averageGrade').textContent = '4.2';
+                document.getElementById('materialsCount').textContent = '12';
+                document.getElementById('aiQuestions').textContent = '25';
+            }
+
+            formatDate(dateString) {
+                if (!dateString) return 'Дата неизвестна';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ru-RU');
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type} show`;
+                
+                const iconMap = {
+                    success: 'icon-success',
+                    error: 'icon-error',
+                    warning: 'icon-warning',
+                    info: 'icon-info'
+                };
+
+                toast.innerHTML = `
+                    <svg class="toast-icon icon icon-sm">
+                        <use href="/assets/modern-icons.svg#${iconMap[type]}"></use>
+                    </svg>
+                    <div class="toast-content">
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close" onclick="this.parentElement.remove()">
+                        <svg class="icon icon-sm">
+                            <use href="/assets/modern-icons.svg#icon-close"></use>
+                        </svg>
+                    </button>
+                `;
+
+                let container = document.querySelector('.toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+
+                container.appendChild(toast);
+                setTimeout(() => toast.remove(), 5000);
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
             const currentUser = localStorage.getItem('currentUser');
             if (!currentUser) {
-                window.location.href = 'auth.html';
-                return null;
+                window.location.href = '/login.html';
+                return;
             }
-            return JSON.parse(currentUser);
-        }
 
-        // Загрузка профиля пользователя
-        function loadUserProfile() {
-            const user = checkAuth();
-            if (!user) return;
-
-            const profile = localStorage.getItem(`teacheruchit_profile_${user.email}`);
-            if (profile) {
-                const profileData = JSON.parse(profile);
-                
-                // Обновляем заголовок
-                document.getElementById('welcome-title').textContent = `Добро пожаловать, ${user.name}!`;
-                document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
-                
-                // Заполняем профиль
-                const profileInfo = document.getElementById('profile-info');
-                profileInfo.innerHTML = `
-                    <div class="card-header">
-                        <div class="card-icon">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div>
-                            <div class="card-title">Информация о профиле</div>
-                        </div>
-                    </div>
-                    <div style="display: grid; gap: 1rem;">
-                        <div><strong>Имя:</strong> ${user.name}</div>
-                        <div><strong>Email:</strong> ${user.email}</div>
-                        <div><strong>Роль:</strong> Ученик</div>
-                        <div><strong>Город:</strong> ${profileData.cityName}</div>
-                        <div><strong>Школа:</strong> ${profileData.school}</div>
-                        <div><strong>Класс:</strong> ${profileData.fullClass}</div>
-                    </div>
-                `;
+            const user = JSON.parse(currentUser);
+            if (user.role !== 'student') {
+                window.location.href = '/teacher-dashboard.html';
+                return;
             }
-        }
 
-        // Навигация по разделам
-        function setupNavigation() {
-            const navItems = document.querySelectorAll('.nav-item');
-            const contentSections = ['dashboard', 'materials', 'assignments', 'grades', 'schedule', 'profile'];
-            
-            navItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    
-                    // Убираем активный класс со всех элементов
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    
-                    // Добавляем активный класс к текущему
-                    item.classList.add('active');
-                    
-                    // Скрываем все секции
-                    contentSections.forEach(section => {
-                        const element = document.getElementById(`${section}-content`);
-                        if (element) {
-                            element.style.display = 'none';
-                        }
-                    });
-                    
-                    // Показываем выбранную секцию
-                    const targetSection = item.getAttribute('data-section');
-                    const targetElement = document.getElementById(`${targetSection}-content`);
-                    if (targetElement) {
-                        targetElement.style.display = 'block';
-                    }
-                });
-            });
-        }
-
-        // Выход из системы
-        function logout() {
-            localStorage.removeItem('currentUser');
-            localStorage.removeItem('userProfile');
-            // Очищаем профили всех пользователей (опционально)
-            Object.keys(localStorage).forEach(key => {
-                if (key.startsWith('teacheruchit_profile_')) {
-                    localStorage.removeItem(key);
-                }
-            });
-            window.location.href = 'auth.html';
-        }
-
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', function() {
-            loadUserProfile();
-            setupNavigation();
-            
-            // Обработчик кнопки выхода
-            document.getElementById('logout-btn').addEventListener('click', logout);
-            
-            console.log('Student Dashboard loaded successfully!');
+            new StudentDashboard();
         });
     </script>
 </body>

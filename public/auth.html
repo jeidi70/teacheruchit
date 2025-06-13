@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Авторизация - TeacherUchit</title>
+    <title>Вход и регистрация - TeacherUchit</title>
     <style>
         :root {
             --primary: #6366f1;
@@ -14,13 +14,11 @@
             --gray-200: #e5e7eb;
             --gray-300: #d1d5db;
             --gray-400: #9ca3af;
+            --gray-500: #6b7280;
             --gray-600: #4b5563;
             --gray-700: #374151;
             --gray-800: #1f2937;
             --gray-900: #111827;
-            --success: #10b981;
-            --error: #ef4444;
-            --warning: #f59e0b;
         }
 
         * {
@@ -29,135 +27,270 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            min-height: 100dvh; /* Для мобильных браузеров */
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1rem;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 10;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         .auth-container {
             background: white;
-            border-radius: 1.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
             padding: 3rem;
             width: 100%;
             max-width: 450px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
             position: relative;
             overflow: hidden;
-        }
-
-        .auth-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            will-change: transform;
+            contain: layout style paint;
         }
 
         .logo-section {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .logo-icon {
             width: 4rem;
             height: 4rem;
-            margin: 0 auto 1rem;
-            filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.3));
+            margin-bottom: 1rem;
         }
 
         .auth-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--gray-900);
+            font-size: 2.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.5rem;
         }
 
         .auth-subtitle {
             color: var(--gray-600);
             font-size: 1rem;
+            font-weight: 500;
         }
 
         .auth-tabs {
             display: flex;
             background: var(--gray-100);
-            border-radius: 0.75rem;
-            padding: 0.25rem;
+            border-radius: 1rem;
+            padding: 0.5rem;
             margin-bottom: 2rem;
+            touch-action: manipulation;
         }
 
         .tab-button {
             flex: 1;
-            padding: 0.75rem;
+            padding: 0.875rem;
+            background: none;
             border: none;
-            background: transparent;
-            color: var(--gray-600);
+            border-radius: 0.75rem;
             font-weight: 600;
-            border-radius: 0.5rem;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            color: var(--gray-600);
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            border-radius: 0.75rem;
+        }
+
+        .tab-button:hover::before {
+            opacity: 1;
+        }
+
+        .tab-button:active {
+            transform: scale(0.98);
         }
 
         .tab-button.active {
             background: white;
             color: var(--primary);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .tab-button.active::before {
+            opacity: 0;
+        }
+
+        .forms-container {
+            position: relative;
+            min-height: 420px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+            contain: layout style paint;
         }
 
         .auth-form {
-            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            min-height: 100%;
+            opacity: 0;
+            transform: translateX(0);
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
+            pointer-events: none;
+            will-change: transform, opacity;
+            box-sizing: border-box;
+            padding: 0;
+            overflow: hidden;
         }
 
         .auth-form.active {
-            display: block;
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            z-index: 2;
+        }
+
+        .auth-form.slide-out-left {
+            transform: translateX(-100%);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .auth-form.slide-out-right {
+            transform: translateX(100%);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .auth-form.slide-in-left {
+            transform: translateX(-100%);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .auth-form.slide-in-right {
+            transform: translateX(100%);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        /* Упрощенная анимация полей */
+        .auth-form .form-group {
+            transition: all 0.15s ease;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .auth-form:not(.active) .form-group {
+            transform: translateY(5px);
+            opacity: 0.9;
+        }
+
+        .auth-form.active .form-group {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         .form-group {
             margin-bottom: 1.5rem;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .form-label {
             display: block;
-            font-weight: 600;
-            color: var(--gray-700);
             margin-bottom: 0.5rem;
+            color: var(--gray-700);
+            font-weight: 600;
+            font-size: 0.9rem;
+            width: 100%;
+            max-width: 100%;
+            word-wrap: break-word;
         }
 
         .form-input {
             width: 100%;
-            padding: 0.875rem 1rem;
+            max-width: 100%;
+            min-width: 0;
+            padding: 1rem;
             border: 2px solid var(--gray-300);
-            border-radius: 0.75rem;
+            border-radius: 12px;
             font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
+            transition: all 0.2s ease;
+            background: var(--gray-50);
+            -webkit-appearance: none;
+            appearance: none;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
+            background: white;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        .form-input.error {
-            border-color: var(--error);
-        }
-
-        .error-message {
-            color: var(--error);
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            display: none;
         }
 
         .password-field {
             position: relative;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .password-toggle {
@@ -167,79 +300,127 @@
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: var(--gray-400);
             cursor: pointer;
+            font-size: 1.25rem;
             padding: 0.25rem;
-        }
-
-        .password-toggle:hover {
-            color: var(--gray-600);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            z-index: 2;
         }
 
         .auth-button {
             width: 100%;
-            padding: 1rem;
+            max-width: 100%;
+            padding: 1.25rem;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
             position: relative;
             overflow: hidden;
-        }
-
-        .auth-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .auth-button:hover::before {
-            left: 100%;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            box-sizing: border-box;
         }
 
         .auth-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
 
-        .auth-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
+        .auth-button:active {
+            transform: translateY(0);
         }
 
-        .loading {
-            display: none;
+        .divider {
+            position: relative;
+            margin: 2rem 0 1.5rem 0;
+            text-align: center;
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: -1rem;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gray-300);
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 1.5rem;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .social-button {
+            width: 60px;
+            height: 60px;
+            padding: 0;
+            border: 2px solid var(--gray-300);
+            border-radius: 16px;
+            background: white;
+            color: var(--gray-600);
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
-        .loading.active {
-            display: flex;
+        .social-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            opacity: 0;
+            transition: opacity 0.2s ease;
         }
 
-        .spinner {
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .social-button:hover::before {
+            opacity: 1;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .social-button:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+        }
+
+        .social-icon {
+            width: 2rem;
+            height: 2rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
         }
 
         .forgot-password {
@@ -250,112 +431,354 @@
         .forgot-password a {
             color: var(--primary);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .forgot-password a:hover {
-            text-decoration: underline;
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
         }
 
-        .social-login {
-            margin-top: 2rem;
+        .form-input.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .success-message {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            font-weight: 600;
             text-align: center;
         }
 
-        .divider {
-            position: relative;
-            margin: 1.5rem 0;
-            text-align: center;
-            color: var(--gray-400);
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--gray-300);
-        }
-
-        .divider span {
-            background: white;
-            padding: 0 1rem;
-        }
-
-        .social-buttons {
+        .success-content {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 1rem;
         }
 
-        .social-button {
+        .success-text {
             flex: 1;
-            padding: 0.875rem;
-            border: 2px solid var(--gray-300);
-            background: white;
-            border-radius: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-weight: 500;
         }
 
-        .social-button:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .back-link {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
+        .continue-button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            text-decoration: none;
-            font-weight: 500;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 0.5rem;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
-        .back-link:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .continue-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
         }
 
-        @media (max-width: 480px) {
+        .continue-button:active {
+            transform: translateY(0);
+        }
+
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+                overflow-x: hidden;
+            }
+
+            .back-link {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
             .auth-container {
                 padding: 2rem 1.5rem;
-                margin: 1rem;
+                border-radius: 1.5rem;
+                margin: 0.5rem;
+                max-width: 100%;
+                width: calc(100% - 1rem);
+                overflow: hidden;
+                contain: layout style paint;
+            }
+
+            .forms-container {
+                min-height: 380px;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .auth-form {
+                width: 100%;
+                max-width: 100%;
+                left: 0;
+                right: 0;
+                overflow: hidden;
+                contain: layout style paint;
+            }
+
+            .logo-icon {
+                width: 3rem;
+                height: 3rem;
             }
 
             .auth-title {
                 font-size: 1.75rem;
             }
 
+            .auth-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .tab-button {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.25rem;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .form-input {
+                padding: 0.875rem;
+                font-size: 16px; /* Предотвращает зум на iOS */
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .password-field {
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .auth-button {
+                padding: 1rem;
+                font-size: 1rem;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .social-button {
+                width: 50px;
+                height: 50px;
+            }
+
+            .social-icon {
+                width: 1.75rem;
+                height: 1.75rem;
+            }
+
+            .divider {
+                margin: 1.5rem 0 1rem 0;
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.25rem;
+                overflow-x: hidden;
+            }
+
+            .auth-container {
+                padding: 1.5rem 1rem;
+                margin: 0.25rem;
+                width: calc(100% - 0.5rem);
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .forms-container {
+                min-height: 360px;
+                width: 100%;
+                overflow: hidden;
+            }
+
+            .auth-form {
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .logo-section {
+                margin-bottom: 2rem;
+            }
+
+            .auth-tabs {
+                margin-bottom: 1.5rem;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .form-input {
+                padding: 0.75rem;
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .password-field {
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .auth-button {
+                padding: 0.875rem;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
             .social-buttons {
-                flex-direction: column;
+                gap: 1rem;
+                width: 100%;
+                justify-content: center;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .social-button {
+                width: 45px;
+                height: 45px;
+                flex-shrink: 0;
+            }
+
+            .social-icon {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+
+            .divider {
+                width: 100%;
+                max-width: 100%;
+                margin: 1.25rem 0 1rem 0;
+            }
+        }
+
+        /* Поддержка темной темы */
+        @media (prefers-color-scheme: dark) {
+            .auth-container {
+                background: #1f2937;
+                color: white;
+            }
+
+            .form-input {
+                background: #374151;
+                border-color: #4b5563;
+                color: white;
+            }
+
+            .form-input:focus {
+                background: #374151;
+                border-color: var(--primary);
+            }
+
+            .form-label {
+                color: #e5e7eb;
+            }
+
+            .divider span {
+                background: #1f2937;
+                color: #9ca3af;
+            }
+
+            .social-button {
+                background: #374151;
+                border-color: #4b5563;
+                color: #e5e7eb;
+            }
+
+            .auth-tabs {
+                background: #374151;
+            }
+
+            .tab-button.active {
+                background: #4b5563;
+                color: var(--primary);
+            }
+        }
+
+        /* Оптимизация для touch устройств */
+        @media (hover: none) and (pointer: coarse) {
+            .auth-form {
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+            
+            .tab-button {
+                transition: all 0.15s ease;
+            }
+            
+            .tab-button::before {
+                transition: opacity 0.1s ease;
+            }
+            
+            .auth-form .form-group {
+                transition: all 0.1s ease;
+            }
+        }
+
+        /* Уменьшение анимаций для пользователей с ограниченными возможностями */
+        @media (prefers-reduced-motion: reduce) {
+            .auth-form {
+                transition: opacity 0.1s ease;
+            }
+
+            .tab-button, .auth-button, .social-button {
+                transition: all 0.05s ease;
+            }
+
+            .form-input {
+                transition: border-color 0.05s ease;
+            }
+            
+            .auth-form .form-group {
+                transition: none;
             }
         }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-link">
-        ← Назад на главную
-    </a>
+    <a href="index.html" class="back-link">← Назад на главную</a>
 
     <div class="auth-container">
         <div class="logo-section">
             <svg class="logo-icon" viewBox="0 0 24 24">
-                <!-- Brand Logo Icon (копируем из index.html) -->
                 <defs>
                     <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
@@ -364,298 +787,478 @@
                     </linearGradient>
                 </defs>
                 
-                <!-- Main circle with gradient -->
                 <circle cx="12" cy="12" r="11" fill="url(#logoGradient)" opacity="0.9"/>
                 <circle cx="12" cy="12" r="11" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
                 
-                <!-- Book/Knowledge symbol -->
                 <path d="M7 6 L17 6 Q18 6 18 7 L18 17 Q18 18 17 18 L7 18 Q6 18 6 17 L6 7 Q6 6 7 6 Z" 
                       fill="white" opacity="0.9"/>
-                <path d="M12 6 L12 18" stroke="url(#logoGradient)" stroke-width="2"/>
-                <path d="M8 9 L11 9 M13 9 L16 9" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M8 12 L11 12 M13 12 L16 12" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M8 15 L11 15 M13 15 L16 15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
                 
-                <!-- AI brain/neural network element -->
-                <circle cx="19" cy="5" r="3.5" fill="white" opacity="0.95"/>
-                <circle cx="19" cy="5" r="3.5" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                <path d="M9 8.5 L15 8.5" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 8.5 L12 15.5" stroke="url(#logoGradient)" stroke-width="2.5" stroke-linecap="round"/>
                 
-                <!-- Neural connections -->
-                <circle cx="17.5" cy="4" r="0.8" fill="url(#logoGradient)"/>
-                <circle cx="20.5" cy="4" r="0.8" fill="url(#logoGradient)"/>
-                <circle cx="19" cy="6.5" r="0.8" fill="url(#logoGradient)"/>
-                <circle cx="19" cy="3.5" r="0.8" fill="url(#logoGradient)"/>
-                
-                <!-- Connecting lines -->
-                <path d="M17.8 4.2 L18.7 3.7 M20.2 4.2 L19.3 3.7 M19.2 6.3 L19.2 5.2" 
-                      stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
-                
-                <!-- Sparkle effect -->
-                <path d="M4 8 L5 9 L4 10 L3 9 Z" fill="white" opacity="0.8"/>
-                <path d="M20 15 L21 16 L20 17 L19 16 Z" fill="white" opacity="0.8"/>
-                <circle cx="6" cy="18" r="1" fill="white" opacity="0.6"/>
+                <circle cx="9" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
+                <circle cx="15" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
+                <circle cx="12" cy="15.5" r="1.2" fill="url(#logoGradient)" opacity="0.8"/>
             </svg>
             <h1 class="auth-title">TeacherUchit</h1>
             <p class="auth-subtitle">Добро пожаловать в будущее образования</p>
         </div>
 
-        <div class="auth-tabs">
-            <button class="tab-button active" onclick="switchTab('login')">Вход</button>
-            <button class="tab-button" onclick="switchTab('register')">Регистрация</button>
+        <div class="success-message" id="success-message">
+            <div class="success-content">
+                <div class="success-text"></div>
+                <button class="continue-button" id="continue-button" style="display: none;" onclick="continueToApp()">
+                    Продолжить
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
         </div>
 
-        <!-- Форма входа -->
-        <form class="auth-form active" id="login-form">
-            <div class="form-group">
-                <label class="form-label" for="login-email">Email</label>
-                <input type="email" id="login-email" class="form-input" placeholder="your@email.com" required>
-                <div class="error-message" id="login-email-error"></div>
-            </div>
+        <div class="auth-tabs">
+            <button class="tab-button active" onclick="showForm('login')">Вход</button>
+            <button class="tab-button" onclick="showForm('register')">Регистрация</button>
+        </div>
 
-            <div class="form-group">
-                <label class="form-label" for="login-password">Пароль</label>
-                <div class="password-field">
-                    <input type="password" id="login-password" class="form-input" placeholder="Введите пароль" required>
-                    <button type="button" class="password-toggle" onclick="togglePassword('login-password')">👁</button>
+        <div class="forms-container">
+            <!-- Форма входа -->
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">Электронная почта</label>
+                    <input type="email" id="login-email" class="form-input" placeholder="your@email.com" required>
+                    <div class="error-message" id="login-email-error"></div>
                 </div>
-                <div class="error-message" id="login-password-error"></div>
-            </div>
 
-            <button type="submit" class="auth-button" id="login-btn">
-                <span class="button-text">Войти</span>
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <span>Входим...</span>
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Пароль</label>
+                    <div class="password-field">
+                        <input type="password" id="login-password" class="form-input" placeholder="Введите пароль" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('login-password')">👁</button>
+                    </div>
+                    <div class="error-message" id="login-password-error"></div>
                 </div>
-            </button>
 
-            <div class="forgot-password">
-                <a href="#" onclick="showForgotPassword()">Забыли пароль?</a>
-            </div>
-        </form>
+                <button type="submit" class="auth-button">Войти в аккаунт</button>
 
-        <!-- Форма регистрации -->
-        <form class="auth-form" id="register-form">
-            <div class="form-group">
-                <label class="form-label" for="register-name">Имя</label>
-                <input type="text" id="register-name" class="form-input" placeholder="Ваше имя" required>
-                <div class="error-message" id="register-name-error"></div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" for="register-email">Email</label>
-                <input type="email" id="register-email" class="form-input" placeholder="your@email.com" required>
-                <div class="error-message" id="register-email-error"></div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" for="register-password">Пароль</label>
-                <div class="password-field">
-                    <input type="password" id="register-password" class="form-input" placeholder="Создайте пароль" required>
-                    <button type="button" class="password-toggle" onclick="togglePassword('register-password')">👁</button>
+                <div class="forgot-password">
+                    <a href="#" onclick="showForgotPassword()">Забыли пароль?</a>
                 </div>
-                <div class="error-message" id="register-password-error"></div>
-            </div>
+            </form>
 
-            <div class="form-group">
-                <label class="form-label" for="register-password-confirm">Подтвердите пароль</label>
-                <div class="password-field">
-                    <input type="password" id="register-password-confirm" class="form-input" placeholder="Повторите пароль" required>
-                    <button type="button" class="password-toggle" onclick="togglePassword('register-password-confirm')">👁</button>
+            <!-- Форма регистрации -->
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label class="form-label" for="register-name">Полное имя</label>
+                    <input type="text" id="register-name" class="form-input" placeholder="Ваше имя и фамилия" required>
+                    <div class="error-message" id="register-name-error"></div>
                 </div>
-                <div class="error-message" id="register-password-confirm-error"></div>
-            </div>
 
-            <button type="submit" class="auth-button" id="register-btn">
-                <span class="button-text">Создать аккаунт</span>
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <span>Создаем аккаунт...</span>
+                <div class="form-group">
+                    <label class="form-label" for="register-email">Электронная почта</label>
+                    <input type="email" id="register-email" class="form-input" placeholder="your@email.com" required>
+                    <div class="error-message" id="register-email-error"></div>
                 </div>
-            </button>
-        </form>
+
+                <div class="form-group">
+                    <label class="form-label" for="register-password">Пароль</label>
+                    <div class="password-field">
+                        <input type="password" id="register-password" class="form-input" placeholder="Создайте надежный пароль" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('register-password')">👁</button>
+                    </div>
+                    <div class="error-message" id="register-password-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="register-password-confirm">Подтверждение пароля</label>
+                    <div class="password-field">
+                        <input type="password" id="register-password-confirm" class="form-input" placeholder="Повторите пароль" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('register-password-confirm')">👁</button>
+                    </div>
+                    <div class="error-message" id="register-password-confirm-error"></div>
+                </div>
+
+                <button type="submit" class="auth-button">Создать аккаунт</button>
+            </form>
+        </div>
 
         <div class="divider">
-            <span>или</span>
+            <span>или продолжить с</span>
         </div>
 
         <div class="social-buttons">
-            <button class="social-button" onclick="socialLogin('google')">
-                <span>Google</span>
+            <button class="social-button" onclick="socialLogin('google')" title="Войти через Google">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1"/>
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                    <path fill="currentColor" d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"/>
+                </svg>
             </button>
-            <button class="social-button" onclick="socialLogin('vk')">
-                <span>VK</span>
+            <button class="social-button" onclick="socialLogin('vk')" title="Войти через ВКонтакте">
+                <svg class="social-icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1"/>
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                    <path fill="currentColor" d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1.01-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 10.857 4.03 8.57 4.03 8.096c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.677.864 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.203.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .372.17.508.271.508.22 0 .407-.136.813-.542 1.254-1.406 2.151-3.574 2.151-3.574.119-.254.322-.491.763-.491h1.744c.525 0 .644.271.525.643-.254 1.167-2.422 4.026-2.422 4.026-.186.305-.254.44 0 .78.186.254.796.78 1.203 1.253.745.847 1.32 1.558 1.473 2.05.17.49-.085.744-.576.744z"/>
+                </svg>
             </button>
         </div>
     </div>
 
     <script>
-        function switchTab(tab) {
-            // Переключение активной вкладки
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+        console.log('TeacherUchit Auth - Script loaded successfully!');
+
+        // Кэшируем элементы для оптимизации
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const successMessage = document.getElementById('success-message');
+
+        // Переменная для отслеживания текущей анимации
+        let isAnimating = false;
+
+        function showForm(formType) {
+            // Предотвращаем множественные клики во время анимации
+            if (isAnimating) return;
             
-            event.target.classList.add('active');
-            document.getElementById(tab + '-form').classList.add('active');
+            console.log('showForm called:', formType);
+            
+            const currentForm = document.querySelector('.auth-form.active');
+            const targetForm = document.getElementById(formType + 'Form');
+            
+            if (!targetForm || targetForm === currentForm) return;
+            
+            isAnimating = true;
+            
+            // Мгновенно обновляем кнопки табов
+            tabButtons.forEach(button => button.classList.remove('active'));
+            const targetButton = document.querySelector(`[onclick="showForm('${formType}')"]`);
+            if (targetButton) targetButton.classList.add('active');
+            
+            // Определяем направление анимации
+            const isLoginToRegister = formType === 'register';
+            
+            if (currentForm) {
+                // Мгновенная подготовка новой формы
+                targetForm.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
+                targetForm.classList.add(isLoginToRegister ? 'slide-in-right' : 'slide-in-left');
+                
+                // Мгновенный запуск анимации
+                requestAnimationFrame(() => {
+                    // Убираем текущую форму
+                    currentForm.classList.remove('active');
+                    currentForm.classList.add(isLoginToRegister ? 'slide-out-left' : 'slide-out-right');
+                    
+                    // Показываем новую форму
+                    targetForm.classList.add('active');
+                    targetForm.classList.remove('slide-in-left', 'slide-in-right');
+                });
+                
+                // Очистка после анимации
+                setTimeout(() => {
+                    currentForm.classList.remove('slide-out-left', 'slide-out-right');
+                    isAnimating = false;
+                    
+                    // Фокус на первое поле (только для десктопа)
+                    if (window.innerWidth > 768) {
+                        const firstInput = targetForm.querySelector('input');
+                        if (firstInput) firstInput.focus();
+                    }
+                }, 300);
+            } else {
+                // Если нет текущей формы, мгновенно показываем целевую
+                targetForm.classList.add('active');
+                isAnimating = false;
+            }
+            
+            console.log('Form switched to:', formType);
         }
 
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
-            const toggle = input.nextElementSibling;
+            if (!input) return;
             
-            if (input.type === 'password') {
-                input.type = 'text';
-                toggle.textContent = '🙈';
-            } else {
-                input.type = 'password';
-                toggle.textContent = '👁';
-            }
+            input.type = input.type === 'password' ? 'text' : 'password';
         }
 
-        function showLoading(formType) {
-            const btn = document.getElementById(formType + '-btn');
-            const buttonText = btn.querySelector('.button-text');
-            const loading = btn.querySelector('.loading');
-            
-            buttonText.style.display = 'none';
-            loading.classList.add('active');
-            btn.disabled = true;
+        function socialLogin(provider) {
+            console.log('socialLogin called:', provider);
+            const messages = {
+                google: 'Вход через Google будет доступен в полной версии приложения',
+                vk: 'Вход через VKontakte будет доступен в полной версии приложения'
+            };
+            alert(messages[provider] || 'Социальный вход будет доступен позже');
         }
 
-        function hideLoading(formType) {
-            const btn = document.getElementById(formType + '-btn');
-            const buttonText = btn.querySelector('.button-text');
-            const loading = btn.querySelector('.loading');
-            
-            buttonText.style.display = 'inline';
-            loading.classList.remove('active');
-            btn.disabled = false;
+        function showForgotPassword() {
+            alert('Функция восстановления пароля будет доступна в полной версии.\n\nДля демо используйте:\nEmail: demo@teacheruchit.ru\nПароль: demo123');
         }
 
         function showError(fieldId, message) {
             const field = document.getElementById(fieldId);
             const error = document.getElementById(fieldId + '-error');
             
-            field.classList.add('error');
-            error.textContent = message;
-            error.style.display = 'block';
+            if (field && error) {
+                field.classList.add('error');
+                error.textContent = message;
+                error.style.display = 'block';
+                
+                // Плавная прокрутка к ошибке на мобильных
+                if (window.innerWidth <= 768) {
+                    field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                field.focus();
+            }
         }
 
         function clearErrors() {
-            document.querySelectorAll('.form-input').forEach(input => {
+            // Оптимизированная очистка ошибок
+            document.querySelectorAll('.form-input.error').forEach(input => {
                 input.classList.remove('error');
             });
             document.querySelectorAll('.error-message').forEach(error => {
                 error.style.display = 'none';
             });
+            successMessage.style.display = 'none';
+            document.getElementById('continue-button').style.display = 'none';
         }
 
-        // Обработка входа
-        document.getElementById('login-form').addEventListener('submit', async function(e) {
+        function showSuccess(message, showContinueButton = false) {
+            const successText = document.querySelector('.success-text');
+            const continueButton = document.getElementById('continue-button');
+            
+            successText.textContent = message;
+            successMessage.style.display = 'block';
+            
+            if (showContinueButton) {
+                continueButton.style.display = 'flex';
+            } else {
+                continueButton.style.display = 'none';
+            }
+            
+            // Прокрутка к сообщению на мобильных
+            if (window.innerWidth <= 768) {
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function continueToApp() {
+            window.location.href = 'role-selection.html';
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // Дебаунс для валидации в реальном времени
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Оптимизированная валидация в реальном времени
+        const validateField = debounce((field) => {
+            const value = field.value.trim();
+            const fieldId = field.id;
+            
+            if (fieldId.includes('email') && value && !isValidEmail(value)) {
+                showError(fieldId, 'Введите корректный email адрес');
+            } else if (fieldId.includes('password') && value && value.length < 6) {
+                showError(fieldId, 'Пароль должен содержать минимум 6 символов');
+            } else {
+                const error = document.getElementById(fieldId + '-error');
+                if (error) {
+                    error.style.display = 'none';
+                    field.classList.remove('error');
+                }
+            }
+        }, 500);
+
+        // Функции для работы с пользователями
+        function saveUser(userData) {
+            const users = getUsers();
+            users[userData.email] = {
+                name: userData.name,
+                email: userData.email,
+                password: userData.password,
+                registeredAt: new Date().toISOString()
+            };
+            localStorage.setItem('teacheruchit_users', JSON.stringify(users));
+        }
+
+        function getUsers() {
+            const users = localStorage.getItem('teacheruchit_users');
+            return users ? JSON.parse(users) : {};
+        }
+
+        function validateUser(email, password) {
+            const users = getUsers();
+            const user = users[email];
+            return user && user.password === password ? user : null;
+        }
+
+        // Обработчики форм
+        loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             clearErrors();
             
-            const email = document.getElementById('login-email').value;
+            const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             
-            // Валидация
+            let hasErrors = false;
+            
             if (!email) {
-                showError('login-email', 'Введите email');
-                return;
+                showError('login-email', 'Введите адрес электронной почты');
+                hasErrors = true;
+            } else if (!isValidEmail(email)) {
+                showError('login-email', 'Введите корректный email адрес');
+                hasErrors = true;
             }
+            
             if (!password) {
                 showError('login-password', 'Введите пароль');
+                hasErrors = true;
+            }
+            
+            if (hasErrors) return;
+            
+            // Проверяем демо аккаунт
+            if (email === 'demo@teacheruchit.ru' && password === 'demo123') {
+                localStorage.setItem('currentUser', JSON.stringify({
+                    name: 'Демо пользователь',
+                    email: email,
+                    isDemo: true
+                }));
+                showSuccess('Успешный вход! Нажмите "Продолжить" для перехода к выбору роли.', true);
                 return;
             }
             
-            showLoading('login');
-            
-            // Имитация запроса к серверу
-            setTimeout(() => {
-                hideLoading('login');
-                
-                // Простая проверка (в реальном приложении это будет API)
-                if (email === 'demo@teacheruchit.ru' && password === 'demo123') {
-                    localStorage.setItem('user', JSON.stringify({
-                        name: 'Демо пользователь',
-                        email: email,
-                        premium: false
-                    }));
-                    window.location.href = 'dashboard.html';
-                } else {
-                    alert('Неверный email или пароль.\nДля демо используйте:\nEmail: demo@teacheruchit.ru\nПароль: demo123');
-                }
-            }, 2000);
+            // Проверяем зарегистрированных пользователей
+            const user = validateUser(email, password);
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showSuccess(`Добро пожаловать, ${user.name}! Нажмите "Продолжить" для перехода к выбору роли.`, true);
+            } else {
+                showError('login-password', 'Неверный email или пароль. Если у вас нет аккаунта - зарегистрируйтесь.');
+            }
         });
 
-        // Обработка регистрации
-        document.getElementById('register-form').addEventListener('submit', async function(e) {
+        registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
             clearErrors();
             
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
+            const name = document.getElementById('register-name').value.trim();
+            const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value;
             const passwordConfirm = document.getElementById('register-password-confirm').value;
             
-            // Валидация
             let hasErrors = false;
             
             if (!name) {
-                showError('register-name', 'Введите имя');
+                showError('register-name', 'Введите ваше имя');
+                hasErrors = true;
+            } else if (name.length < 2) {
+                showError('register-name', 'Имя должно содержать минимум 2 символа');
                 hasErrors = true;
             }
+            
             if (!email) {
-                showError('register-email', 'Введите email');
+                showError('register-email', 'Введите адрес электронной почты');
                 hasErrors = true;
+            } else if (!isValidEmail(email)) {
+                showError('register-email', 'Введите корректный email адрес');
+                hasErrors = true;
+            } else {
+                // Проверяем, не занят ли email
+                const users = getUsers();
+                if (users[email]) {
+                    showError('register-email', 'Пользователь с таким email уже зарегистрирован. Попробуйте войти.');
+                    hasErrors = true;
+                }
             }
+            
             if (!password) {
-                showError('register-password', 'Введите пароль');
+                showError('register-password', 'Создайте пароль');
                 hasErrors = true;
             } else if (password.length < 6) {
                 showError('register-password', 'Пароль должен содержать минимум 6 символов');
                 hasErrors = true;
             }
-            if (password !== passwordConfirm) {
+            
+            if (!passwordConfirm) {
+                showError('register-password-confirm', 'Подтвердите пароль');
+                hasErrors = true;
+            } else if (password !== passwordConfirm) {
                 showError('register-password-confirm', 'Пароли не совпадают');
                 hasErrors = true;
             }
             
             if (hasErrors) return;
             
-            showLoading('register');
+            // Сохраняем пользователя
+            const userData = { name, email, password };
+            saveUser(userData);
             
-            // Имитация регистрации
-            setTimeout(() => {
-                hideLoading('register');
-                
-                localStorage.setItem('user', JSON.stringify({
-                    name: name,
-                    email: email,
-                    premium: false
-                }));
-                
-                alert('Аккаунт успешно создан! Добро пожаловать в TeacherUchit!');
-                window.location.href = 'dashboard.html';
-            }, 2000);
+            // Устанавливаем как текущего пользователя
+            localStorage.setItem('currentUser', JSON.stringify({
+                name: name,
+                email: email,
+                registeredAt: new Date().toISOString()
+            }));
+            
+            showSuccess(`Аккаунт успешно создан! Добро пожаловать в TeacherUchit, ${name}! Нажмите "Продолжить" для выбора роли.`, true);
         });
 
-        function socialLogin(provider) {
-            alert(`Вход через ${provider} будет доступен в полной версии приложения`);
-        }
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            
+            if (mode === 'register') {
+                showForm('register');
+            } else {
+                showForm('login');
+            }
 
-        function showForgotPassword() {
-            alert('Функция восстановления пароля будет доступна в полной версии');
-        }
+            // Добавляем валидацию в реальном времени для всех полей
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.addEventListener('input', () => validateField(input));
+                input.addEventListener('blur', () => validateField(input));
+            });
 
-        // Проверка URL параметров для автоматического переключения на регистрацию
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('action') === 'register') {
-            switchTab('register');
-            // Обновляем активную кнопку без события
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-button')[1].classList.add('active');
-        }
+            // Оптимизация для мобильных устройств
+            if ('ontouchstart' in window) {
+                // Добавляем класс для мобильных устройств
+                document.body.classList.add('touch-device');
+                
+                // Предотвращаем двойной тап для зума
+                let lastTouchEnd = 0;
+                document.addEventListener('touchend', function (event) {
+                    const now = (new Date()).getTime();
+                    if (now - lastTouchEnd <= 300) {
+                        event.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, false);
+            }
+
+            // Обработка изменения ориентации
+            window.addEventListener('orientationchange', function() {
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                }, 100);
+            });
+        });
+
+        console.log('All functions and event listeners initialized');
     </script>
 </body>
 </html>

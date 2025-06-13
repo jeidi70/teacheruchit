@@ -1238,9 +1238,21 @@
                 hasErrors = true;
             }
             
-            if (hasErrors) return;
+            if (hasErrors) {
+                // Восстанавливаем кнопку при ошибках
+                const submitButton = registerForm.querySelector('button[type="submit"]');
+                submitButton.textContent = 'Создать аккаунт';
+                submitButton.disabled = false;
+                return;
+            }
             
             console.log('Registration validation passed, proceeding with registration...');
+            
+            // Показываем loading состояние кнопки
+            const submitButton = registerForm.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Создаем аккаунт...';
+            submitButton.disabled = true;
             
             // Сохраняем пользователя
             const userData = { name, email, password };
@@ -1256,8 +1268,10 @@
             }));
             
             console.log('Current user set in localStorage');
+            console.log('Registration successful, redirecting to role selection...');
             
-            showSuccess(`Аккаунт успешно создан! Добро пожаловать в TeacherUchit, ${name}! Перенаправляем к выбору роли...`, true);
+            // Мгновенное перенаправление без показа success message
+            window.location.href = 'role-selection.html';
         });
 
         // Инициализация при загрузке

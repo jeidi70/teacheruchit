@@ -357,6 +357,11 @@ app.get('/minimal', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'new-design.html'));
 });
 
+// Ультра-футуристичная версия с неоном и анимациями
+app.get('/future', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'ultra-modern.html'));
+});
+
 // API info endpoint
 app.get('/api/info', (req, res) => {
   res.json({

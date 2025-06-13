@@ -352,6 +352,11 @@ app.get('/improved', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'improved-landing.html'));
 });
 
+// Новая минималистичная версия в стиле Apple
+app.get('/minimal', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'new-design.html'));
+});
+
 // API info endpoint
 app.get('/api/info', (req, res) => {
   res.json({

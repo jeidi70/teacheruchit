@@ -83,11 +83,10 @@
         }
 
         .logo-icon {
-            width: 3rem;
-            height: 3rem;
-            background: url('/assets/logo-large.svg') no-repeat center;
-            background-size: contain;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            width: 2.5rem;
+            height: 2.5rem;
+            color: var(--primary);
+            margin-right: 0.75rem;
         }
 
         .nav-links {
@@ -561,7 +560,7 @@
             top: 24px;
             right: -15px;
             color: white;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             transform: rotate(45deg);
             z-index: 3;
@@ -655,8 +654,8 @@
         }
 
         .pricing-card.featured .features-list li::before {
-            color: var(--accent);
-            background: rgba(255, 255, 255, 0.2);
+            color: var(--primary);
+            background: white;
         }
 
         /* Enhanced pricing buttons */
@@ -772,6 +771,15 @@
     <div style="position: absolute; width: 0; height: 0; overflow: hidden;">
         <svg>
             <defs>
+                <!-- Brand Logo Icon -->
+                <g id="icon-brand-logo">
+                    <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1"/>
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M8 8 L16 8 L16 10 L10 10 L10 14 L14 14 L14 16 L8 16 Z" fill="currentColor"/>
+                    <circle cx="18" cy="6" r="2" fill="currentColor" opacity="0.8"/>
+                    <path d="M17 5 L17 7 M16 6 L18 6" stroke="white" stroke-width="1" stroke-linecap="round"/>
+                </g>
+                
                 <!-- AI Robot Icon -->
                 <g id="icon-ai-robot">
                     <rect x="2" y="3" width="20" height="16" rx="3" fill="currentColor" opacity="0.1"/>
@@ -914,7 +922,9 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="#" class="logo">
-                <div class="logo-icon"></div>
+                <svg class="logo-icon" viewBox="0 0 24 24">
+                    <use href="#icon-brand-logo"></use>
+                </svg>
                 TeacherUchit
             </a>
             

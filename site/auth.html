@@ -1174,6 +1174,30 @@
             
             if (hasErrors) return;
             
+            // Проверяем админский аккаунт
+            if (email === 'admin@teacheruchit.com') {
+                // Админский доступ с любым паролем (или можете задать конкретный)
+                if (password === 'admin123') {
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        name: 'Администратор',
+                        email: email,
+                        role: 'admin',
+                        isAdmin: true,
+                        loginAt: new Date().toISOString()
+                    }));
+                    
+                    showSuccess('Добро пожаловать, Администратор!');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'admin-dashboard.html';
+                    }, 1500);
+                    return;
+                } else {
+                    showError('login-password', 'Неверный пароль администратора');
+                    return;
+                }
+            }
+            
             // Проверяем демо аккаунт
             if (email === 'demo@teacheruchit.ru' && password === 'demo123') {
                 localStorage.setItem('currentUser', JSON.stringify({

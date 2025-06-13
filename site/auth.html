@@ -460,6 +460,42 @@
             text-align: center;
         }
 
+        .success-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .success-text {
+            flex: 1;
+        }
+
+        .continue-button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .continue-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .continue-button:active {
+            transform: translateY(0);
+        }
+
         /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
             body {
@@ -768,7 +804,17 @@
             <p class="auth-subtitle">Добро пожаловать в будущее образования</p>
         </div>
 
-        <div class="success-message" id="success-message"></div>
+        <div class="success-message" id="success-message">
+            <div class="success-content">
+                <div class="success-text"></div>
+                <button class="continue-button" id="continue-button" style="display: none;" onclick="continueToApp()">
+                    Продолжить
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
 
         <div class="auth-tabs">
             <button class="tab-button active" onclick="showForm('login')">Вход</button>
@@ -973,16 +1019,30 @@
                 error.style.display = 'none';
             });
             successMessage.style.display = 'none';
+            document.getElementById('continue-button').style.display = 'none';
         }
 
-        function showSuccess(message) {
-            successMessage.textContent = message;
+        function showSuccess(message, showContinueButton = false) {
+            const successText = document.querySelector('.success-text');
+            const continueButton = document.getElementById('continue-button');
+            
+            successText.textContent = message;
             successMessage.style.display = 'block';
+            
+            if (showContinueButton) {
+                continueButton.style.display = 'flex';
+            } else {
+                continueButton.style.display = 'none';
+            }
             
             // Прокрутка к сообщению на мобильных
             if (window.innerWidth <= 768) {
                 successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
+        }
+
+        function continueToApp() {
+            window.location.href = 'role-selection.html';
         }
 
         function isValidEmail(email) {
@@ -1020,6 +1080,29 @@
             }
         }, 500);
 
+        // Функции для работы с пользователями
+        function saveUser(userData) {
+            const users = getUsers();
+            users[userData.email] = {
+                name: userData.name,
+                email: userData.email,
+                password: userData.password,
+                registeredAt: new Date().toISOString()
+            };
+            localStorage.setItem('teacheruchit_users', JSON.stringify(users));
+        }
+
+        function getUsers() {
+            const users = localStorage.getItem('teacheruchit_users');
+            return users ? JSON.parse(users) : {};
+        }
+
+        function validateUser(email, password) {
+            const users = getUsers();
+            const user = users[email];
+            return user && user.password === password ? user : null;
+        }
+
         // Обработчики форм
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -1045,14 +1128,24 @@
             
             if (hasErrors) return;
             
-            // Имитация входа
+            // Проверяем демо аккаунт
             if (email === 'demo@teacheruchit.ru' && password === 'demo123') {
-                showSuccess('Успешный вход! Перенаправляем...');
-                setTimeout(() => {
-                    window.location.href = 'role-selection.html';
-                }, 1500);
+                localStorage.setItem('currentUser', JSON.stringify({
+                    name: 'Демо пользователь',
+                    email: email,
+                    isDemo: true
+                }));
+                showSuccess('Успешный вход! Нажмите "Продолжить" для перехода к выбору роли.', true);
+                return;
+            }
+            
+            // Проверяем зарегистрированных пользователей
+            const user = validateUser(email, password);
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showSuccess(`Добро пожаловать, ${user.name}! Нажмите "Продолжить" для перехода к выбору роли.`, true);
             } else {
-                showError('login-password', 'Неверный email или пароль. Для демо: demo@teacheruchit.ru / demo123');
+                showError('login-password', 'Неверный email или пароль. Если у вас нет аккаунта - зарегистрируйтесь.');
             }
         });
 
@@ -1081,6 +1174,13 @@
             } else if (!isValidEmail(email)) {
                 showError('register-email', 'Введите корректный email адрес');
                 hasErrors = true;
+            } else {
+                // Проверяем, не занят ли email
+                const users = getUsers();
+                if (users[email]) {
+                    showError('register-email', 'Пользователь с таким email уже зарегистрирован. Попробуйте войти.');
+                    hasErrors = true;
+                }
             }
             
             if (!password) {
@@ -1101,10 +1201,18 @@
             
             if (hasErrors) return;
             
-            showSuccess('Аккаунт успешно создан! Добро пожаловать в TeacherUchit!');
-            setTimeout(() => {
-                window.location.href = 'role-selection.html';
-            }, 2000);
+            // Сохраняем пользователя
+            const userData = { name, email, password };
+            saveUser(userData);
+            
+            // Устанавливаем как текущего пользователя
+            localStorage.setItem('currentUser', JSON.stringify({
+                name: name,
+                email: email,
+                registeredAt: new Date().toISOString()
+            }));
+            
+            showSuccess(`Аккаунт успешно создан! Добро пожаловать в TeacherUchit, ${name}! Нажмите "Продолжить" для выбора роли.`, true);
         });
 
         // Инициализация при загрузке

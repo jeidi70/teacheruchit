@@ -396,7 +396,7 @@
                 <circle cx="12" cy="15.5" r="1.2" fill="url(#logoGradient)" opacity="0.8"/>
             </svg>
             <h1 class="title">Добро пожаловать в TeacherUchit!</h1>
-            <p class="subtitle">Давайте настроим ваш профиль</p>
+            <p class="subtitle" id="user-greeting">Давайте настроим ваш профиль</p>
         </div>
 
         <div class="step-indicator">
@@ -524,6 +524,25 @@
         console.log('Role Selection - Script loaded successfully!');
 
         let selectedRole = null;
+
+        // Проверяем авторизацию и отображаем имя пользователя
+        function checkAuthAndDisplayUser() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                // Если пользователь не авторизован, перенаправляем на страницу входа
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+            const greeting = document.getElementById('user-greeting');
+            if (user.name) {
+                greeting.textContent = `${user.name}, давайте настроим ваш профиль`;
+            }
+        }
+
+        // Инициализация при загрузке
+        checkAuthAndDisplayUser();
 
         // Данные школ по городам
         const schoolsByCity = {

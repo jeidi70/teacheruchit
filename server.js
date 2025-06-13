@@ -336,7 +336,7 @@ app.post('/api/verify-token', async (req, res) => {
 
 // Serve main pages
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'design-selector.html'));
 });
 
 app.get('/login', (req, res) => {
@@ -345,6 +345,11 @@ app.get('/login', (req, res) => {
 
 app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
+
+// Design selector page
+app.get('/designs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'design-selector.html'));
 });
 
 // Новая улучшенная версия лендинга
@@ -385,7 +390,7 @@ app.get('/api/info', (req, res) => {
 
 // Catch all handler for SPA routing
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'new-design.html'));
 });
 
 // Error handling middleware

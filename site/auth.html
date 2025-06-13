@@ -471,29 +471,7 @@
             flex: 1;
         }
 
-        .continue-button {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-        .continue-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
-        }
-
-        .continue-button:active {
-            transform: translateY(0);
+        .auth-tabs {
         }
 
         /* МОБИЛЬНАЯ АДАПТАЦИЯ */
@@ -807,12 +785,6 @@
         <div class="success-message" id="success-message">
             <div class="success-content">
                 <div class="success-text"></div>
-                <button class="continue-button" id="continue-button" style="display: none;">
-                    Продолжить
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
             </div>
         </div>
 
@@ -1027,22 +999,15 @@
                 error.style.display = 'none';
             });
             successMessage.style.display = 'none';
-            document.getElementById('continue-button').style.display = 'none';
         }
 
-        function showSuccess(message, showContinueButton = false) {
-            console.log('showSuccess called with:', message, 'showButton:', showContinueButton);
+        function showSuccess(message, autoRedirect = false) {
+            console.log('showSuccess called with:', message, 'autoRedirect:', autoRedirect);
             
             const successText = document.querySelector('.success-text');
-            const continueButton = document.getElementById('continue-button');
             
             if (!successText) {
                 console.error('Success text element not found!');
-                return;
-            }
-            
-            if (!continueButton) {
-                console.error('Continue button element not found!');
                 return;
             }
             
@@ -1051,21 +1016,18 @@
             
             console.log('Success message should now be visible');
             
-            if (showContinueButton) {
-                continueButton.style.display = 'flex';
-                console.log('Continue button should now be visible');
-            } else {
-                continueButton.style.display = 'none';
-            }
-            
             // Прокрутка к сообщению на мобильных
             if (window.innerWidth <= 768) {
                 successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-        }
-
-        function continueToApp() {
-            window.location.href = 'role-selection.html';
+            
+            // Автоматическое перенаправление через 2 секунды
+            if (autoRedirect) {
+                setTimeout(() => {
+                    console.log('Auto-redirecting to role selection...');
+                    window.location.href = 'role-selection.html';
+                }, 2000);
+            }
         }
 
         function isValidEmail(email) {
@@ -1203,7 +1165,7 @@
                     return;
                 }
                 
-                showSuccess('Успешный вход! Нажмите "Продолжить" для перехода к выбору роли.', true);
+                showSuccess('Успешный вход! Перенаправляем к выбору роли...', true);
                 return;
             }
             
@@ -1220,7 +1182,7 @@
                     return;
                 }
                 
-                showSuccess(`Добро пожаловать, ${user.name}! Нажмите "Продолжить" для перехода к выбору роли.`, true);
+                showSuccess(`Добро пожаловать, ${user.name}! Перенаправляем к выбору роли...`, true);
             } else {
                 showError('login-password', 'Неверный email или пароль. Если у вас нет аккаунта - зарегистрируйтесь.');
             }
@@ -1295,7 +1257,7 @@
             
             console.log('Current user set in localStorage');
             
-            showSuccess(`Аккаунт успешно создан! Добро пожаловать в TeacherUchit, ${name}! Нажмите "Продолжить" для выбора роли.`, true);
+            showSuccess(`Аккаунт успешно создан! Добро пожаловать в TeacherUchit, ${name}! Перенаправляем к выбору роли...`, true);
         });
 
         // Инициализация при загрузке
@@ -1335,11 +1297,6 @@
                     const provider = this.getAttribute('data-provider');
                     socialLogin(provider);
                 });
-            });
-
-            // Обработчик кнопки "Продолжить"
-            document.getElementById('continue-button').addEventListener('click', function() {
-                continueToApp();
             });
             
             const urlParams = new URLSearchParams(window.location.search);

@@ -471,6 +471,17 @@
             flex: 1;
         }
 
+        .external-register-button {
+            margin: 1.5rem 0;
+            text-align: center;
+            display: none;
+        }
+
+        .external-register-button .auth-button {
+            width: 100%;
+            margin: 0;
+        }
+
         .auth-tabs {
         }
 
@@ -849,9 +860,12 @@
                     </div>
                     <div class="error-message" id="register-password-confirm-error"></div>
                 </div>
-
-                <button type="submit" class="auth-button">Создать аккаунт</button>
             </form>
+        </div>
+
+        <!-- Внешняя кнопка "Создать аккаунт" - всегда видна -->
+        <div class="external-register-button">
+            <button type="button" class="auth-button" id="external-register-btn">Создать аккаунт</button>
         </div>
 
         <div class="divider">
@@ -896,10 +910,18 @@
             
             const currentForm = document.querySelector('.auth-form.active');
             const targetForm = document.getElementById(formType + 'Form');
+            const externalRegisterButton = document.querySelector('.external-register-button');
             
             if (!targetForm || targetForm === currentForm) return;
             
             isAnimating = true;
+            
+            // Показываем/скрываем внешнюю кнопку регистрации
+            if (formType === 'register') {
+                externalRegisterButton.style.display = 'block';
+            } else {
+                externalRegisterButton.style.display = 'none';
+            }
             
             // Очищаем только ошибки, но НЕ success message
             document.querySelectorAll('.form-input.error').forEach(input => {
@@ -1188,91 +1210,99 @@
             }
         });
 
-        registerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            clearErrors();
-            
-            const name = document.getElementById('register-name').value.trim();
-            const email = document.getElementById('register-email').value.trim();
-            const password = document.getElementById('register-password').value;
-            const passwordConfirm = document.getElementById('register-password-confirm').value;
-            
-            let hasErrors = false;
-            
-            if (!name) {
-                showError('register-name', 'Введите ваше имя');
-                hasErrors = true;
-            } else if (name.length < 2) {
-                showError('register-name', 'Имя должно содержать минимум 2 символа');
-                hasErrors = true;
-            }
-            
-            if (!email) {
-                showError('register-email', 'Введите адрес электронной почты');
-                hasErrors = true;
-            } else if (!isValidEmail(email)) {
-                showError('register-email', 'Введите корректный email адрес');
-                hasErrors = true;
-            } else {
-                // Проверяем, не занят ли email
-                const users = getUsers();
-                if (users[email]) {
-                    showError('register-email', 'Пользователь с таким email уже зарегистрирован. Попробуйте войти.');
+        // Обработчики социальных кнопок
+        document.querySelectorAll('.social-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const provider = this.getAttribute('data-provider');
+                socialLogin(provider);
+            });
+        });
+
+        // Обработчик для внешней кнопки регистрации
+        const externalRegisterBtn = document.getElementById('external-register-btn');
+        if (externalRegisterBtn) {
+            externalRegisterBtn.addEventListener('click', function() {
+                clearErrors();
+                
+                const name = document.getElementById('register-name').value.trim();
+                const email = document.getElementById('register-email').value.trim();
+                const password = document.getElementById('register-password').value;
+                const passwordConfirm = document.getElementById('register-password-confirm').value;
+                
+                let hasErrors = false;
+                
+                if (!name) {
+                    showError('register-name', 'Введите ваше имя');
+                    hasErrors = true;
+                } else if (name.length < 2) {
+                    showError('register-name', 'Имя должно содержать минимум 2 символа');
                     hasErrors = true;
                 }
-            }
-            
-            if (!password) {
-                showError('register-password', 'Создайте пароль');
-                hasErrors = true;
-            } else if (password.length < 6) {
-                showError('register-password', 'Пароль должен содержать минимум 6 символов');
-                hasErrors = true;
-            }
-            
-            if (!passwordConfirm) {
-                showError('register-password-confirm', 'Подтвердите пароль');
-                hasErrors = true;
-            } else if (password !== passwordConfirm) {
-                showError('register-password-confirm', 'Пароли не совпадают');
-                hasErrors = true;
-            }
-            
-            if (hasErrors) {
-                // Восстанавливаем кнопку при ошибках
-                const submitButton = registerForm.querySelector('button[type="submit"]');
-                submitButton.textContent = 'Создать аккаунт';
-                submitButton.disabled = false;
-                return;
-            }
-            
-            console.log('Registration validation passed, proceeding with registration...');
-            
-            // Показываем loading состояние кнопки
-            const submitButton = registerForm.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            submitButton.textContent = 'Создаем аккаунт...';
-            submitButton.disabled = true;
-            
-            // Сохраняем пользователя
-            const userData = { name, email, password };
-            saveUser(userData);
-            
-            console.log('User saved to localStorage:', userData);
-            
-            // Устанавливаем как текущего пользователя
-            localStorage.setItem('currentUser', JSON.stringify({
-                name: name,
-                email: email,
-                registeredAt: new Date().toISOString()
-            }));
-            
-            console.log('Current user set in localStorage');
-            console.log('Registration successful, redirecting to role selection...');
-            
-            // Мгновенное перенаправление без показа success message
-            window.location.href = 'role-selection.html';
-        });
+                
+                if (!email) {
+                    showError('register-email', 'Введите адрес электронной почты');
+                    hasErrors = true;
+                } else if (!isValidEmail(email)) {
+                    showError('register-email', 'Введите корректный email адрес');
+                    hasErrors = true;
+                } else {
+                    // Проверяем, не занят ли email
+                    const users = getUsers();
+                    if (users[email]) {
+                        showError('register-email', 'Пользователь с таким email уже зарегистрирован. Попробуйте войти.');
+                        hasErrors = true;
+                    }
+                }
+                
+                if (!password) {
+                    showError('register-password', 'Создайте пароль');
+                    hasErrors = true;
+                } else if (password.length < 6) {
+                    showError('register-password', 'Пароль должен содержать минимум 6 символов');
+                    hasErrors = true;
+                }
+                
+                if (!passwordConfirm) {
+                    showError('register-password-confirm', 'Подтвердите пароль');
+                    hasErrors = true;
+                } else if (password !== passwordConfirm) {
+                    showError('register-password-confirm', 'Пароли не совпадают');
+                    hasErrors = true;
+                }
+                
+                if (hasErrors) {
+                    // Восстанавливаем кнопку при ошибках
+                    this.textContent = 'Создать аккаунт';
+                    this.disabled = false;
+                    return;
+                }
+                
+                console.log('Registration validation passed, proceeding with registration...');
+                
+                // Показываем loading состояние кнопки
+                this.textContent = 'Создаем аккаунт...';
+                this.disabled = true;
+                
+                // Сохраняем пользователя
+                const userData = { name, email, password };
+                saveUser(userData);
+                
+                console.log('User saved to localStorage:', userData);
+                
+                // Устанавливаем как текущего пользователя
+                localStorage.setItem('currentUser', JSON.stringify({
+                    name: name,
+                    email: email,
+                    registeredAt: new Date().toISOString()
+                }));
+                
+                console.log('Current user set in localStorage');
+                console.log('Registration successful, redirecting to role selection...');
+                
+                // Мгновенное перенаправление без показа success message
+                window.location.href = 'role-selection.html';
+            });
+        }
 
         // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
@@ -1305,23 +1335,6 @@
                 showForgotPassword();
             });
 
-            // Обработчики социальных кнопок
-            document.querySelectorAll('.social-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const provider = this.getAttribute('data-provider');
-                    socialLogin(provider);
-                });
-            });
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const mode = urlParams.get('mode');
-            
-            if (mode === 'register') {
-                showForm('register');
-            } else {
-                showForm('login');
-            }
-
             // Добавляем валидацию в реальном времени для всех полей
             document.querySelectorAll('.form-input').forEach(input => {
                 input.addEventListener('input', () => validateField(input));
@@ -1350,6 +1363,15 @@
                     window.scrollTo(0, 0);
                 }, 100);
             });
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            
+            if (mode === 'register') {
+                showForm('register');
+            } else {
+                showForm('login');
+            }
         });
 
         console.log('All functions and event listeners initialized');

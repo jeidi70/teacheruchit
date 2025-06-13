@@ -61,14 +61,13 @@
 
         .auth-container {
             background: white;
-            border-radius: 1.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
             padding: 3rem;
             width: 100%;
-            max-width: 480px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            max-width: 450px;
             position: relative;
             overflow: hidden;
-            z-index: 2;
         }
 
         .auth-container::before {
@@ -138,11 +137,45 @@
         }
 
         .auth-form {
-            display: none;
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .auth-form.active {
-            display: block;
+        .auth-form.slide-out-left {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+
+        .auth-form.slide-out-right {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        .auth-form.slide-in-left {
+            opacity: 0;
+            transform: translateX(-100%);
+            animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .auth-form.slide-in-right {
+            opacity: 0;
+            transform: translateX(100%);
+            animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .form-group {
@@ -330,39 +363,63 @@
 
         .social-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             justify-content: center;
+            align-items: center;
         }
 
         .social-button {
-            flex: 1;
-            max-width: 120px;
-            padding: 1rem;
+            width: 60px;
+            height: 60px;
+            padding: 0;
             border: 2px solid var(--gray-300);
-            border-radius: 12px;
+            border-radius: 16px;
             background: white;
             color: var(--gray-600);
-            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.75rem;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .social-button:hover::before {
+            opacity: 1;
         }
 
         .social-button:hover {
             border-color: var(--primary);
             color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
+        }
+
+        .social-button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.1);
         }
 
         .social-icon {
-            width: 1.75rem;
-            height: 1.75rem;
+            width: 2.25rem;
+            height: 2.25rem;
             flex-shrink: 0;
+            position: relative;
+            z-index: 1;
         }
 
         .back-link {
@@ -517,12 +574,12 @@
         <div class="success-message" id="success-message"></div>
 
         <div class="auth-tabs">
-            <button class="tab-button active" onclick="switchTab('login')">Вход</button>
-            <button class="tab-button" onclick="switchTab('register')">Регистрация</button>
+            <button class="tab-button active" onclick="showForm('login')">Вход</button>
+            <button class="tab-button" onclick="showForm('register')">Регистрация</button>
         </div>
 
         <!-- Форма входа -->
-        <form class="auth-form active" id="login-form">
+        <form class="auth-form active" id="loginForm">
             <div class="form-group">
                 <label class="form-label" for="login-email">Электронная почта</label>
                 <input type="email" id="login-email" class="form-input" placeholder="your@email.com" required autocomplete="email">
@@ -552,7 +609,7 @@
         </form>
 
         <!-- Форма регистрации -->
-        <form class="auth-form" id="register-form">
+        <form class="auth-form" id="registerForm" style="display: none;">
             <div class="form-group">
                 <label class="form-label" for="register-name">Полное имя</label>
                 <input type="text" id="register-name" class="form-input" placeholder="Ваше имя и фамилия" required autocomplete="name">
@@ -599,17 +656,16 @@
         <div class="social-buttons">
             <button class="social-button" onclick="socialLogin('google')" title="Войти через Google">
                 <svg class="social-icon" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="currentColor" opacity="0.8" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="currentColor" opacity="0.6" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="currentColor" opacity="0.9" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1"/>
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                    <path fill="currentColor" d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"/>
                 </svg>
             </button>
             <button class="social-button" onclick="socialLogin('vk')" title="Войти через ВКонтакте">
                 <svg class="social-icon" viewBox="0 0 24 24">
-                    <rect width="24" height="24" rx="5" ry="5" fill="currentColor" opacity="0.1"/>
-                    <rect width="24" height="24" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                    <path fill="currentColor" d="M12.76 16.8c0 0 .38-.04.58-.24.18-.18.17-.52.17-.52s-.03-1.58.71-1.81c.73-.23 1.66 1.53 2.65 2.21.75.51 1.32.4 1.32.4l2.65-.04s1.38-.09.73-1.17c-.05-.09-.38-.79-1.95-2.24-1.64-1.52-1.42-1.27.56-3.89 1.2-1.59 1.68-2.56 1.53-2.98-.14-.4-1.03-.29-1.03-.29l-2.98.02s-.22-.03-.38.07c-.16.09-.26.31-.26.31s-.47 1.24-1.09 2.3c-1.32 2.23-1.85 2.02-2.06 1.9-.5-.28-.38-1.11-.38-1.71 0-1.86.28-2.63-.55-2.83-.28-.07-.48-.11-1.19-.12-.9-.01-1.67 0-2.1.21-.29.14-.51.45-.38.47.17.02.55.1.75.38.26.36.25 1.16.25 1.16s.15 2.19-.35 2.46c-.34.19-.81-.2-1.82-2.2-.51-1.01-.9-2.12-.9-2.12s-.08-.18-.21-.28c-.16-.12-.39-.15-.39-.15l-2.82.02s-.42.01-.58.19c-.14.16-.01.5-.01.5s2.2 5.14 4.69 7.73c2.29 2.38 4.89 2.22 4.89 2.22l-.01.01z"/>
+                    <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1"/>
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                    <path fill="currentColor" d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1.01-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 10.857 4.03 8.57 4.03 8.096c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.677.864 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.203.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .372.17.508.271.508.22 0 .407-.136.813-.542 1.254-1.406 2.151-3.574 2.151-3.574.119-.254.322-.491.763-.491h1.744c.525 0 .644.271.525.643-.254 1.167-2.422 4.026-2.422 4.026-.186.305-.254.44 0 .78.186.254.796.78 1.203 1.253.745.847 1.32 1.558 1.473 2.05.17.49-.085.744-.576.744z"/>
                 </svg>
             </button>
         </div>
@@ -629,24 +685,71 @@
                 
                 <!-- VK Icon -->
                 <g id="vk-icon">
-                    <rect width="24" height="24" fill="#0077FF" rx="4"/>
-                    <path fill="#FFFFFF" d="M11.701 18.771h1.437s.433-.047.654-.284c.203-.218.196-.625.196-.625s-.028-1.911.861-2.193c.875-.277 1.996 1.846 3.185 2.664.901.619 1.586.484 1.586.484l3.179-.044s1.661-.102.875-1.407c-.063-.107-.453-.953-2.339-2.695-1.976-1.825-1.711-1.529.669-4.685 1.448-1.921 2.025-3.092 1.843-3.594-.174-.482-1.245-.355-1.245-.355l-3.576.021s-.265-.036-.461.081c-.191.113-.314.378-.314.378s-.564 1.501-1.316 2.778c-1.588 2.693-2.222 2.433-2.481 2.289-.604-.334-.453-1.343-.453-2.061 0-2.240.339-3.174-.661-3.417-.332-.08-.576-.133-1.424-.142-1.087-.012-2.008.003-2.532.259-.349.170-.618.548-.454.569.203.026.663.124.906.456.314.428.302 1.394.302 1.394s.18 2.636-.419 2.967c-.411.227-.975-.236-2.186-2.658-.619-1.216-1.086-2.555-1.086-2.555s-.09-.221-.251-.339c-.195-.142-.469-.187-.469-.187l-3.389.021s-.509.014-.696.235c-.166.196-.013.603-.013.603s2.65 6.197 5.653 9.322c2.754 2.863 5.877 2.679 5.877 2.679z"/>
+                    <rect width="24" height="24" rx="5" ry="5" fill="currentColor" opacity="0.1"/>
+                    <rect width="24" height="24" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path fill="currentColor" d="M12.76 16.8c0 0 .38-.04.58-.24.18-.18.17-.52.17-.52s-.03-1.58.71-1.81c.73-.23 1.66 1.53 2.65 2.21.75.51 1.32.4 1.32.4l2.65-.04s1.38-.09.73-1.17c-.05-.09-.38-.79-1.95-2.24-1.64-1.52-1.42-1.27.56-3.89 1.2-1.59 1.68-2.56 1.53-2.98-.14-.4-1.03-.29-1.03-.29l-2.98.02s-.22-.03-.38.07c-.16.09-.26.31-.26.31s-.47 1.24-1.09 2.3c-1.32 2.23-1.85 2.02-2.06 1.9-.5-.28-.38-1.11-.38-1.71 0-1.86.28-2.63-.55-2.83-.28-.07-.48-.11-1.19-.12-.9-.01-1.67 0-2.1.21-.29.14-.51.45-.38.47.17.02.55.1.75.38.26.36.25 1.16.25 1.16s.15 2.19-.35 2.46c-.34.19-.81-.2-1.82-2.2-.51-1.01-.9-2.12-.9-2.12s-.08-.18-.21-.28c-.16-.12-.39-.15-.39-.15l-2.82.02s-.42.01-.58.19c-.14.16-.01.5-.01.5s2.2 5.14 4.69 7.73c2.29 2.38 4.89 2.22 4.89 2.22l-.01.01z"/>
                 </g>
             </defs>
         </svg>
     </div>
 
     <script>
-        function switchTab(tab) {
-            // Переключение активной вкладки
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+        function showForm(formType) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const currentActive = document.querySelector('.auth-form:not([style*="display: none"])');
             
-            event.target.classList.add('active');
-            document.getElementById(tab + '-form').classList.add('active');
+            // Определяем направление анимации
+            const isLoginToRegister = formType === 'register' && currentActive === loginForm;
+            const isRegisterToLogin = formType === 'login' && currentActive === registerForm;
             
-            // Очистка ошибок при переключении
-            clearErrors();
+            if (formType === 'login') {
+                if (isRegisterToLogin) {
+                    // Анимация: регистрация -> вход (слайд вправо)
+                    registerForm.classList.add('slide-out-right');
+                    
+                    setTimeout(() => {
+                        registerForm.style.display = 'none';
+                        registerForm.classList.remove('slide-out-right');
+                        
+                        loginForm.style.display = 'block';
+                        loginForm.classList.add('slide-in-left');
+                        
+                        setTimeout(() => {
+                            loginForm.classList.remove('slide-in-left');
+                        }, 500);
+                    }, 250);
+                } else {
+                    loginForm.style.display = 'block';
+                    registerForm.style.display = 'none';
+                }
+            } else {
+                if (isLoginToRegister) {
+                    // Анимация: вход -> регистрация (слайд влево)
+                    loginForm.classList.add('slide-out-left');
+                    
+                    setTimeout(() => {
+                        loginForm.style.display = 'none';
+                        loginForm.classList.remove('slide-out-left');
+                        
+                        registerForm.style.display = 'block';
+                        registerForm.classList.add('slide-in-right');
+                        
+                        setTimeout(() => {
+                            registerForm.classList.remove('slide-in-right');
+                        }, 500);
+                    }, 250);
+                } else {
+                    registerForm.style.display = 'block';
+                    loginForm.style.display = 'none';
+                }
+            }
+            
+            // Обновляем активные вкладки
+            document.querySelectorAll('.tab-button').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[onclick="showForm('${formType}')"]`).classList.add('active');
         }
 
         function togglePassword(inputId) {
@@ -723,7 +826,7 @@
         }
 
         // Обработка входа
-        document.getElementById('login-form').addEventListener('submit', async function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             clearErrors();
             
@@ -772,7 +875,7 @@
         });
 
         // Обработка регистрации
-        document.getElementById('register-form').addEventListener('submit', async function(e) {
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             clearErrors();
             
@@ -849,22 +952,20 @@
             alert('Функция восстановления пароля будет доступна в полной версии.\n\nДля демо используйте:\nEmail: demo@teacheruchit.ru\nПароль: demo123');
         }
 
-        // Проверка URL параметров для автоматического переключения на регистрацию
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('action') === 'register') {
-            // Переключаем на регистрацию
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
-            document.querySelectorAll('.tab-button')[1].classList.add('active');
-            document.getElementById('register-form').classList.add('active');
-        }
-
-        // Автофокус на первое поле
+        // Проверка URL параметров при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
-            const firstInput = document.querySelector('.auth-form.active .form-input');
-            if (firstInput) {
-                setTimeout(() => firstInput.focus(), 500);
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            
+            if (mode === 'register') {
+                showForm('register');
             }
+            
+            // Автофокус на первое поле
+            setTimeout(() => {
+                const firstInput = document.querySelector('.auth-form:not([style*="display: none"]) input');
+                if (firstInput) firstInput.focus();
+            }, 100);
         });
 
         // Обработка Enter для переключения между полями

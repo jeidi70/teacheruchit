@@ -1121,14 +1121,17 @@
             return profile && profile.role && profile.profileCompleted;
         }
 
-        function redirectToDashboard(userEmail, role) {
-            if (role === 'student') {
-                window.location.href = 'index.html?role=student';
-            } else if (role === 'teacher') {
-                window.location.href = 'index.html?role=teacher';
-            } else {
-                window.location.href = 'role-selection.html';
+        function redirectToDashboard(userEmail) {
+            const profile = getUserProfile(userEmail);
+            if (profile && profile.profileCompleted) {
+                if (profile.role === 'student') {
+                    window.location.href = 'student-dashboard.html';
+                } else if (profile.role === 'teacher') {
+                    window.location.href = 'teacher-dashboard.html';
+                }
+                return true;
             }
+            return false;
         }
 
         function checkExistingUserAndRedirect() {
@@ -1139,7 +1142,7 @@
                 
                 if (profile && profile.profileCompleted) {
                     console.log('User already has completed profile, redirecting to dashboard...');
-                    redirectToDashboard(user.email, profile.role);
+                    redirectToDashboard(user.email);
                     return true;
                 }
             }
@@ -1183,7 +1186,7 @@
                 if (isProfileComplete(email)) {
                     const profile = getUserProfile(email);
                     console.log('Demo user has completed profile, redirecting...');
-                    redirectToDashboard(email, profile.role);
+                    redirectToDashboard(email);
                     return;
                 }
                 
@@ -1200,7 +1203,7 @@
                 if (isProfileComplete(email)) {
                     const profile = getUserProfile(email);
                     console.log('User has completed profile, redirecting...');
-                    redirectToDashboard(email, profile.role);
+                    redirectToDashboard(email);
                     return;
                 }
                 

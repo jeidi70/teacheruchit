@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
     </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
   
-  <!-- Background rounded rectangle -->
-  <rect width="40" height="40" rx="10" fill="url(#logoGradient)"/>
+  <!-- Main container -->
+  <rect width="64" height="64" rx="16" fill="url(#logoGradient)" filter="url(#glow)"/>
   
-  <!-- Abstract book/education lines -->
-  <rect x="10" y="12" width="20" height="3" rx="1.5" fill="white"/>
-  <rect x="12" y="28" width="16" height="2" rx="1" fill="white" opacity="0.8"/>
+  <!-- Letter T with modern design -->
+  <path d="M16 20 L48 20 L48 26 L36 26 L36 44 L28 44 L28 26 L16 26 Z" fill="white" opacity="0.95"/>
   
-  <!-- Knowledge dot/spark -->
-  <circle cx="26" cy="18" r="3" fill="white"/>
+  <!-- Accent dot -->
+  <circle cx="42" cy="36" r="3" fill="white" opacity="0.8"/>
   
-  <!-- Connection lines -->
-  <path d="M10 20 Q20 25 30 20" stroke="white" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <!-- Progress indicator -->
+  <rect x="20" y="50" width="24" height="2" rx="1" fill="white" opacity="0.6"/>
+  <rect x="20" y="50" width="16" height="2" rx="1" fill="white" opacity="0.9"/>
 </svg> 

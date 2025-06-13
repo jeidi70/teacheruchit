@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель - TeacherUchit</title>
+    <link rel="stylesheet" href="/assets/modern-design-system.css">
+    <link rel="stylesheet" href="/assets/components.css">
+    <style>
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+            background: var(--surface-secondary);
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            background: var(--surface-primary);
+            border-right: 1px solid var(--border-primary);
+            padding: var(--spacing-lg);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .admin-main {
+            flex: 1;
+            margin-left: 280px;
+            padding: var(--spacing-lg);
+        }
+
+        .admin-header {
+            background: var(--surface-primary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .admin-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .admin-subtitle {
+            color: var(--text-secondary);
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--surface-primary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-primary);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-value {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+
+        .admin-section {
+            background: var(--surface-primary);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-primary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .section-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-primary);
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+        }
+
+        .section-content {
+            padding: var(--spacing-lg);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--spacing-md);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .data-table th {
+            background: var(--surface-secondary);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+        }
+
+        .data-table td {
+            color: var(--text-secondary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-50);
+            color: var(--primary-600);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .form-card {
+            background: var(--surface-secondary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-primary);
+        }
+
+        .form-card-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border-primary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-xl);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto var(--spacing-md);
+            color: var(--text-secondary);
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .upload-hint {
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>Админ панель</h2>
+                <p>TeacherUchit</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-dashboard"></use>
+                            </svg>
+                            Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#subjects" class="nav-link" data-section="subjects">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-materials"></use>
+                            </svg>
+                            Предметы
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#schools" class="nav-link" data-section="schools">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-education"></use>
+                            </svg>
+                            Школы
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#users" class="nav-link" data-section="users">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-users"></use>
+                            </svg>
+                            Пользователи
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#files" class="nav-link" data-section="files">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-upload"></use>
+                            </svg>
+                            Файлы
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#settings" class="nav-link" data-section="settings">
+                            <svg class="nav-icon">
+                                <use href="/assets/modern-icons.svg#icon-settings"></use>
+                            </svg>
+                            Настройки
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="section-content">
+                <div class="admin-header">
+                    <h1 class="admin-title">Панель администратора</h1>
+                    <p class="admin-subtitle">Управление образовательной платформой TeacherUchit</p>
+                </div>
+
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon primary">
+                                <svg class="icon icon-md">
+                                    <use href="/assets/modern-icons.svg#icon-users"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Всего пользователей</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon success">
+                                <svg class="icon icon-md">
+                                    <use href="/assets/modern-icons.svg#icon-teacher"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalTeachers">0</div>
+                        <div class="stat-label">Учителей</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon warning">
+                                <svg class="icon icon-md">
+                                    <use href="/assets/modern-icons.svg#icon-students"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalStudents">0</div>
+                        <div class="stat-label">Учеников</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon error">
+                                <svg class="icon icon-md">
+                                    <use href="/assets/modern-icons.svg#icon-education"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalSchools">0</div>
+                        <div class="stat-label">Школ</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subjects Section -->
+            <div id="subjects-section" class="section-content hidden">
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Управление предметами</h2>
+                        <button class="btn btn-primary" onclick="adminPanel.showAddSubjectModal()">
+                            <svg class="icon icon-sm">
+                                <use href="/assets/modern-icons.svg#icon-plus"></use>
+                            </svg>
+                            Добавить предмет
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-grid">
+                            <div class="form-card">
+                                <h3 class="form-card-title">Добавить новый предмет</h3>
+                                <div id="addSubjectForm"></div>
+                                <button class="btn btn-primary" onclick="adminPanel.addSubject()">
+                                    Добавить предмет
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Описание</th>
+                                    <th>Иконка</th>
+                                    <th>Цвет</th>
+                                    <th>Для учителей</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subjectsTableBody">
+                                <!-- Subjects will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schools Section -->
+            <div id="schools-section" class="section-content hidden">
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Управление школами</h2>
+                        <button class="btn btn-primary" onclick="adminPanel.showAddSchoolModal()">
+                            <svg class="icon icon-sm">
+                                <use href="/assets/modern-icons.svg#icon-plus"></use>
+                            </svg>
+                            Добавить школу
+                        </button>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-grid">
+                            <div class="form-card">
+                                <h3 class="form-card-title">Добавить новую школу</h3>
+                                <div id="addSchoolForm"></div>
+                                <button class="btn btn-primary" onclick="adminPanel.addSchool()">
+                                    Добавить школу
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Город</th>
+                                    <th>Дата добавления</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="schoolsTableBody">
+                                <!-- Schools will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Files Section -->
+            <div id="files-section" class="section-content hidden">
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Управление файлами</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-grid">
+                            <div class="form-card">
+                                <h3 class="form-card-title">Загрузить карты</h3>
+                                <div class="upload-area" onclick="adminPanel.selectFiles('maps')">
+                                    <svg class="upload-icon">
+                                        <use href="/assets/modern-icons.svg#icon-upload"></use>
+                                    </svg>
+                                    <div class="upload-text">Нажмите для выбора карт</div>
+                                    <div class="upload-hint">Поддерживаются: JPG, PNG, SVG</div>
+                                </div>
+                                <input type="file" id="mapsInput" multiple accept=".jpg,.jpeg,.png,.svg" style="display: none;">
+                            </div>
+                            
+                            <div class="form-card">
+                                <h3 class="form-card-title">Загрузить PDF документы</h3>
+                                <div class="upload-area" onclick="adminPanel.selectFiles('pdfs')">
+                                    <svg class="upload-icon">
+                                        <use href="/assets/modern-icons.svg#icon-pdf"></use>
+                                    </svg>
+                                    <div class="upload-text">Нажмите для выбора PDF</div>
+                                    <div class="upload-hint">Поддерживаются: PDF файлы</div>
+                                </div>
+                                <input type="file" id="pdfsInput" multiple accept=".pdf" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div id="uploadedFiles">
+                            <!-- Uploaded files will be shown here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other sections will be loaded dynamically -->
+            <div id="users-section" class="section-content hidden"></div>
+            <div id="settings-section" class="section-content hidden"></div>
+        </main>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+
+    <script src="/js/subjects-manager.js"></script>
+    <script>
+        class AdminPanel {
+            constructor() {
+                this.currentSection = 'dashboard';
+                this.uploadedFiles = JSON.parse(localStorage.getItem('uploaded_files') || '{}');
+                this.init();
+            }
+
+            init() {
+                this.setupNavigation();
+                this.updateStats();
+                this.loadSectionContent('subjects');
+                this.loadSectionContent('schools');
+                this.setupFileUploads();
+            }
+
+            setupNavigation() {
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const section = link.dataset.section;
+                        this.showSection(section);
+                    });
+                });
+            }
+
+            showSection(sectionName) {
+                // Hide all sections
+                document.querySelectorAll('.section-content').forEach(section => {
+                    section.classList.add('hidden');
+                });
+
+                // Show selected section
+                const targetSection = document.getElementById(`${sectionName}-section`);
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                    this.loadSectionContent(sectionName);
+                }
+
+                // Update navigation
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+
+                this.currentSection = sectionName;
+            }
+
+            loadSectionContent(sectionName) {
+                switch(sectionName) {
+                    case 'subjects':
+                        this.loadSubjectsContent();
+                        break;
+                    case 'schools':
+                        this.loadSchoolsContent();
+                        break;
+                    case 'files':
+                        this.loadFilesContent();
+                        break;
+                }
+            }
+
+            loadSubjectsContent() {
+                // Load add subject form
+                const addSubjectForm = document.getElementById('addSubjectForm');
+                if (addSubjectForm) {
+                    addSubjectForm.innerHTML = subjectsManager.createAddSubjectForm();
+                }
+
+                // Load subjects table
+                this.updateSubjectsTable();
+            }
+
+            loadSchoolsContent() {
+                // Load add school form
+                const addSchoolForm = document.getElementById('addSchoolForm');
+                if (addSchoolForm) {
+                    addSchoolForm.innerHTML = subjectsManager.createAddSchoolForm();
+                }
+
+                // Load schools table
+                this.updateSchoolsTable();
+            }
+
+            loadFilesContent() {
+                this.updateFilesDisplay();
+            }
+
+            updateStats() {
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const teachers = users.filter(user => user.role === 'teacher');
+                const students = users.filter(user => user.role === 'student');
+                const schools = subjectsManager.getSchools();
+
+                document.getElementById('totalUsers').textContent = users.length;
+                document.getElementById('totalTeachers').textContent = teachers.length;
+                document.getElementById('totalStudents').textContent = students.length;
+                document.getElementById('totalSchools').textContent = schools.length;
+            }
+
+            updateSubjectsTable() {
+                const tbody = document.getElementById('subjectsTableBody');
+                if (!tbody) return;
+
+                const allSubjects = subjectsManager.getAllSubjects();
+                const teacherSubjects = subjectsManager.getSubjectsForRole('teacher');
+
+                tbody.innerHTML = allSubjects.map(subject => {
+                    const isTeacherSubject = teacherSubjects.find(ts => ts.id === subject.id);
+                    return `
+                        <tr>
+                            <td>${subject.name}</td>
+                            <td>${subject.description || 'Нет описания'}</td>
+                            <td>
+                                <svg class="icon icon-sm ${subject.color}">
+                                    <use href="/assets/modern-icons.svg#${subject.icon}"></use>
+                                </svg>
+                            </td>
+                            <td>
+                                <span class="badge ${subject.color}">${subject.color}</span>
+                            </td>
+                            <td>
+                                <span class="badge ${isTeacherSubject ? 'success' : 'secondary'}">
+                                    ${isTeacherSubject ? 'Да' : 'Нет'}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-xs btn-secondary" onclick="adminPanel.editSubject('${subject.id}')">
+                                        Редактировать
+                                    </button>
+                                    <button class="btn btn-xs btn-error" onclick="adminPanel.deleteSubject('${subject.id}')">
+                                        Удалить
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            updateSchoolsTable() {
+                const tbody = document.getElementById('schoolsTableBody');
+                if (!tbody) return;
+
+                const schools = subjectsManager.getSchools();
+
+                tbody.innerHTML = schools.map(school => `
+                    <tr>
+                        <td>${school.name}</td>
+                        <td>${school.city}</td>
+                        <td>${school.createdAt ? new Date(school.createdAt).toLocaleDateString('ru-RU') : 'Неизвестно'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-xs btn-secondary" onclick="adminPanel.editSchool('${school.id}')">
+                                    Редактировать
+                                </button>
+                                <button class="btn btn-xs btn-error" onclick="adminPanel.deleteSchool('${school.id}')">
+                                    Удалить
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            addSubject() {
+                const form = document.getElementById('addSubjectForm');
+                const formData = new FormData(form);
+                
+                const subjectData = {
+                    name: formData.get('name'),
+                    description: formData.get('description'),
+                    icon: formData.get('icon'),
+                    color: formData.get('color'),
+                    isTeacherSubject: formData.get('isTeacherSubject') === 'on'
+                };
+
+                if (!subjectData.name) {
+                    this.showToast('Пожалуйста, введите название предмета', 'error');
+                    return;
+                }
+
+                try {
+                    subjectsManager.addSubject(subjectData);
+                    this.showToast('Предмет успешно добавлен!', 'success');
+                    this.updateSubjectsTable();
+                    form.reset();
+                } catch (error) {
+                    this.showToast('Ошибка при добавлении предмета', 'error');
+                }
+            }
+
+            addSchool() {
+                const form = document.getElementById('addSchoolForm');
+                const formData = new FormData(form);
+                
+                const schoolData = {
+                    name: formData.get('name'),
+                    city: formData.get('city'),
+                    createdAt: new Date().toISOString()
+                };
+
+                if (!schoolData.name || !schoolData.city) {
+                    this.showToast('Пожалуйста, заполните все поля', 'error');
+                    return;
+                }
+
+                try {
+                    subjectsManager.addSchool(schoolData);
+                    this.showToast('Школа успешно добавлена!', 'success');
+                    this.updateSchoolsTable();
+                    this.updateStats();
+                    form.reset();
+                } catch (error) {
+                    this.showToast('Ошибка при добавлении школы', 'error');
+                }
+            }
+
+            setupFileUploads() {
+                // Setup maps upload
+                const mapsInput = document.getElementById('mapsInput');
+                if (mapsInput) {
+                    mapsInput.addEventListener('change', (e) => {
+                        this.handleFileUpload(e.target.files, 'maps');
+                    });
+                }
+
+                // Setup PDFs upload
+                const pdfsInput = document.getElementById('pdfsInput');
+                if (pdfsInput) {
+                    pdfsInput.addEventListener('change', (e) => {
+                        this.handleFileUpload(e.target.files, 'pdfs');
+                    });
+                }
+            }
+
+            selectFiles(type) {
+                const input = document.getElementById(`${type}Input`);
+                if (input) {
+                    input.click();
+                }
+            }
+
+            handleFileUpload(files, type) {
+                if (!this.uploadedFiles[type]) {
+                    this.uploadedFiles[type] = [];
+                }
+
+                Array.from(files).forEach(file => {
+                    const fileData = {
+                        id: 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        uploadedAt: new Date().toISOString(),
+                        category: type
+                    };
+
+                    this.uploadedFiles[type].push(fileData);
+                });
+
+                this.saveUploadedFiles();
+                this.updateFilesDisplay();
+                this.showToast(`Загружено ${files.length} файлов`, 'success');
+            }
+
+            updateFilesDisplay() {
+                const container = document.getElementById('uploadedFiles');
+                if (!container) return;
+
+                let html = '';
+                
+                Object.keys(this.uploadedFiles).forEach(category => {
+                    const files = this.uploadedFiles[category];
+                    if (files.length > 0) {
+                        html += `
+                            <div class="files-category">
+                                <h3>${category === 'maps' ? 'Карты' : 'PDF документы'}</h3>
+                                <div class="files-list">
+                                    ${files.map(file => `
+                                        <div class="file-item">
+                                            <div class="file-info">
+                                                <span class="file-name">${file.name}</span>
+                                                <span class="file-size">${this.formatFileSize(file.size)}</span>
+                                            </div>
+                                            <button class="btn btn-xs btn-error" onclick="adminPanel.deleteFile('${category}', '${file.id}')">
+                                                Удалить
+                                            </button>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                container.innerHTML = html || '<p>Файлы не загружены</p>';
+            }
+
+            deleteFile(category, fileId) {
+                if (this.uploadedFiles[category]) {
+                    this.uploadedFiles[category] = this.uploadedFiles[category].filter(file => file.id !== fileId);
+                    this.saveUploadedFiles();
+                    this.updateFilesDisplay();
+                    this.showToast('Файл удален', 'success');
+                }
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            saveUploadedFiles() {
+                localStorage.setItem('uploaded_files', JSON.stringify(this.uploadedFiles));
+            }
+
+            // Placeholder methods
+            editSubject(subjectId) {
+                this.showToast('Редактирование предмета - в разработке', 'info');
+            }
+
+            deleteSubject(subjectId) {
+                this.showToast('Удаление предмета - в разработке', 'info');
+            }
+
+            editSchool(schoolId) {
+                this.showToast('Редактирование школы - в разработке', 'info');
+            }
+
+            deleteSchool(schoolId) {
+                this.showToast('Удаление школы - в разработке', 'info');
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type} show`;
+                
+                const iconMap = {
+                    success: 'icon-success',
+                    error: 'icon-error',
+                    warning: 'icon-warning',
+                    info: 'icon-info'
+                };
+
+                toast.innerHTML = `
+                    <svg class="toast-icon icon icon-sm">
+                        <use href="/assets/modern-icons.svg#${iconMap[type]}"></use>
+                    </svg>
+                    <div class="toast-content">
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close" onclick="this.parentElement.remove()">
+                        <svg class="icon icon-sm">
+                            <use href="/assets/modern-icons.svg#icon-close"></use>
+                        </svg>
+                    </button>
+                `;
+
+                let container = document.querySelector('.toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+
+                container.appendChild(toast);
+                setTimeout(() => toast.remove(), 5000);
+            }
+        }
+
+        // Initialize admin panel
+        const adminPanel = new AdminPanel();
+        window.adminPanel = adminPanel;
+    </script>
+</body>
+</html>

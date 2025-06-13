@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация учителя - TeacherUchit</title>
+    <link rel="stylesheet" href="/assets/modern-design-system.css">
+    <link rel="stylesheet" href="/assets/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--primary-50) 0%, var(--secondary-50) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+
+        .registration-container {
+            background: var(--surface-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            padding: var(--spacing-xl);
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid var(--border-primary);
+        }
+
+        .registration-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: var(--primary-500);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            color: white;
+        }
+
+        .registration-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .registration-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--text-base);
+        }
+
+        .form-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .section-title {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .section-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-500);
+        }
+
+        .subject-warning {
+            background: var(--warning-50);
+            border: 1px solid var(--warning-200);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+            font-size: var(--text-sm);
+            color: var(--warning-700);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .school-info {
+            background: var(--info-50);
+            border: 1px solid var(--info-200);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+            font-size: var(--text-sm);
+            color: var(--info-700);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: var(--spacing-lg);
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            margin-top: var(--spacing-xl);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border-primary);
+        }
+
+        .login-link a {
+            color: var(--primary-500);
+            text-decoration: none;
+            font-weight: var(--font-medium);
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: var(--error-500);
+            font-size: var(--text-sm);
+            margin-top: var(--spacing-xs);
+            display: none;
+        }
+
+        .form-group.error .form-input,
+        .form-group.error .form-select {
+            border-color: var(--error-500);
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .registration-container {
+                margin: var(--spacing-md);
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <div class="registration-header">
+            <div class="logo">
+                <svg class="icon icon-lg">
+                    <use href="/assets/modern-icons.svg#icon-teacher"></use>
+                </svg>
+            </div>
+            <h1 class="registration-title">Регистрация учителя</h1>
+            <p class="registration-subtitle">Присоединяйтесь к образовательной платформе TeacherUchit</p>
+        </div>
+
+        <form id="teacherRegistrationForm" class="teacher-form">
+            <!-- Основная информация -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    <svg class="section-icon">
+                        <use href="/assets/modern-icons.svg#icon-profile"></use>
+                    </svg>
+                    Основная информация
+                </h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName" class="form-label required">Имя</label>
+                        <input type="text" id="firstName" name="firstName" class="form-input" required>
+                        <div class="error-message">Пожалуйста, введите ваше имя</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastName" class="form-label required">Фамилия</label>
+                        <input type="text" id="lastName" name="lastName" class="form-input" required>
+                        <div class="error-message">Пожалуйста, введите вашу фамилию</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label required">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                    <div class="error-message">Пожалуйста, введите корректный email</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password" class="form-label required">Пароль</label>
+                        <input type="password" id="password" name="password" class="form-input" required minlength="6">
+                        <div class="error-message">Пароль должен содержать минимум 6 символов</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label required">Подтвердите пароль</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
+                        <div class="error-message">Пароли не совпадают</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Профессиональная информация -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    <svg class="section-icon">
+                        <use href="/assets/modern-icons.svg#icon-education"></use>
+                    </svg>
+                    Профессиональная информация
+                </h2>
+                
+                <div class="form-group">
+                    <label for="school" class="form-label required">Школа</label>
+                    <select id="school" name="school" class="form-select" required>
+                        <option value="">Выберите школу</option>
+                    </select>
+                    <div class="school-info">
+                        Не нашли свою школу? Обратитесь к администратору для добавления.
+                    </div>
+                    <div class="error-message">Пожалуйста, выберите школу</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="primarySubject" class="form-label required">Основной предмет</label>
+                        <select id="primarySubject" name="primarySubject" class="form-select" required>
+                            <option value="">Выберите предмет</option>
+                            <option value="История">История</option>
+                            <option value="Обществознание">Обществознание</option>
+                        </select>
+                        <div class="error-message">Пожалуйста, выберите основной предмет</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="secondarySubject" class="form-label">Дополнительный предмет</label>
+                        <select id="secondarySubject" name="secondarySubject" class="form-select">
+                            <option value="">Выберите предмет</option>
+                            <option value="История">История</option>
+                            <option value="Обществознание">Обществознание</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="subject-warning">
+                    <svg class="icon icon-xs">
+                        <use href="/assets/modern-icons.svg#icon-warning"></use>
+                    </svg>
+                    Основной и дополнительный предметы должны быть разными
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="experience" class="form-label required">Опыт работы (лет)</label>
+                        <input type="number" id="experience" name="experience" class="form-input" required min="0" max="50">
+                        <div class="error-message">Пожалуйста, укажите опыт работы</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="qualification" class="form-label required">Квалификация</label>
+                        <select id="qualification" name="qualification" class="form-select" required>
+                            <option value="">Выберите квалификацию</option>
+                            <option value="Без категории">Без категории</option>
+                            <option value="Вторая категория">Вторая категория</option>
+                            <option value="Первая категория">Первая категория</option>
+                            <option value="Высшая категория">Высшая категория</option>
+                        </select>
+                        <div class="error-message">Пожалуйста, выберите квалификацию</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дополнительная информация -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    <svg class="section-icon">
+                        <use href="/assets/modern-icons.svg#icon-info"></use>
+                    </svg>
+                    Дополнительная информация
+                </h2>
+                
+                <div class="form-group">
+                    <label for="bio" class="form-label">О себе</label>
+                    <textarea id="bio" name="bio" class="form-textarea" placeholder="Расскажите немного о себе, своих интересах и подходе к преподаванию..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone" class="form-label">Телефон</label>
+                    <input type="tel" id="phone" name="phone" class="form-input" placeholder="+7 (999) 123-45-67">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-register">
+                <svg class="icon icon-sm">
+                    <use href="/assets/modern-icons.svg#icon-teacher"></use>
+                </svg>
+                Зарегистрироваться как учитель
+            </button>
+        </form>
+
+        <div class="login-link">
+            <p>Уже есть аккаунт? <a href="/login.html">Войти в систему</a></p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <script>
+        class TeacherRegistration {
+            constructor() {
+                this.form = document.getElementById('teacherRegistrationForm');
+                this.schools = [
+                    { name: 'МБОУ СОШ №1 им. А.С. Пушкина', city: 'Москва' },
+                    { name: 'МБОУ Гимназия №2', city: 'Москва' },
+                    { name: 'МБОУ Лицей №3', city: 'Москва' },
+                    { name: 'МБОУ СОШ №5 им. М.В. Ломоносова', city: 'Санкт-Петербург' },
+                    { name: 'МБОУ Гимназия №7', city: 'Санкт-Петербург' },
+                    { name: 'МБОУ СОШ №10', city: 'Екатеринбург' },
+                    { name: 'МБОУ Лицей №12', city: 'Новосибирск' },
+                    { name: 'МБОУ СОШ №15', city: 'Казань' },
+                    { name: 'МБОУ Гимназия №18', city: 'Нижний Новгород' },
+                    { name: 'МБОУ СОШ №20', city: 'Челябинск' },
+                    { name: 'МБОУ Лицей №25', city: 'Самара' },
+                    { name: 'МБОУ СОШ №30', city: 'Омск' },
+                    { name: 'МБОУ Гимназия №35', city: 'Ростов-на-Дону' },
+                    { name: 'МБОУ СОШ №40', city: 'Уфа' },
+                    { name: 'МБОУ Лицей №45', city: 'Красноярск' }
+                ];
+                this.init();
+            }
+
+            init() {
+                this.populateSchools();
+                this.setupFormValidation();
+                this.setupPasswordConfirmation();
+                this.setupSubjectValidation();
+                this.form.addEventListener('submit', this.handleSubmit.bind(this));
+            }
+
+            populateSchools() {
+                const schoolSelect = document.getElementById('school');
+                
+                // Группируем школы по городам
+                const cities = [...new Set(this.schools.map(school => school.city))].sort();
+                
+                cities.forEach(city => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = city;
+                    
+                    const citySchools = this.schools.filter(school => school.city === city);
+                    citySchools.forEach(school => {
+                        const option = document.createElement('option');
+                        option.value = school.name;
+                        option.textContent = school.name;
+                        optgroup.appendChild(option);
+                    });
+                    
+                    schoolSelect.appendChild(optgroup);
+                });
+            }
+
+            setupFormValidation() {
+                const inputs = this.form.querySelectorAll('input[required], select[required]');
+                inputs.forEach(input => {
+                    input.addEventListener('blur', () => this.validateField(input));
+                    input.addEventListener('input', () => this.clearFieldError(input));
+                });
+            }
+
+            setupPasswordConfirmation() {
+                const password = document.getElementById('password');
+                const confirmPassword = document.getElementById('confirmPassword');
+                
+                confirmPassword.addEventListener('input', () => {
+                    if (confirmPassword.value && password.value !== confirmPassword.value) {
+                        this.showFieldError(confirmPassword, 'Пароли не совпадают');
+                    } else {
+                        this.clearFieldError(confirmPassword);
+                    }
+                });
+            }
+
+            setupSubjectValidation() {
+                const primarySubject = document.getElementById('primarySubject');
+                const secondarySubject = document.getElementById('secondarySubject');
+                
+                primarySubject.addEventListener('change', () => {
+                    this.updateSecondarySubjectOptions();
+                });
+                
+                secondarySubject.addEventListener('change', () => {
+                    this.validateSubjects();
+                });
+            }
+
+            updateSecondarySubjectOptions() {
+                const primarySubject = document.getElementById('primarySubject');
+                const secondarySubject = document.getElementById('secondarySubject');
+                const primaryValue = primarySubject.value;
+                
+                // Очищаем вторичный предмет
+                secondarySubject.innerHTML = '<option value="">Выберите предмет</option>';
+                
+                // Добавляем опции, исключая выбранный основной предмет
+                const subjects = ['История', 'Обществознание'];
+                subjects.forEach(subject => {
+                    if (subject !== primaryValue) {
+                        const option = document.createElement('option');
+                        option.value = subject;
+                        option.textContent = subject;
+                        secondarySubject.appendChild(option);
+                    }
+                });
+            }
+
+            validateSubjects() {
+                const primarySubject = document.getElementById('primarySubject');
+                const secondarySubject = document.getElementById('secondarySubject');
+                
+                if (primarySubject.value && secondarySubject.value && 
+                    primarySubject.value === secondarySubject.value) {
+                    this.showFieldError(secondarySubject, 'Дополнительный предмет должен отличаться от основного');
+                    return false;
+                } else {
+                    this.clearFieldError(secondarySubject);
+                    return true;
+                }
+            }
+
+            validateField(field) {
+                const value = field.value.trim();
+                let isValid = true;
+                let errorMessage = '';
+
+                // Проверка обязательных полей
+                if (field.hasAttribute('required') && !value) {
+                    isValid = false;
+                    errorMessage = 'Это поле обязательно для заполнения';
+                }
+
+                // Специфичные проверки
+                switch (field.type) {
+                    case 'email':
+                        if (value && !this.isValidEmail(value)) {
+                            isValid = false;
+                            errorMessage = 'Введите корректный email адрес';
+                        }
+                        break;
+                    case 'password':
+                        if (value && value.length < 6) {
+                            isValid = false;
+                            errorMessage = 'Пароль должен содержать минимум 6 символов';
+                        }
+                        break;
+                    case 'number':
+                        if (value && (isNaN(value) || value < 0)) {
+                            isValid = false;
+                            errorMessage = 'Введите корректное число';
+                        }
+                        break;
+                }
+
+                if (!isValid) {
+                    this.showFieldError(field, errorMessage);
+                } else {
+                    this.clearFieldError(field);
+                }
+
+                return isValid;
+            }
+
+            showFieldError(field, message) {
+                const formGroup = field.closest('.form-group');
+                const errorElement = formGroup.querySelector('.error-message');
+                
+                formGroup.classList.add('error');
+                if (errorElement) {
+                    errorElement.textContent = message;
+                }
+            }
+
+            clearFieldError(field) {
+                const formGroup = field.closest('.form-group');
+                formGroup.classList.remove('error');
+            }
+
+            isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                // Валидация всех полей
+                const inputs = this.form.querySelectorAll('input[required], select[required]');
+                let isFormValid = true;
+                
+                inputs.forEach(input => {
+                    if (!this.validateField(input)) {
+                        isFormValid = false;
+                    }
+                });
+
+                // Проверка совпадения паролей
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                if (password !== confirmPassword) {
+                    this.showFieldError(document.getElementById('confirmPassword'), 'Пароли не совпадают');
+                    isFormValid = false;
+                }
+
+                // Проверка предметов
+                if (!this.validateSubjects()) {
+                    isFormValid = false;
+                }
+
+                if (!isFormValid) {
+                    this.showToast('Пожалуйста, исправьте ошибки в форме', 'error');
+                    return;
+                }
+
+                // Сбор данных формы
+                const formData = new FormData(this.form);
+                const teacherData = {
+                    id: 'teacher_' + Date.now(),
+                    role: 'teacher',
+                    email: formData.get('email'),
+                    password: formData.get('password'),
+                    profile: {
+                        firstName: formData.get('firstName'),
+                        lastName: formData.get('lastName'),
+                        school: formData.get('school'),
+                        primarySubject: formData.get('primarySubject'),
+                        secondarySubject: formData.get('secondarySubject') || null,
+                        experience: parseInt(formData.get('experience')),
+                        qualification: formData.get('qualification'),
+                        bio: formData.get('bio') || '',
+                        phone: formData.get('phone') || '',
+                        avatar: null,
+                        createdAt: new Date().toISOString(),
+                        isActive: true
+                    }
+                };
+
+                try {
+                    // Сохранение в localStorage
+                    const users = JSON.parse(localStorage.getItem('users') || '[]');
+                    
+                    // Проверка на существующий email
+                    if (users.find(user => user.email === teacherData.email)) {
+                        this.showToast('Пользователь с таким email уже существует', 'error');
+                        this.showFieldError(document.getElementById('email'), 'Этот email уже используется');
+                        return;
+                    }
+
+                    users.push(teacherData);
+                    localStorage.setItem('users', JSON.stringify(users));
+
+                    this.showToast('Регистрация успешно завершена!', 'success');
+                    
+                    // Перенаправление на страницу входа через 2 секунды
+                    setTimeout(() => {
+                        window.location.href = '/login.html?registered=teacher';
+                    }, 2000);
+
+                } catch (error) {
+                    console.error('Ошибка регистрации:', error);
+                    this.showToast('Произошла ошибка при регистрации. Попробуйте еще раз.', 'error');
+                }
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type} show`;
+                
+                const iconMap = {
+                    success: 'icon-success',
+                    error: 'icon-error',
+                    warning: 'icon-warning',
+                    info: 'icon-info'
+                };
+
+                toast.innerHTML = `
+                    <svg class="toast-icon icon icon-sm">
+                        <use href="/assets/modern-icons.svg#${iconMap[type]}"></use>
+                    </svg>
+                    <div class="toast-content">
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close" onclick="this.parentElement.remove()">
+                        <svg class="icon icon-sm">
+                            <use href="/assets/modern-icons.svg#icon-close"></use>
+                        </svg>
+                    </button>
+                `;
+
+                let container = document.querySelector('.toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+
+                container.appendChild(toast);
+                setTimeout(() => toast.remove(), 5000);
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            new TeacherRegistration();
+        });
+    </script>
+</body>
+</html>

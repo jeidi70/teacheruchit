@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeacherUchit - Революция в образовании</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            /* Button improvements for better readability */
+            --btn-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --btn-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--gray-900);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            margin-right: 0.75rem;
+            filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.3));
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Enhanced buttons for better readability */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            z-index: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn:hover::before {
+            opacity: 0.8;
+        }
+
+        .btn > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: var(--btn-shadow);
+            border: 2px solid transparent;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow-hover);
+            background: linear-gradient(135deg, #5856eb, #7c3aed);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            box-shadow: var(--btn-shadow);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow-hover);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 0 6rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .hero .btn-secondary {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero .btn-secondary:hover {
+            background: white;
+            border-color: white;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--gray-50);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray-200);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .feature-description {
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        /* Custom SVG Icon styles */
+        .custom-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        /* Larger icons for feature cards */
+        .feature-icon .custom-icon {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        /* AI Demo Section */
+        .ai-demo {
+            padding: 6rem 0;
+            background: var(--gray-50);
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .demo-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--gray-900);
+        }
+
+        .demo-content p {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-200);
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: var(--gray-50);
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            word-wrap: break-word;
+        }
+
+        .message.ai .message-content {
+            background: white;
+            color: var(--gray-900);
+            border: 1px solid var(--gray-200);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+        }
+
+        .chat-input-container {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 0.5rem;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .send-btn {
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Demo question buttons with better contrast */
+        .demo-question {
+            background: white !important;
+            border: 2px solid var(--gray-300) !important;
+            padding: 0.75rem !important;
+            border-radius: 0.75rem !important;
+            text-align: left !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            color: var(--gray-700) !important;
+            font-weight: 500 !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .demo-question:hover {
+            border-color: var(--primary) !important;
+            background: var(--primary) !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border: 2px solid var(--gray-200);
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .pricing-card.featured {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card.featured::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: -65px;
+            width: 220px;
+            height: 45px;
+            background: var(--accent);
+            transform: rotate(45deg);
+            z-index: 1;
+        }
+
+        .pricing-card.featured::after {
+            content: '';
+            position: absolute;
+            top: 22px;
+            right: -20px;
+            width: 26px;
+            height: 26px;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2 L14.4 8.8 L22 8.8 L16.8 13.2 L19.2 20 L12 15.6 L4.8 20 L7.2 13.2 L2 8.8 L9.6 8.8 Z' fill='white'/%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
+            transform: rotate(45deg);
+            z-index: 2;
+        }
+
+        .pricing-card.featured .popular-badge {
+            position: absolute;
+            top: 24px;
+            right: -15px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transform: rotate(45deg);
+            z-index: 3;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-8px);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .pricing-card .plan-icon {
+            width: 2rem;
+            height: 2rem;
+            color: var(--primary);
+        }
+
+        .pricing-card.featured .plan-icon {
+            color: white;
+        }
+
+        .price {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pricing-card.featured .price {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .price-period {
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .pricing-card.featured .price-period {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .features-list li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .pricing-card.featured .features-list li::before {
+            color: var(--primary);
+            background: white;
+        }
+
+        /* Enhanced pricing buttons */
+        .pricing-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .pricing-card.featured .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .pricing-card.featured .btn-primary:hover {
+            background: #0891b2;
+            border-color: #0891b2;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gray-900);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer-link {
+            display: block;
+            color: var(--gray-400);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--gray-700);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--gray-400);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .logo-icon {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+
+        /* Loading animation for icons */
+        .feature-icon {
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .feature-card:nth-child(2) .feature-icon { animation-delay: 0.5s; }
+        .feature-card:nth-child(3) .feature-icon { animation-delay: 1s; }
+        .feature-card:nth-child(4) .feature-icon { animation-delay: 1.5s; }
+        .feature-card:nth-child(5) .feature-icon { animation-delay: 2s; }
+        .feature-card:nth-child(6) .feature-icon { animation-delay: 2.5s; }
+
+        /* User Profile Section */
+        .user-profile {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--gray-200);
+            margin-top: 4rem;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-avatar {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .profile-details h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-details p {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        .profile-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .profile-card {
+            background: var(--gray-50);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+        }
+
+        .profile-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .profile-card p {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--gray-900);
+        }
+
+        .profile-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Include custom icons -->
+    <div style="position: absolute; width: 0; height: 0; overflow: hidden;">
+        <svg>
+            <defs>
+                <!-- Brand Logo Icon -->
+                <g id="icon-brand-logo">
+                    <!-- Outer gradient circle -->
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Main circle with gradient -->
+                    <circle cx="12" cy="12" r="11" fill="url(#logoGradient)" opacity="0.9"/>
+                    <circle cx="12" cy="12" r="11" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
+                    
+                    <!-- Book/Knowledge symbol -->
+                    <path d="M7 6 L17 6 Q18 6 18 7 L18 17 Q18 18 17 18 L7 18 Q6 18 6 17 L6 7 Q6 6 7 6 Z" 
+                          fill="white" opacity="0.9"/>
+                    <path d="M12 6 L12 18" stroke="url(#logoGradient)" stroke-width="2"/>
+                    <path d="M8 9 L11 9 M13 9 L16 9" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M8 12 L11 12 M13 12 L16 12" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M8 15 L11 15 M13 15 L16 15" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                    
+                    <!-- AI brain/neural network element -->
+                    <circle cx="19" cy="5" r="3.5" fill="white" opacity="0.95"/>
+                    <circle cx="19" cy="5" r="3.5" fill="none" stroke="url(#logoGradient)" stroke-width="1.5"/>
+                    
+                    <!-- Neural connections -->
+                    <circle cx="17.5" cy="4" r="0.8" fill="url(#logoGradient)"/>
+                    <circle cx="20.5" cy="4" r="0.8" fill="url(#logoGradient)"/>
+                    <circle cx="19" cy="6.5" r="0.8" fill="url(#logoGradient)"/>
+                    <circle cx="19" cy="3.5" r="0.8" fill="url(#logoGradient)"/>
+                    
+                    <!-- Connecting lines -->
+                    <path d="M17.8 4.2 L18.7 3.7 M20.2 4.2 L19.3 3.7 M19.2 6.3 L19.2 5.2" 
+                          stroke="url(#logoGradient)" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+                    
+                    <!-- Sparkle effect -->
+                    <path d="M4 8 L5 9 L4 10 L3 9 Z" fill="white" opacity="0.8"/>
+                    <path d="M20 15 L21 16 L20 17 L19 16 Z" fill="white" opacity="0.8"/>
+                    <circle cx="6" cy="18" r="1" fill="white" opacity="0.6"/>
+                </g>
+                
+                <!-- AI Robot Icon -->
+                <g id="icon-ai-robot">
+                    <rect x="2" y="3" width="20" height="16" rx="3" fill="currentColor" opacity="0.1"/>
+                    <rect x="3" y="4" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="8" cy="9" r="1.5" fill="currentColor"/>
+                    <circle cx="16" cy="9" r="1.5" fill="currentColor"/>
+                    <path d="M9 13 Q12 15 15 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <rect x="11" y="1" width="2" height="2" rx="1" fill="currentColor"/>
+                    <circle cx="6" cy="2" r="1" fill="currentColor"/>
+                    <circle cx="18" cy="2" r="1" fill="currentColor"/>
+                </g>
+                
+                <!-- Gamepad Icon -->
+                <g id="icon-gamepad">
+                    <path d="M6 7 Q4 7 4 9 L4 15 Q4 17 6 17 L18 17 Q20 17 20 15 L20 9 Q20 7 18 7 L6 7 Z" 
+                          fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="8" cy="11" r="1" fill="currentColor"/>
+                    <circle cx="16" cy="11" r="1" fill="currentColor"/>
+                    <path d="M7 9 L7 13 M5 11 L9 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+                </g>
+
+                <!-- Analytics Chart Icon -->
+                <g id="icon-analytics">
+                    <path d="M3 20 L21 20 M3 20 L3 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M7 16 L7 20 M11 12 L11 20 M15 8 L15 20 M19 6 L19 20" 
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="7" cy="16" r="1.5" fill="currentColor"/>
+                    <circle cx="11" cy="12" r="1.5" fill="currentColor"/>
+                    <circle cx="15" cy="8" r="1.5" fill="currentColor"/>
+                    <circle cx="19" cy="6" r="1.5" fill="currentColor"/>
+                </g>
+
+                <!-- Community Users Icon -->
+                <g id="icon-community">
+                    <!-- Background circle -->
+                    <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1"/>
+                    
+                    <!-- Group of people in modern style -->
+                    <circle cx="8" cy="8" r="2.5" fill="currentColor" opacity="0.8"/>
+                    <circle cx="16" cy="8" r="2.5" fill="currentColor" opacity="0.8"/>
+                    <circle cx="12" cy="6" r="2" fill="currentColor"/>
+                    
+                    <!-- Bodies/shoulders -->
+                    <path d="M5 16 Q8 14 8 16 L8 19 Q8 20 9 20 L11 20" 
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M19 16 Q16 14 16 16 L16 19 Q16 20 15 20 L13 20" 
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M9 14 Q12 12 12 14 L12 18 Q12 19 11 19 L13 19 Q14 19 14 18 L14 14 Q14 12 12 12 Q10 12 10 14" 
+                          fill="currentColor" opacity="0.7"/>
+                    
+                    <!-- Connection lines showing community -->
+                    <path d="M8 10 Q12 8 16 10" stroke="currentColor" stroke-width="1.5" 
+                          stroke-dasharray="2,2" opacity="0.6"/>
+                    <path d="M6 14 Q12 11 18 14" stroke="currentColor" stroke-width="1.5" 
+                          stroke-dasharray="2,2" opacity="0.6"/>
+                    
+                    <!-- Hearts/connection symbols -->
+                    <path d="M4 12 Q4 11 5 11 Q6 11 6 12 Q6 13 5 14 Q4 13 4 12 Z" 
+                          fill="currentColor" opacity="0.8"/>
+                    <path d="M18 12 Q18 11 19 11 Q20 11 20 12 Q20 13 19 14 Q18 13 18 12 Z" 
+                          fill="currentColor" opacity="0.8"/>
+                </g>
+
+                <!-- Lesson Developer AI Assistant Icon -->
+                <g id="icon-lesson-ai">
+                    <rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 7 L16 7 M8 11 L14 11 M8 15 L12 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="18" cy="6" r="3" fill="currentColor" opacity="0.1"/>
+                    <path d="M17 5 L17 7 M16 6 L18 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="17" cy="4" r="0.5" fill="currentColor"/>
+                    <circle cx="19" cy="4" r="0.5" fill="currentColor"/>
+                    <circle cx="18" cy="2.5" r="0.5" fill="currentColor"/>
+                    <path d="M16.5 5 L15.5 4 M19.5 5 L20.5 4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+                </g>
+
+                <!-- Security Shield Icon -->
+                <g id="icon-security">
+                    <path d="M12 2 L4 6 L4 12 Q4 16 12 22 Q20 16 20 12 L20 6 L12 2 Z" 
+                          fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M9 12 L11 14 L15 9" stroke="currentColor" stroke-width="1.5" 
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="12" cy="8" r="2" fill="currentColor" opacity="0.2"/>
+                </g>
+
+                <!-- Mobile Responsive Icon -->
+                <g id="icon-responsive">
+                    <rect x="2" y="6" width="9" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                    <rect x="13" y="3" width="8" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                    <circle cx="17" cy="18" r="0.8" fill="currentColor"/>
+                    <path d="M4 9 L9 9" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/>
+                    <path d="M15 6 L19 6" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/>
+                    <rect x="4" y="7.5" width="5" height="3" rx="0.5" fill="currentColor" opacity="0.1"/>
+                </g>
+
+                <!-- Robot Teacher Icon -->
+                <g id="icon-robot-teacher">
+                    <rect x="6" y="4" width="12" height="10" rx="2" fill="currentColor" opacity="0.1"/>
+                    <rect x="7" y="5" width="10" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                    <circle cx="10" cy="8" r="1" fill="currentColor"/>
+                    <circle cx="14" cy="8" r="1" fill="currentColor"/>
+                    <path d="M9 11 Q12 12.5 15 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    <rect x="11" y="2" width="2" height="2" rx="1" fill="currentColor"/>
+                    <path d="M8 16 L8 20 M16 16 L16 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M6 20 L10 20 M14 20 L18 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </g>
+
+                <!-- Paper Plane Send Icon -->
+                <g id="icon-send">
+                    <path d="M22 2 L11 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M22 2 L15 22 L11 13 L2 9 L22 2 Z" fill="currentColor" opacity="0.1"/>
+                    <path d="M22 2 L15 22 L11 13 L2 9 L22 2 Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+
+                <!-- Popular Badge Icon -->
+                <g id="icon-popular">
+                    <path d="M12 2 L14.4 8.8 L22 8.8 L16.8 13.2 L19.2 20 L12 15.6 L4.8 20 L7.2 13.2 L2 8.8 L9.6 8.8 Z" 
+                          fill="currentColor"/>
+                    <circle cx="12" cy="12" r="1.5" fill="white"/>
+                </g>
+
+                <!-- Crown Icon for Premium -->
+                <g id="icon-crown">
+                    <path d="M5 16 L19 16 L17 8 L14.5 11 L12 7 L9.5 11 L7 8 L5 16 Z" 
+                          fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <circle cx="7" cy="8" r="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="12" cy="7" r="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="17" cy="8" r="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M6 16 L18 16 L18 18 Q18 19 17 19 L7 19 Q6 19 6 18 L6 16 Z" 
+                          fill="none" stroke="currentColor" stroke-width="1.5"/>
+                </g>
+
+                <!-- Gift Icon for Free -->
+                <g id="icon-gift">
+                    <rect x="6" y="10" width="12" height="8" rx="1" fill="currentColor" opacity="0.1"/>
+                    <rect x="6" y="10" width="12" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 10 L12 18" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M6 13 L18 13" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 10 Q12 8 10 8 Q8 8 8 10 Q8 10 10 10 L12 10" 
+                          fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 10 Q12 8 14 8 Q16 8 16 10 Q16 10 14 10 L12 10" 
+                          fill="none" stroke="currentColor" stroke-width="1.5"/>
+                </g>
+
+                <!-- Play Button Icon -->
+                <g id="icon-play">
+                    <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1"/>
+                    <path d="M10 8 L16 12 L10 16 Z" fill="currentColor"/>
+                </g>
+
+                <!-- Rocket Launch Icon -->
+                <g id="icon-rocket">
+                    <path d="M12 2 Q16 6 16 12 L20 16 L16 20 L12 16 Q6 16 2 12 Q6 6 12 2 Z" 
+                          fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="12" cy="8" r="2" fill="currentColor" opacity="0.3"/>
+                    <path d="M8 16 L4 20 M8 16 L12 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </g>
+            </defs>
+        </svg>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24">
+                    <use href="#icon-brand-logo"></use>
+                </svg>
+                TeacherUchit
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="#features" class="nav-link">Возможности</a></li>
+                <li><a href="#ai" class="nav-link">ИИ-помощник</a></li>
+                <li><a href="#pricing" class="nav-link">Тарифы</a></li>
+                <li><a href="auth.html" class="btn btn-secondary">Войти</a></li>
+                <li><a href="auth.html?action=register" class="btn btn-primary">Начать</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Profile Section -->
+    <div id="user-profile-section" class="user-profile" style="display: none;">
+        <div class="container">
+            <div class="profile-header">
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-details">
+                        <h2 id="profile-name">Имя пользователя</h2>
+                        <p id="profile-role">Роль</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Выйти
+                </button>
+            </div>
+            <div class="profile-data" id="profile-data">
+                <!-- Данные профиля будут загружены динамически -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero-section">
+        <div class="container">
+            <div class="hero-content fade-in">
+                <h1 class="hero-title">Революция в образовании</h1>
+                <p class="hero-subtitle">
+                    Современная платформа для изучения истории с ИИ-помощником, геймификацией и интерактивными уроками
+                </p>
+                <div class="hero-buttons">
+                    <a href="auth.html?action=register" class="btn btn-primary">
+                        <svg class="custom-icon" viewBox="0 0 24 24">
+                            <use href="#icon-rocket"></use>
+                        </svg>
+                        Начать бесплатно
+                    </a>
+                    <a href="#ai" class="btn btn-secondary">
+                        <svg class="custom-icon" viewBox="0 0 24 24">
+                            <use href="#icon-play"></use>
+                        </svg>
+                        Демо ИИ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Возможности платформы</h2>
+                <p class="section-subtitle">
+                    Современные инструменты для эффективного изучения истории и обществознания
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg class="custom-icon" viewBox="0 0 24 24">
+                            <use href="#icon-ai-robot"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">ИИ-помощник</h3>
+                    <p class="feature-description">
+                        Персональный ассистент отвечает на вопросы и объясняет сложные темы простым языком
+                    </p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg class="custom-icon" viewBox="0 0 24 24">
+                            <use href="#icon-gamepad"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Геймификация</h3>
+                    <p class="feature-description">
+                        Система достижений и рейтингов превращает обучение в увлекательную игру
+                    </p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg class="custom-icon" viewBox="0 0 24 24">
+                            <use href="#icon-analytics"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Аналитика</h3>
+                    <p class="feature-description">
+                        Подробная статистика прогресса помогает отслеживать успехи в обучении
+                    </p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg class="custom-icon" viewBox="0 0 24 24">
+                            <use href="#icon-community"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Сообщество</h3>
+                    <p class="feature-description">
+                        Общайтесь с одноклассниками и участвуйте в совместных проектах
+                    </p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg class="custom-icon" viewBox="0 0 24 24">
+                            <use href="#icon-lesson-ai"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Помощник в разработке уроков</h3>
+                    <p class="feature-description">
+                        ИИ-ассистент помогает учителям создавать интерактивные уроки и учебные материалы
+                    </p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <svg class="custom-icon" viewBox="0 0 24 24">
+                            <use href="#icon-security"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Безопасность</h3>
+                    <p class="feature-description">
+                        Надежная защита данных и безопасная среда для учеников любого возраста
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Demo Section -->
+    <section id="ai" class="ai-demo">
+        <div class="container">
+            <div class="demo-grid">
+                <div class="demo-content">
+                    <h2>ИИ-помощник ТичерНаучит</h2>
+                    <p>
+                        Революционный ИИ-ассистент, который понимает контекст и адаптируется под уровень ученика. 
+                        Попробуйте задать вопрос прямо сейчас!
+                    </p>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="font-weight: 600; margin-bottom: 1rem;">Примеры вопросов:</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <button class="demo-question">
+                                "Расскажи про Великую Отечественную войну"
+                            </button>
+                            <button class="demo-question">
+                                "Объясни феодализм простыми словами"
+                            </button>
+                            <button class="demo-question">
+                                "Кто такой Наполеон?"
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <svg class="custom-icon" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem;">
+                            <use href="#icon-robot-teacher"></use>
+                        </svg>
+                        <span>ИИ-помощник ТичерНаучит</span>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message ai">
+                            <div class="message-content">
+                                Привет! Я ваш ИИ-помощник по истории. Задавайте любые вопросы!
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" class="chat-input" placeholder="Спросите что-нибудь об истории...">
+                        <button id="send-btn" class="send-btn">
+                            <svg class="custom-icon" viewBox="0 0 24 24">
+                                <use href="#icon-send"></use>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Доступные тарифы</h2>
+                <p class="section-subtitle">Выберите оптимальный план для эффективного обучения</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>
+                        <svg class="plan-icon" viewBox="0 0 24 24">
+                            <use href="#icon-gift"></use>
+                        </svg>
+                        Бесплатный
+                    </h3>
+                    <div class="price">0₽</div>
+                    <div class="price-period">/месяц</div>
+                    <ul class="features-list">
+                        <li>Базовые материалы</li>
+                        <li>20 вопросов ИИ в день</li>
+                        <li>Система достижений</li>
+                        <li>Адаптивный веб-интерфейс</li>
+                    </ul>
+                    <a href="auth.html?action=register" class="btn btn-secondary">Начать бесплатно</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="popular-badge">Популярный</div>
+                    <h3>
+                        <svg class="plan-icon" viewBox="0 0 24 24">
+                            <use href="#icon-crown"></use>
+                        </svg>
+                        Premium
+                    </h3>
+                    <div class="price">399₽</div>
+                    <div class="price-period">/месяц</div>
+                    <ul class="features-list">
+                        <li>Все бесплатные функции</li>
+                        <li>Безлимитный ИИ-помощник</li>
+                        <li>Помощник в создании уроков</li>
+                        <li>Эксклюзивные материалы</li>
+                        <li>Приоритетная поддержка</li>
+                    </ul>
+                    <a href="auth.html?action=register" class="btn btn-primary">Получить Premium</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TeacherUchit</h3>
+                    <p style="color: var(--gray-400); margin-bottom: 1rem;">
+                        Революционная платформа для изучения истории и обществознания
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Платформа</h3>
+                    <a href="auth.html" class="footer-link">Войти</a>
+                    <a href="auth.html?action=register" class="footer-link">Регистрация</a>
+                    <a href="#features" class="footer-link">Возможности</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Поддержка</h3>
+                    <a href="#" class="footer-link">Помощь</a>
+                    <a href="#" class="footer-link">FAQ</a>
+                    <a href="#" class="footer-link">Контакты</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Правовая информация</h3>
+                    <a href="#" class="footer-link">Конфиденциальность</a>
+                    <a href="#" class="footer-link">Условия использования</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TeacherUchit. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Проверка авторизации и загрузка профиля
+        function checkAuthAndLoadProfile() {
+            const currentUser = localStorage.getItem('currentUser');
+            const urlParams = new URLSearchParams(window.location.search);
+            const showDashboard = urlParams.get('dashboard') === 'true' || urlParams.get('role');
+
+            if (currentUser && showDashboard) {
+                const user = JSON.parse(currentUser);
+                const profile = localStorage.getItem(`teacheruchit_profile_${user.email}`);
+                
+                if (profile) {
+                    displayUserProfile(user, JSON.parse(profile));
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function displayUserProfile(user, profileData) {
+            // Показываем секцию профиля
+            document.getElementById('user-profile-section').style.display = 'block';
+            
+            // Скрываем или изменяем hero секцию для дашборда
+            const heroSection = document.getElementById('hero-section');
+            if (heroSection) {
+                heroSection.style.display = 'none';
+            }
+
+            // Заполняем основную информацию
+            document.getElementById('profile-name').textContent = user.name;
+            document.getElementById('profile-role').textContent = 
+                profileData.role === 'student' ? 'Ученик' : 'Учитель';
+
+            // Заполняем данные профиля
+            const profileDataContainer = document.getElementById('profile-data');
+            let profileCards = '';
+
+            if (profileData.role === 'student') {
+                profileCards = `
+                    <div class="profile-card">
+                        <h3>Город</h3>
+                        <p>${profileData.cityName || 'Санкт-Петербург'}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Школа</h3>
+                        <p>${profileData.school}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Класс</h3>
+                        <p><span class="profile-badge">${profileData.fullClass || profileData.class + profileData.letter}</span></p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Email</h3>
+                        <p>${user.email}</p>
+                    </div>
+                `;
+            } else {
+                profileCards = `
+                    <div class="profile-card">
+                        <h3>Предмет</h3>
+                        <p><span class="profile-badge">${profileData.subjectName || profileData.subject}</span></p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Опыт работы</h3>
+                        <p>${profileData.experienceName || profileData.experience}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Учреждение</h3>
+                        <p>${profileData.school}</p>
+                    </div>
+                    <div class="profile-card">
+                        <h3>Email</h3>
+                        <p>${user.email}</p>
+                    </div>
+                `;
+            }
+
+            profileDataContainer.innerHTML = profileCards;
+        }
+
+        function logout() {
+            // Очищаем данные пользователя
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('userProfile');
+            
+            // Перенаправляем на страницу входа
+            window.location.href = 'auth.html';
+        }
+
+        // Убираем inline onclick и добавляем обработчик
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем авторизацию при загрузке
+            const isLoggedIn = checkAuthAndLoadProfile();
+            
+            // Обработчик кнопки выхода
+            const logoutBtn = document.querySelector('button[onclick="logout()"]');
+            if (logoutBtn) {
+                logoutBtn.removeAttribute('onclick');
+                logoutBtn.addEventListener('click', logout);
+            }
+            
+            console.log('User logged in:', isLoggedIn);
+        });
+
+        // Остальной JavaScript код страницы...
+        
+        // Инициализация чата и других функций только если пользователь не авторизован
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const demoQuestions = document.querySelectorAll('.demo-question');
+            
+            // Запускаем чат только если не показан дашборд
+            if (chatMessages && !document.getElementById('user-profile-section').style.display !== 'none') {
+                // Demo responses
+                const responses = {
+                    'великая отечественная война': 'Великая Отечественная война (1941-1945) - важнейший период в истории России. Это была война против фашистской Германии и её союзников. Война началась 22 июня 1941 года и закончилась победой СССР 9 мая 1945 года.',
+                    'феодализм': 'Феодализм - это общественный строй, где земля принадлежит феодалам (дворянам), а крестьяне работают на этой земле. Главные черты: личная зависимость крестьян, натуральное хозяйство, иерархия власти.',
+                    'наполеон': 'Наполеон Бонапарт (1769-1821) - французский император и полководец. Провёл множество реформ во Франции, завоевал большую часть Европы. В 1812 году вторгся в Россию, но потерпел поражение.',
+                    'default': 'Отличный вопрос! В полной версии платформы я дам подробный ответ с учётом вашего класса и программы обучения.'
+                };
+                
+                function addMessage(text, isUser = false) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+                    messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
+                    chatMessages.appendChild(messageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+                
+                function sendMessage(text) {
+                    if (!text.trim()) return;
+                    
+                    addMessage(text, true);
+                    chatInput.value = '';
+                    
+                    // Simulate AI response
+                    setTimeout(() => {
+                        const lowerText = text.toLowerCase();
+                        let response = responses.default;
+                        
+                        for (const key in responses) {
+                            if (lowerText.includes(key)) {
+                                response = responses[key];
+                                break;
+                            }
+                        }
+                        
+                        addMessage(response);
+                    }, 1000);
+                }
+                
+                // Event listeners для чата
+                if (sendBtn) {
+                    sendBtn.addEventListener('click', () => sendMessage(chatInput.value));
+                }
+                if (chatInput) {
+                    chatInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') sendMessage(chatInput.value);
+                    });
+                }
+                
+                // Demo questions
+                demoQuestions.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        chatInput.value = btn.textContent.replace(/"/g, '');
+                        sendMessage(chatInput.value);
+                    });
+                });
+            }
+            
+            // Общие функции для всех пользователей
+            // Smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+            
+            // Navbar scroll effect
+            window.addEventListener('scroll', () => {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                } else {
+                    navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                }
+            });
+            
+            // Intersection Observer for animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.feature-card').forEach(el => {
+                observer.observe(el);
+            });
+            
+            console.log('✅ TeacherUchit - Загружена версия с профилем пользователя!');
+        });
+    </script>
+</body>
+</html>

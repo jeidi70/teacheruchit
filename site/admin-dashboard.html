@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель - TeacherUchit</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self';">
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #dc2626;
+            --secondary: #7c2d12;
+            --accent: #f59e0b;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .logo-section {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid var(--gray-200);
+            text-align: center;
+        }
+
+        .logo-icon {
+            width: 3rem;
+            height: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .nav-menu {
+            padding: 2rem 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: var(--gray-700);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(90deg, rgba(220, 38, 38, 0.1), transparent);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item i {
+            width: 1.5rem;
+            margin-right: 1rem;
+            font-size: 1.125rem;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .header-left p {
+            color: var(--gray-600);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 0.5rem;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .table th {
+            background: var(--gray-50);
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .table tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-500);
+            cursor: pointer;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-200);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .notification {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .notification.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .notification.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .file-upload {
+            border: 2px dashed var(--gray-300);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(220, 38, 38, 0.05);
+        }
+
+        .file-upload.dragover {
+            border-color: var(--primary);
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 999;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                <svg class="logo-icon" viewBox="0 0 24 24">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#dc2626;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#7c2d12;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="12" cy="12" r="11" fill="url(#logoGradient)" opacity="0.9"/>
+                    <path d="M7 6 L17 6 Q18 6 18 7 L18 17 Q18 18 17 18 L7 18 Q6 18 6 17 L6 7 Q6 6 7 6 Z" fill="white" opacity="0.9"/>
+                    <path d="M9 8.5 L15 8.5" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M12 8.5 L12 15.5" stroke="url(#logoGradient)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="9" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
+                    <circle cx="15" cy="8.5" r="1" fill="url(#logoGradient)" opacity="0.6"/>
+                    <circle cx="12" cy="15.5" r="1.2" fill="url(#logoGradient)" opacity="0.8"/>
+                </svg>
+                <div class="logo-title">TeacherUchit</div>
+                <div class="admin-badge">АДМИН</div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Главная
+                </a>
+                <a href="#" class="nav-item" data-section="materials">
+                    <i class="fas fa-book"></i>
+                    Материалы
+                </a>
+                <a href="#" class="nav-item" data-section="users">
+                    <i class="fas fa-users"></i>
+                    Пользователи
+                </a>
+                <a href="#" class="nav-item" data-section="schools">
+                    <i class="fas fa-school"></i>
+                    Школы и коды
+                </a>
+                <a href="#" class="nav-item" data-section="structure">
+                    <i class="fas fa-sitemap"></i>
+                    Структура сайта
+                </a>
+                <a href="#" class="nav-item" data-section="content">
+                    <i class="fas fa-edit"></i>
+                    Контент
+                </a>
+                <a href="#" class="nav-item" data-section="analytics">
+                    <i class="fas fa-chart-bar"></i>
+                    Аналитика
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    Настройки
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-left">
+                    <h1 id="welcome-title">Панель администратора</h1>
+                    <p id="welcome-subtitle">Управление системой TeacherUchit</p>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">A</div>
+                    <button class="logout-btn" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Выйти
+                    </button>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div id="notification" class="notification"></div>
+
+            <!-- Dashboard Content -->
+            <div id="dashboard-content">
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-users">0</div>
+                        <div class="stat-label">Всего пользователей</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-materials">0</div>
+                        <div class="stat-label">Материалов</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-schools">0</div>
+                        <div class="stat-label">Школ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-teachers">0</div>
+                        <div class="stat-label">Учителей</div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-bolt"></i>
+                        Быстрые действия
+                    </h2>
+                    <div class="grid grid-3">
+                        <button class="btn btn-primary" data-action="add-material">
+                            <i class="fas fa-plus"></i>
+                            Добавить материал
+                        </button>
+                        <button class="btn btn-primary" data-action="add-school">
+                            <i class="fas fa-school"></i>
+                            Добавить школу
+                        </button>
+                        <button class="btn btn-primary" data-action="manage-structure">
+                            <i class="fas fa-sitemap"></i>
+                            Управление структурой
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-history"></i>
+                        Последняя активность
+                    </h2>
+                    <div id="recent-activity">
+                        <!-- Активность будет загружена JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Materials Section -->
+            <div id="materials-content" style="display: none;">
+                <div class="content-section">
+                    <div class="section-title">
+                        <i class="fas fa-book"></i>
+                        Управление материалами
+                        <button class="btn btn-primary" style="margin-left: auto;" data-action="add-material">
+                            <i class="fas fa-plus"></i>
+                            Добавить материал
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Фильтр по предмету</label>
+                            <select class="form-select" id="material-filter">
+                                <option value="">Все предметы</option>
+                                <option value="history">История</option>
+                                <option value="social">Обществознание</option>
+                                <option value="geography">География</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Поиск</label>
+                            <input type="text" class="form-input" id="material-search" placeholder="Поиск материалов...">
+                        </div>
+                    </div>
+
+                    <table class="table" id="materials-table">
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Предмет</th>
+                                <th>Тип</th>
+                                <th>Статус</th>
+                                <th>Создан</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="materials-tbody">
+                            <!-- Материалы будут загружены JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="users-content" style="display: none;">
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-users"></i>
+                        Управление пользователями
+                    </h2>
+                    
+                    <div class="grid grid-3">
+                        <div class="form-group">
+                            <label class="form-label">Фильтр по роли</label>
+                            <select class="form-select" id="user-role-filter">
+                                <option value="">Все роли</option>
+                                <option value="student">Ученики</option>
+                                <option value="teacher">Учителя</option>
+                                <option value="admin">Админы</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Фильтр по школе</label>
+                            <select class="form-select" id="user-school-filter">
+                                <option value="">Все школы</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Поиск</label>
+                            <input type="text" class="form-input" id="user-search" placeholder="Поиск пользователей...">
+                        </div>
+                    </div>
+
+                    <table class="table" id="users-table">
+                        <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Email</th>
+                                <th>Роль</th>
+                                <th>Школа</th>
+                                <th>Статус</th>
+                                <th>Регистрация</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <!-- Пользователи будут загружены JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Schools Section -->
+            <div id="schools-content" style="display: none;">
+                <div class="content-section">
+                    <div class="section-title">
+                        <i class="fas fa-school"></i>
+                        Управление школами и кодами
+                        <button class="btn btn-primary" style="margin-left: auto;" data-action="add-school">
+                            <i class="fas fa-plus"></i>
+                            Добавить школу
+                        </button>
+                    </div>
+
+                    <div class="grid grid-2" style="margin-bottom: 2rem;">
+                        <div class="card">
+                            <h3 class="card-title">Генератор кодов</h3>
+                            <div class="form-group">
+                                <label class="form-label">Выберите школу</label>
+                                <select class="form-select" id="school-for-code">
+                                    <option value="">Выберите школу</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" id="generate-code-btn">
+                                <i class="fas fa-magic"></i>
+                                Сгенерировать код
+                            </button>
+                            <div id="generated-code" style="margin-top: 1rem; display: none;">
+                                <label class="form-label">Сгенерированный код:</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="text" class="form-input" id="new-school-code" readonly>
+                                    <button class="btn btn-secondary" id="copy-code-btn">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <h3 class="card-title">Статистика кодов</h3>
+                            <div style="margin-bottom: 1rem;">
+                                <strong>Активных кодов:</strong> <span id="active-codes-count">0</span>
+                            </div>
+                            <div style="margin-bottom: 1rem;">
+                                <strong>Использованных кодов:</strong> <span id="used-codes-count">0</span>
+                            </div>
+                            <div>
+                                <strong>Всего кодов:</strong> <span id="total-codes-count">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table" id="schools-table">
+                        <thead>
+                            <tr>
+                                <th>Школа</th>
+                                <th>Код</th>
+                                <th>Статус</th>
+                                <th>Учителей</th>
+                                <th>Создан</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schools-tbody">
+                            <!-- Школы будут загружены JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Structure Section -->
+            <div id="structure-content" style="display: none;">
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-sitemap"></i>
+                        Управление структурой сайта
+                    </h2>
+                    
+                    <div class="grid grid-2">
+                        <div class="card">
+                            <h3 class="card-title">Страницы</h3>
+                            <div id="pages-list">
+                                <!-- Список страниц -->
+                            </div>
+                            <button class="btn btn-primary" data-action="add-page">
+                                <i class="fas fa-plus"></i>
+                                Добавить страницу
+                            </button>
+                        </div>
+                        
+                        <div class="card">
+                            <h3 class="card-title">Навигация</h3>
+                            <div id="navigation-structure">
+                                <!-- Структура навигации -->
+                            </div>
+                            <button class="btn btn-primary" data-action="edit-navigation">
+                                <i class="fas fa-edit"></i>
+                                Редактировать навигацию
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div id="content-content" style="display: none;">
+                <div class="content-section">
+                    <div class="section-title">
+                        <i class="fas fa-edit"></i>
+                        Управление контентом
+                        <button class="btn btn-primary" style="margin-left: auto;" data-action="add-content">
+                            <i class="fas fa-plus"></i>
+                            Добавить контент
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Тип контента</label>
+                            <select class="form-select" id="content-type-filter">
+                                <option value="">Все типы</option>
+                                <option value="lesson">Урок</option>
+                                <option value="test">Тест</option>
+                                <option value="article">Статья</option>
+                                <option value="video">Видео</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Поиск</label>
+                            <input type="text" class="form-input" id="content-search" placeholder="Поиск контента...">
+                        </div>
+                    </div>
+
+                    <div id="content-grid" class="grid grid-3">
+                        <!-- Контент будет загружен JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div id="analytics-content" style="display: none;">
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Аналитика и статистика
+                    </h2>
+                    
+                    <div class="grid grid-2">
+                        <div class="card">
+                            <h3 class="card-title">Активность пользователей</h3>
+                            <div id="user-activity-chart">
+                                <!-- График активности -->
+                                <p>График активности пользователей за последние 7 дней</p>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <h3 class="card-title">Популярные материалы</h3>
+                            <div id="popular-materials">
+                                <!-- Популярные материалы -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings-content" style="display: none;">
+                <div class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-cog"></i>
+                        Настройки системы
+                    </h2>
+                    
+                    <div class="grid grid-2">
+                        <div class="card">
+                            <h3 class="card-title">Общие настройки</h3>
+                            <div class="form-group">
+                                <label class="form-label">Название сайта</label>
+                                <input type="text" class="form-input" id="site-title" value="TeacherUchit">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Описание</label>
+                                <textarea class="form-textarea" id="site-description">Образовательная платформа для учителей и учеников</textarea>
+                            </div>
+                            <button class="btn btn-success" id="save-general-settings">
+                                <i class="fas fa-save"></i>
+                                Сохранить
+                            </button>
+                        </div>
+                        
+                        <div class="card">
+                            <h3 class="card-title">Настройки безопасности</h3>
+                            <div class="form-group">
+                                <label class="form-label">Требовать подтверждение email</label>
+                                <select class="form-select" id="email-verification">
+                                    <option value="true">Да</option>
+                                    <option value="false">Нет</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Автоматическое одобрение учителей</label>
+                                <select class="form-select" id="auto-approve-teachers">
+                                    <option value="false">Нет</option>
+                                    <option value="true">Да</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-success" id="save-security-settings">
+                                <i class="fas fa-save"></i>
+                                Сохранить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Material -->
+    <div id="add-material-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить материал</h3>
+                <button class="close-btn" data-close="add-material-modal">&times;</button>
+            </div>
+            <form id="add-material-form">
+                <div class="form-group">
+                    <label class="form-label">Название материала</label>
+                    <input type="text" class="form-input" id="material-title" required>
+                </div>
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Предмет</label>
+                        <select class="form-select" id="material-subject" required>
+                            <option value="">Выберите предмет</option>
+                            <option value="history">История</option>
+                            <option value="social">Обществознание</option>
+                            <option value="geography">География</option>
+                            <option value="economics">Экономика</option>
+                            <option value="law">Право</option>
+                            <option value="philosophy">Философия</option>
+                            <option value="political">Политология</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Тип материала</label>
+                        <select class="form-select" id="material-type" required>
+                            <option value="">Выберите тип</option>
+                            <option value="lesson">Урок</option>
+                            <option value="test">Тест</option>
+                            <option value="article">Статья</option>
+                            <option value="video">Видео</option>
+                            <option value="document">Документ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Описание</label>
+                    <textarea class="form-textarea" id="material-description" placeholder="Краткое описание материала"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Содержание</label>
+                    <textarea class="form-textarea" id="material-content" placeholder="Основное содержание материала" style="min-height: 200px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Файлы (изображения, документы)</label>
+                    <div class="file-upload" id="material-files">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
+                        <p>Перетащите файлы сюда или нажмите для выбора</p>
+                        <input type="file" multiple accept="image/*,.pdf,.doc,.docx" style="display: none;" id="file-input">
+                    </div>
+                </div>
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Класс</label>
+                        <select class="form-select" id="material-grade">
+                            <option value="">Все классы</option>
+                            <option value="5">5 класс</option>
+                            <option value="6">6 класс</option>
+                            <option value="7">7 класс</option>
+                            <option value="8">8 класс</option>
+                            <option value="9">9 класс</option>
+                            <option value="10">10 класс</option>
+                            <option value="11">11 класс</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Статус</label>
+                        <select class="form-select" id="material-status">
+                            <option value="draft">Черновик</option>
+                            <option value="published" selected>Опубликован</option>
+                            <option value="archived">Архив</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-secondary" data-close="add-material-modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить материал</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add School -->
+    <div id="add-school-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить школу</h3>
+                <button class="close-btn" data-close="add-school-modal">&times;</button>
+            </div>
+            <form id="add-school-form">
+                <div class="form-group">
+                    <label class="form-label">Название школы</label>
+                    <input type="text" class="form-input" id="school-name" required placeholder="Например: МБОУ СОШ №1">
+                </div>
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Город</label>
+                        <select class="form-select" id="school-city" required>
+                            <option value="">Выберите город</option>
+                            <option value="spb">Санкт-Петербург</option>
+                            <option value="moscow">Москва</option>
+                            <option value="kazan">Казань</option>
+                            <option value="nnovgorod">Нижний Новгород</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Тип школы</label>
+                        <select class="form-select" id="school-type">
+                            <option value="school">Общеобразовательная школа</option>
+                            <option value="gymnasium">Гимназия</option>
+                            <option value="lyceum">Лицей</option>
+                            <option value="college">Колледж</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Адрес</label>
+                    <input type="text" class="form-input" id="school-address" placeholder="Полный адрес школы">
+                </div>
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Телефон</label>
+                        <input type="tel" class="form-input" id="school-phone" placeholder="+7 (xxx) xxx-xx-xx">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="school-email" placeholder="school@example.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Описание</label>
+                    <textarea class="form-textarea" id="school-description" placeholder="Дополнительная информация о школе"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-secondary" data-close="add-school-modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить школу</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Content -->
+    <div id="edit-content-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="edit-content-title">Редактировать контент</h3>
+                <button class="close-btn" data-close="edit-content-modal">&times;</button>
+            </div>
+            <form id="edit-content-form">
+                <div class="form-group">
+                    <label class="form-label">Заголовок</label>
+                    <input type="text" class="form-input" id="content-title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Содержание</label>
+                    <textarea class="form-textarea" id="content-body" style="min-height: 300px;" required></textarea>
+                </div>
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Статус</label>
+                        <select class="form-select" id="content-status">
+                            <option value="published">Опубликован</option>
+                            <option value="draft">Черновик</option>
+                            <option value="archived">Архив</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Приоритет</label>
+                        <select class="form-select" id="content-priority">
+                            <option value="normal">Обычный</option>
+                            <option value="high">Высокий</option>
+                            <option value="urgent">Срочный</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-secondary" data-close="edit-content-modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Административные данные
+        let adminData = {
+            materials: JSON.parse(localStorage.getItem('teacheruchit_admin_materials') || '[]'),
+            schools: JSON.parse(localStorage.getItem('teacheruchit_admin_schools') || '[]'),
+            settings: JSON.parse(localStorage.getItem('teacheruchit_admin_settings') || '{}'),
+            analytics: JSON.parse(localStorage.getItem('teacheruchit_admin_analytics') || '{}')
+        };
+
+        // Проверка админских прав
+        function checkAdminAccess() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = 'auth.html';
+                return false;
+            }
+            
+            const user = JSON.parse(currentUser);
+            if (user.email !== 'admin@teacheruchit.com') {
+                alert('Доступ запрещен! Требуются права администратора.');
+                window.location.href = 'auth.html';
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Загрузка статистики
+        function loadStatistics() {
+            // Получаем всех пользователей
+            const allUsers = [];
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('teacheruchit_profile_')) {
+                    const profile = JSON.parse(localStorage.getItem(key));
+                    allUsers.push(profile);
+                }
+            });
+
+            const students = allUsers.filter(user => user.role === 'student');
+            const teachers = allUsers.filter(user => user.role === 'teacher');
+
+            document.getElementById('total-users').textContent = allUsers.length;
+            document.getElementById('total-materials').textContent = adminData.materials.length;
+            document.getElementById('total-schools').textContent = adminData.schools.length;
+            document.getElementById('total-teachers').textContent = teachers.length;
+        }
+
+        // Навигация по разделам
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const contentSections = ['dashboard', 'materials', 'users', 'schools', 'structure', 'content', 'analytics', 'settings'];
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    contentSections.forEach(section => {
+                        const element = document.getElementById(`${section}-content`);
+                        if (element) {
+                            element.style.display = 'none';
+                        }
+                    });
+                    
+                    const targetSection = item.getAttribute('data-section');
+                    const targetElement = document.getElementById(`${targetSection}-content`);
+                    if (targetElement) {
+                        targetElement.style.display = 'block';
+                        
+                        // Загружаем данные для каждой секции
+                        switch(targetSection) {
+                            case 'materials':
+                                loadMaterials();
+                                break;
+                            case 'users':
+                                loadUsers();
+                                break;
+                            case 'schools':
+                                loadSchools();
+                                break;
+                            case 'content':
+                                loadContent();
+                                break;
+                            case 'analytics':
+                                loadAnalytics();
+                                break;
+                        }
+                    }
+                });
+            });
+        }
+
+        // Управление модальными окнами
+        function setupModals() {
+            // Открытие модальных окон
+            document.addEventListener('click', (e) => {
+                if (e.target.hasAttribute('data-action')) {
+                    const action = e.target.getAttribute('data-action');
+                    switch(action) {
+                        case 'add-material':
+                            document.getElementById('add-material-modal').classList.add('active');
+                            break;
+                        case 'add-school':
+                            document.getElementById('add-school-modal').classList.add('active');
+                            break;
+                        case 'add-content':
+                            document.getElementById('edit-content-modal').classList.add('active');
+                            document.getElementById('edit-content-title').textContent = 'Добавить контент';
+                            break;
+                    }
+                }
+            });
+
+            // Закрытие модальных окон
+            document.addEventListener('click', (e) => {
+                if (e.target.hasAttribute('data-close')) {
+                    const modalId = e.target.getAttribute('data-close');
+                    document.getElementById(modalId).classList.remove('active');
+                }
+                
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('active');
+                }
+            });
+        }
+
+        // Уведомления
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Управление материалами
+        function loadMaterials() {
+            const tbody = document.getElementById('materials-tbody');
+            tbody.innerHTML = '';
+
+            adminData.materials.forEach((material, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${material.title}</td>
+                    <td>${getSubjectName(material.subject)}</td>
+                    <td>${getTypeName(material.type)}</td>
+                    <td><span class="badge badge-${getStatusClass(material.status)}">${getStatusName(material.status)}</span></td>
+                    <td>${new Date(material.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" onclick="editMaterial(${index})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteMaterial(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getSubjectName(subject) {
+            const subjects = {
+                'history': 'История',
+                'social': 'Обществознание',
+                'geography': 'География',
+                'economics': 'Экономика',
+                'law': 'Право',
+                'philosophy': 'Философия',
+                'political': 'Политология'
+            };
+            return subjects[subject] || subject;
+        }
+
+        function getTypeName(type) {
+            const types = {
+                'lesson': 'Урок',
+                'test': 'Тест',
+                'article': 'Статья',
+                'video': 'Видео',
+                'document': 'Документ'
+            };
+            return types[type] || type;
+        }
+
+        function getStatusName(status) {
+            const statuses = {
+                'published': 'Опубликован',
+                'draft': 'Черновик',
+                'archived': 'Архив'
+            };
+            return statuses[status] || status;
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                'published': 'success',
+                'draft': 'warning',
+                'archived': 'danger'
+            };
+            return classes[status] || 'secondary';
+        }
+
+        // Добавление материала
+        document.getElementById('add-material-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const material = {
+                id: Date.now(),
+                title: document.getElementById('material-title').value,
+                subject: document.getElementById('material-subject').value,
+                type: document.getElementById('material-type').value,
+                description: document.getElementById('material-description').value,
+                content: document.getElementById('material-content').value,
+                grade: document.getElementById('material-grade').value,
+                status: document.getElementById('material-status').value,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            adminData.materials.push(material);
+            localStorage.setItem('teacheruchit_admin_materials', JSON.stringify(adminData.materials));
+            
+            showNotification('Материал успешно добавлен!');
+            document.getElementById('add-material-modal').classList.remove('active');
+            document.getElementById('add-material-form').reset();
+            loadMaterials();
+            loadStatistics();
+        });
+
+        function editMaterial(index) {
+            const material = adminData.materials[index];
+            // Заполняем форму данными материала
+            document.getElementById('material-title').value = material.title;
+            document.getElementById('material-subject').value = material.subject;
+            document.getElementById('material-type').value = material.type;
+            document.getElementById('material-description').value = material.description;
+            document.getElementById('material-content').value = material.content;
+            document.getElementById('material-grade').value = material.grade || '';
+            document.getElementById('material-status').value = material.status;
+            
+            document.getElementById('add-material-modal').classList.add('active');
+        }
+
+        function deleteMaterial(index) {
+            if (confirm('Вы уверены, что хотите удалить этот материал?')) {
+                adminData.materials.splice(index, 1);
+                localStorage.setItem('teacheruchit_admin_materials', JSON.stringify(adminData.materials));
+                showNotification('Материал удален!', 'error');
+                loadMaterials();
+                loadStatistics();
+            }
+        }
+
+        // Управление пользователями
+        function loadUsers() {
+            const tbody = document.getElementById('users-tbody');
+            tbody.innerHTML = '';
+
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('teacheruchit_profile_')) {
+                    const profile = JSON.parse(localStorage.getItem(key));
+                    const email = key.replace('teacheruchit_profile_', '');
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${profile.userName || 'Не указано'}</td>
+                        <td>${email}</td>
+                        <td><span class="badge badge-${profile.role === 'teacher' ? 'warning' : 'success'}">${profile.role === 'teacher' ? 'Учитель' : 'Ученик'}</span></td>
+                        <td>${profile.school || 'Не указано'}</td>
+                        <td><span class="badge badge-success">Активен</span></td>
+                        <td>${new Date(profile.completedAt).toLocaleDateString()}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" onclick="viewUser('${email}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser('${email}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            });
+        }
+
+        function viewUser(email) {
+            const profile = JSON.parse(localStorage.getItem(`teacheruchit_profile_${email}`));
+            alert(`Информация о пользователе:\n\nИмя: ${profile.userName}\nEmail: ${email}\nРоль: ${profile.role}\nШкола: ${profile.school || 'Не указано'}\nСоздан: ${new Date(profile.completedAt).toLocaleDateString()}`);
+        }
+
+        function deleteUser(email) {
+            if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+                localStorage.removeItem(`teacheruchit_profile_${email}`);
+                showNotification('Пользователь удален!', 'error');
+                loadUsers();
+                loadStatistics();
+            }
+        }
+
+        // Управление школами
+        function loadSchools() {
+            const tbody = document.getElementById('schools-tbody');
+            tbody.innerHTML = '';
+
+            adminData.schools.forEach((school, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${school.name}</td>
+                    <td>${school.code || 'Не сгенерирован'}</td>
+                    <td><span class="badge badge-${school.status === 'active' ? 'success' : 'warning'}">${school.status === 'active' ? 'Активна' : 'Неактивна'}</span></td>
+                    <td>${school.teachersCount || 0}</td>
+                    <td>${new Date(school.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" onclick="editSchool(${index})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteSchool(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Обновляем список школ в генераторе кодов
+            const schoolSelect = document.getElementById('school-for-code');
+            schoolSelect.innerHTML = '<option value="">Выберите школу</option>';
+            adminData.schools.forEach((school, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = school.name;
+                schoolSelect.appendChild(option);
+            });
+        }
+
+        // Добавление школы
+        document.getElementById('add-school-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const school = {
+                id: Date.now(),
+                name: document.getElementById('school-name').value,
+                city: document.getElementById('school-city').value,
+                type: document.getElementById('school-type').value,
+                address: document.getElementById('school-address').value,
+                phone: document.getElementById('school-phone').value,
+                email: document.getElementById('school-email').value,
+                description: document.getElementById('school-description').value,
+                status: 'active',
+                teachersCount: 0,
+                createdAt: new Date().toISOString()
+            };
+
+            adminData.schools.push(school);
+            localStorage.setItem('teacheruchit_admin_schools', JSON.stringify(adminData.schools));
+            
+            showNotification('Школа успешно добавлена!');
+            document.getElementById('add-school-modal').classList.remove('active');
+            document.getElementById('add-school-form').reset();
+            loadSchools();
+            loadStatistics();
+        });
+
+        // Генерация кода школы
+        document.getElementById('generate-code-btn').addEventListener('click', () => {
+            const schoolIndex = document.getElementById('school-for-code').value;
+            if (!schoolIndex) {
+                alert('Выберите школу для генерации кода');
+                return;
+            }
+
+            const school = adminData.schools[schoolIndex];
+            const cityCode = school.city.toUpperCase();
+            const schoolId = school.id.toString().slice(-3);
+            const year = new Date().getFullYear();
+            const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+            
+            const code = `${cityCode}_${schoolId}_${year}_${randomCode}`;
+            
+            school.code = code;
+            localStorage.setItem('teacheruchit_admin_schools', JSON.stringify(adminData.schools));
+            
+            document.getElementById('new-school-code').value = code;
+            document.getElementById('generated-code').style.display = 'block';
+            
+            showNotification('Код школы сгенерирован!');
+            loadSchools();
+        });
+
+        // Копирование кода
+        document.getElementById('copy-code-btn').addEventListener('click', () => {
+            const codeInput = document.getElementById('new-school-code');
+            codeInput.select();
+            document.execCommand('copy');
+            showNotification('Код скопирован в буфер обмена!');
+        });
+
+        function editSchool(index) {
+            const school = adminData.schools[index];
+            // Заполняем форму данными школы
+            document.getElementById('school-name').value = school.name;
+            document.getElementById('school-city').value = school.city;
+            document.getElementById('school-type').value = school.type;
+            document.getElementById('school-address').value = school.address || '';
+            document.getElementById('school-phone').value = school.phone || '';
+            document.getElementById('school-email').value = school.email || '';
+            document.getElementById('school-description').value = school.description || '';
+            
+            document.getElementById('add-school-modal').classList.add('active');
+        }
+
+        function deleteSchool(index) {
+            if (confirm('Вы уверены, что хотите удалить эту школу?')) {
+                adminData.schools.splice(index, 1);
+                localStorage.setItem('teacheruchit_admin_schools', JSON.stringify(adminData.schools));
+                showNotification('Школа удалена!', 'error');
+                loadSchools();
+                loadStatistics();
+            }
+        }
+
+        // Управление контентом
+        function loadContent() {
+            const contentGrid = document.getElementById('content-grid');
+            contentGrid.innerHTML = '';
+
+            // Загружаем материалы как контент
+            adminData.materials.forEach((material, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h4 class="card-title">${material.title}</h4>
+                        <span class="badge badge-${getStatusClass(material.status)}">${getStatusName(material.status)}</span>
+                    </div>
+                    <p style="color: var(--gray-600); margin-bottom: 1rem;">${material.description || 'Нет описания'}</p>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-secondary btn-sm" onclick="editContent(${index})">
+                            <i class="fas fa-edit"></i>
+                            Редактировать
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="viewContent(${index})">
+                            <i class="fas fa-eye"></i>
+                            Просмотр
+                        </button>
+                    </div>
+                `;
+                contentGrid.appendChild(card);
+            });
+        }
+
+        function editContent(index) {
+            const material = adminData.materials[index];
+            document.getElementById('content-title').value = material.title;
+            document.getElementById('content-body').value = material.content;
+            document.getElementById('content-status').value = material.status;
+            
+            document.getElementById('edit-content-modal').classList.add('active');
+            document.getElementById('edit-content-title').textContent = 'Редактировать контент';
+        }
+
+        function viewContent(index) {
+            const material = adminData.materials[index];
+            window.open(`data:text/html,<html><head><title>${material.title}</title></head><body><h1>${material.title}</h1><p>${material.content}</p></body></html>`, '_blank');
+        }
+
+        // Аналитика
+        function loadAnalytics() {
+            // Простая аналитика активности
+            const allUsers = [];
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('teacheruchit_profile_')) {
+                    const profile = JSON.parse(localStorage.getItem(key));
+                    allUsers.push(profile);
+                }
+            });
+
+            const popularMaterials = document.getElementById('popular-materials');
+            popularMaterials.innerHTML = `
+                <p><strong>Всего материалов:</strong> ${adminData.materials.length}</p>
+                <p><strong>Опубликованных:</strong> ${adminData.materials.filter(m => m.status === 'published').length}</p>
+                <p><strong>Черновиков:</strong> ${adminData.materials.filter(m => m.status === 'draft').length}</p>
+                <p><strong>Предметов:</strong> ${new Set(adminData.materials.map(m => m.subject)).size}</p>
+            `;
+        }
+
+        // Сохранение настроек
+        document.getElementById('save-general-settings').addEventListener('click', () => {
+            adminData.settings.siteTitle = document.getElementById('site-title').value;
+            adminData.settings.siteDescription = document.getElementById('site-description').value;
+            
+            localStorage.setItem('teacheruchit_admin_settings', JSON.stringify(adminData.settings));
+            showNotification('Общие настройки сохранены!');
+        });
+
+        document.getElementById('save-security-settings').addEventListener('click', () => {
+            adminData.settings.emailVerification = document.getElementById('email-verification').value === 'true';
+            adminData.settings.autoApproveTeachers = document.getElementById('auto-approve-teachers').value === 'true';
+            
+            localStorage.setItem('teacheruchit_admin_settings', JSON.stringify(adminData.settings));
+            showNotification('Настройки безопасности сохранены!');
+        });
+
+        // Выход из системы
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'auth.html';
+        }
+
+        // Загрузка последней активности
+        function loadRecentActivity() {
+            const activityContainer = document.getElementById('recent-activity');
+            const activities = [
+                { text: 'Добавлен новый материал по истории', time: '2 часа назад', icon: 'fas fa-plus', color: 'success' },
+                { text: 'Зарегистрирован новый учитель', time: '4 часа назад', icon: 'fas fa-user-plus', color: 'primary' },
+                { text: 'Сгенерирован код для школы №239', time: '1 день назад', icon: 'fas fa-key', color: 'warning' },
+                { text: 'Обновлены настройки системы', time: '2 дня назад', icon: 'fas fa-cog', color: 'secondary' }
+            ];
+
+            activityContainer.innerHTML = activities.map(activity => `
+                <div style="display: flex; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--gray-200);">
+                    <div style="width: 2.5rem; height: 2.5rem; background: var(--${activity.color}); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                        <i class="${activity.icon}" style="color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 500; color: var(--gray-900);">${activity.text}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-500);">${activity.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAdminAccess()) return;
+            
+            setupNavigation();
+            setupModals();
+            loadStatistics();
+            loadRecentActivity();
+            
+            // Обработчик кнопки выхода
+            document.getElementById('logout-btn').addEventListener('click', logout);
+            
+            console.log('Admin Dashboard loaded successfully!');
+        });
+    </script>
+</body>
+</html>

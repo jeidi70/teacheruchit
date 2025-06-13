@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeacherUchit - Образовательная платформа</title>
+    <link rel="stylesheet" href="/assets/modern-design-system.css">
+    <link rel="stylesheet" href="/assets/components.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-50) 0%, var(--secondary-50) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--spacing-xl);
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero-title {
+            font-size: var(--text-5xl);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            line-height: var(--leading-tight);
+        }
+
+        .hero-subtitle {
+            font-size: var(--text-xl);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-2xl);
+            line-height: var(--leading-relaxed);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: var(--spacing-lg);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-button {
+            padding: var(--spacing-lg) var(--spacing-2xl);
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            border-radius: var(--radius-xl);
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .hero-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero-button.primary {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        .hero-button.primary:hover {
+            background: var(--primary-600);
+            color: white;
+            text-decoration: none;
+        }
+
+        .hero-button.secondary {
+            background: var(--surface-primary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-primary);
+        }
+
+        .hero-button.secondary:hover {
+            background: var(--surface-secondary);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-color: var(--primary-300);
+        }
+
+        .features-section {
+            padding: var(--spacing-3xl) var(--spacing-xl);
+            background: var(--surface-primary);
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: var(--text-3xl);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .feature-card {
+            background: var(--surface-secondary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            text-align: center;
+            border: 1px solid var(--border-primary);
+            transition: all var(--transition-fast);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            color: white;
+        }
+
+        .feature-icon.primary { background: var(--primary-500); }
+        .feature-icon.secondary { background: var(--secondary-500); }
+        .feature-icon.success { background: var(--success-500); }
+        .feature-icon.warning { background: var(--warning-500); }
+
+        .feature-title {
+            font-size: var(--text-xl);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: var(--leading-relaxed);
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-primary);
+            padding: var(--spacing-lg) var(--spacing-xl);
+            z-index: 1000;
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: var(--text-xl);
+            font-weight: var(--font-bold);
+            color: var(--primary-600);
+            text-decoration: none;
+        }
+
+        .navbar-logo:hover {
+            color: var(--primary-700);
+            text-decoration: none;
+        }
+
+        .navbar-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .navbar-button {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: var(--font-medium);
+            transition: all var(--transition-fast);
+        }
+
+        .navbar-button.login {
+            color: var(--text-secondary);
+        }
+
+        .navbar-button.login:hover {
+            color: var(--primary-600);
+            text-decoration: none;
+        }
+
+        .navbar-button.register {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        .navbar-button.register:hover {
+            background: var(--primary-600);
+            color: white;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: var(--text-3xl);
+            }
+
+            .hero-subtitle {
+                font-size: var(--text-lg);
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-button {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .navbar-buttons {
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="navbar-logo">TeacherUchit</a>
+            <div class="navbar-buttons">
+                <a href="/login.html" class="navbar-button login">Войти</a>
+                <a href="/teacher-registration.html" class="navbar-button register">Регистрация</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Современная образовательная платформа</h1>
+            <p class="hero-subtitle">
+                TeacherUchit — это инновационная платформа для изучения истории и обществознания 
+                с поддержкой ИИ-помощника и современными инструментами для учителей и учеников
+            </p>
+            <div class="hero-buttons">
+                <a href="/teacher-registration.html" class="hero-button primary">
+                    <svg class="icon icon-sm">
+                        <use href="/assets/modern-icons.svg#icon-teacher"></use>
+                    </svg>
+                    Для учителей
+                </a>
+                <a href="/student-registration.html" class="hero-button secondary">
+                    <svg class="icon icon-sm">
+                        <use href="/assets/modern-icons.svg#icon-students"></use>
+                    </svg>
+                    Для учеников
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-container">
+            <h2 class="features-title">Возможности платформы</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon primary">
+                        <svg class="icon icon-xl">
+                            <use href="/assets/modern-icons.svg#icon-ai"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">ИИ-помощник</h3>
+                    <p class="feature-description">
+                        Персональный помощник на базе DeepSeek AI для ответов на вопросы, 
+                        помощи с заданиями и объяснения сложных тем
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon secondary">
+                        <svg class="icon icon-xl">
+                            <use href="/assets/modern-icons.svg#icon-class"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Управление классами</h3>
+                    <p class="feature-description">
+                        Создавайте классы, приглашайте учеников, отслеживайте прогресс 
+                        и управляйте учебным процессом в одном месте
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon success">
+                        <svg class="icon icon-xl">
+                            <use href="/assets/modern-icons.svg#icon-materials"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Учебные материалы</h3>
+                    <p class="feature-description">
+                        Загружайте и организуйте материалы по истории и обществознанию, 
+                        делитесь ими с учениками
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon warning">
+                        <svg class="icon icon-xl">
+                            <use href="/assets/modern-icons.svg#icon-assignments"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Задания и тесты</h3>
+                    <p class="feature-description">
+                        Создавайте интерактивные задания, проводите тестирования 
+                        и автоматически проверяйте результаты
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon primary">
+                        <svg class="icon icon-xl">
+                            <use href="/assets/modern-icons.svg#icon-grades"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Журнал оценок</h3>
+                    <p class="feature-description">
+                        Ведите электронный журнал с системой геймификации, 
+                        отслеживайте успеваемость и прогресс учеников
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon secondary">
+                        <svg class="icon icon-xl">
+                            <use href="/assets/modern-icons.svg#icon-premium"></use>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Премиум функции</h3>
+                    <p class="feature-description">
+                        Расширенные возможности ИИ, дополнительные материалы 
+                        и инструменты для более эффективного обучения
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <script>
+        // Простая анимация появления элементов при скролле
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Применяем анимацию к карточкам функций
+        document.addEventListener('DOMContentLoaded', () => {
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+
+            // Проверяем, авторизован ли пользователь
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                const navbar = document.querySelector('.navbar-buttons');
+                navbar.innerHTML = `
+                    <a href="/${user.role}-dashboard.html" class="navbar-button login">
+                        Личный кабинет
+                    </a>
+                    <button onclick="logout()" class="navbar-button register">
+                        Выйти
+                    </button>
+                `;
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('user');
+            window.location.reload();
+        }
+
+        // Плавная прокрутка для якорных ссылок
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

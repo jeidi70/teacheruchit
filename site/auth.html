@@ -128,7 +128,7 @@
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             color: var(--gray-600);
             position: relative;
             overflow: hidden;
@@ -146,12 +146,16 @@
             height: 100%;
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.15s ease;
             border-radius: 0.75rem;
         }
 
         .tab-button:hover::before {
             opacity: 1;
+        }
+
+        .tab-button:active {
+            transform: scale(0.98);
         }
 
         .tab-button.active {
@@ -183,7 +187,7 @@
             min-height: 100%;
             opacity: 0;
             transform: translateX(0);
-            transition: transform 0.4s ease, opacity 0.4s ease;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
             pointer-events: none;
             will-change: transform, opacity;
             box-sizing: border-box;
@@ -195,31 +199,36 @@
             opacity: 1;
             transform: translateX(0);
             pointer-events: auto;
+            z-index: 2;
         }
 
         .auth-form.slide-out-left {
             transform: translateX(-100%);
             opacity: 0;
+            z-index: 1;
         }
 
         .auth-form.slide-out-right {
             transform: translateX(100%);
             opacity: 0;
+            z-index: 1;
         }
 
         .auth-form.slide-in-left {
             transform: translateX(-100%);
             opacity: 0;
+            z-index: 1;
         }
 
         .auth-form.slide-in-right {
             transform: translateX(100%);
             opacity: 0;
+            z-index: 1;
         }
 
-        /* Упрощенная анимация полей для мобильных */
+        /* Упрощенная анимация полей */
         .auth-form .form-group {
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
@@ -227,8 +236,8 @@
         }
 
         .auth-form:not(.active) .form-group {
-            transform: translateY(10px);
-            opacity: 0.8;
+            transform: translateY(5px);
+            opacity: 0.9;
         }
 
         .auth-form.active .form-group {
@@ -689,18 +698,41 @@
             }
         }
 
+        /* Оптимизация для touch устройств */
+        @media (hover: none) and (pointer: coarse) {
+            .auth-form {
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+            
+            .tab-button {
+                transition: all 0.15s ease;
+            }
+            
+            .tab-button::before {
+                transition: opacity 0.1s ease;
+            }
+            
+            .auth-form .form-group {
+                transition: all 0.1s ease;
+            }
+        }
+
         /* Уменьшение анимаций для пользователей с ограниченными возможностями */
         @media (prefers-reduced-motion: reduce) {
             .auth-form {
-                transition: opacity 0.2s ease;
+                transition: opacity 0.1s ease;
             }
 
             .tab-button, .auth-button, .social-button {
-                transition: all 0.1s ease;
+                transition: all 0.05s ease;
             }
 
             .form-input {
-                transition: border-color 0.1s ease;
+                transition: border-color 0.05s ease;
+            }
+            
+            .auth-form .form-group {
+                transition: none;
             }
         }
     </style>
@@ -851,7 +883,7 @@
             
             isAnimating = true;
             
-            // Обновляем кнопки табов
+            // Мгновенно обновляем кнопки табов
             tabButtons.forEach(button => button.classList.remove('active'));
             const targetButton = document.querySelector(`[onclick="showForm('${formType}')"]`);
             if (targetButton) targetButton.classList.add('active');
@@ -860,47 +892,35 @@
             const isLoginToRegister = formType === 'register';
             
             if (currentForm) {
-                // Подготавливаем новую форму для входа
-                targetForm.classList.remove('slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
-                targetForm.style.transform = isLoginToRegister ? 'translateX(100%)' : 'translateX(-100%)';
-                targetForm.style.opacity = '0';
-                targetForm.style.pointerEvents = 'none';
+                // Мгновенная подготовка новой формы
+                targetForm.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
+                targetForm.classList.add(isLoginToRegister ? 'slide-in-right' : 'slide-in-left');
                 
-                // Запускаем анимацию выхода текущей формы
-                currentForm.classList.remove('active');
-                currentForm.classList.add(isLoginToRegister ? 'slide-out-left' : 'slide-out-right');
-                
-                // Через небольшую задержку запускаем анимацию входа новой формы
-                setTimeout(() => {
+                // Мгновенный запуск анимации
+                requestAnimationFrame(() => {
+                    // Убираем текущую форму
+                    currentForm.classList.remove('active');
+                    currentForm.classList.add(isLoginToRegister ? 'slide-out-left' : 'slide-out-right');
+                    
                     // Показываем новую форму
                     targetForm.classList.add('active');
-                    targetForm.style.transform = 'translateX(0)';
-                    targetForm.style.opacity = '1';
-                    targetForm.style.pointerEvents = 'auto';
+                    targetForm.classList.remove('slide-in-left', 'slide-in-right');
+                });
+                
+                // Очистка после анимации
+                setTimeout(() => {
+                    currentForm.classList.remove('slide-out-left', 'slide-out-right');
+                    isAnimating = false;
                     
-                    // Убираем классы анимации с текущей формы
-                    setTimeout(() => {
-                        currentForm.classList.remove('slide-out-left', 'slide-out-right');
-                        currentForm.style.transform = '';
-                        currentForm.style.opacity = '';
-                        currentForm.style.pointerEvents = '';
-                        
-                        // Разблокируем анимацию
-                        isAnimating = false;
-                        
-                        // Фокус на первое поле (только для десктопа)
-                        if (window.innerWidth > 768) {
-                            const firstInput = targetForm.querySelector('input');
-                            if (firstInput) firstInput.focus();
-                        }
-                    }, 400);
-                }, 50);
+                    // Фокус на первое поле (только для десктопа)
+                    if (window.innerWidth > 768) {
+                        const firstInput = targetForm.querySelector('input');
+                        if (firstInput) firstInput.focus();
+                    }
+                }, 300);
             } else {
-                // Если нет текущей формы, просто показываем целевую
+                // Если нет текущей формы, мгновенно показываем целевую
                 targetForm.classList.add('active');
-                targetForm.style.transform = 'translateX(0)';
-                targetForm.style.opacity = '1';
-                targetForm.style.pointerEvents = 'auto';
                 isAnimating = false;
             }
             

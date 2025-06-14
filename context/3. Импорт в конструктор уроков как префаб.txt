@@ -1,0 +1,12 @@
+
+---
+
+### **8. Аналитика для учителя**
+```prompt
+Создай дашборд /dashboard/teacher/analytics:
+1. Запросы к Firestore:
+```ts
+// Получение данных по классу
+const classResults = await db.collection('lessons')
+  .where('classId', '==', currentClassId)
+  .get();

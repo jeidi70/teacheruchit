@@ -1,0 +1,23 @@
+Создай Next.js 14 (App Router) проект с TypeScript и интегрируй Firebase. Конфигурация:
+1. Используй Firebase SDK v10
+
+2. Подключи сервисы: 
+   - Firestore (база уроков/пользователей)
+   - Firebase Auth (учителя/ученики)
+   - Firebase Storage (для медиаконтента)
+   - Firebase Hosting (деплой)
+   - Cloud Functions (для будущей ИИ-логики)
+// Для Firebase JS SDK v7.20.0 и более поздних версий параметр dimensionId необязателен
+константа firebaseConfig = { 
+  apiKey : «AIzaSyDdr_9yA391YOY08o3T3RXvjD1-dIdfCK0» , 
+  authDomain : "teacheruchit.firebaseapp.com" , 
+  projectId : "teacheruchit" , 
+  storageBucket : "teacheruchit.firebasestorage.app" , 
+  messageSenderId : "762586190395" , 
+  appId : "1:762586190395:web:78333e7d5fa3dd6dd1021e" , 
+  Идентификатор измерения : "G-K0BHLKHNHF" 
+};
+
+3. Инициализация Firebase в `lib/firebase.ts` с секретными ключами из `.env.local`
+4. Настрой домен из reg.ru в Firebase Hosting (указать в firebase.json)
+5. Добавь шаблон PWA (manifest.json, service-worker)

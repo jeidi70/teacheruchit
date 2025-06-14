@@ -1,0 +1,9 @@
+Реализуй аутентификацию с ролями:
+1. Страницы: /login, /register (с выбором роли "Учитель" или "Ученик")
+2. Используй Firebase Auth + Firestore для хранения доп. полей:
+   - Учитель: school, subject, classIds[]
+   - Ученик: classId, grade, avatarProgress
+3. Редирект после логина:
+   - Учитель → /dashboard/teacher
+   - Ученик → /dashboard/student
+4. Защищённые роуты через HOC `withAuth` (проверка роли)

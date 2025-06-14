@@ -1,0 +1,16 @@
+Создай конструктор уроков в /dashboard/teacher/create-lesson:
+1. Drag-and-drop интерфейс (используй react-dnd) с блоками:
+   - Видео (загрузка в Firebase Storage)
+   - Интерактивная карта (Leaflet)
+   - Документ (PDF viewer)
+   - Вопрос (тест/эссе/анализ источника)
+   - Симулятор (базовый шаблон)
+2. Сохранение структуры урока в Firestore:
+```ts
+interface Lesson {
+  blocks: Array<{
+    type: 'video' | 'map' | 'quiz' | 'simulator';
+    data: JSON; // Конфиг блока
+  }>;
+  classIds: string[]; // Для каких классов
+}
